@@ -1,0 +1,259 @@
+/* ==========================================================================
+   Editorial for Knowledge Base — 05 Layout
+   版式扩展：按笔记切换栏宽 / 分栏 / 卡片 / 成稿模式
+
+   用法：在笔记 frontmatter 里写 cssclass
+     ---
+     cssclass: wide-page
+     ---
+   可以叠加：cssclass: wide-table cards
+
+   借鉴来源（GitHub）：
+   - efemkay/obsidian-modular-css-layout → wide-page / wide-table /
+     wide-dataview / narrow-page 的 cssclass 约定与变量覆盖写法
+   - replete/obsidian-minimal-theme-css-snippets → Daily Note - Sticky Headings
+   - r-u-s-h-i-k-e-s-h/Obsidian-CSS-Snippets → Card view / Card layout、
+     Multicolumn note、Properties on hover
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 栏宽控制
+   关键：直接改 Minimal 依赖的 --line-width，靠继承一次搞定，不用到处 !important
+   -------------------------------------------------------------------------- */
+.wide-page {
+  --line-width: 100%;
+  --file-line-width: 100%;
+  --max-width: 100%;
+}
+
+.wide-page .markdown-preview-sizer,
+.wide-page.markdown-preview-view .markdown-preview-sizer,
+.wide-page .cm-sizer,
+.wide-page .markdown-source-view .cm-content {
+  max-width: 100% !important;
+}
+
+/* 只放宽表格，正文仍保持舒适栏宽 */
+.wide-table .markdown-preview-sizer table,
+.wide-table .markdown-rendered table {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: calc(-1 * (100% - min(100%, var(--line-width))) / 2);
+}
+
+/* 只放宽 Dataview 结果块 */
+.wide-dataview .markdown-preview-sizer .block-language-dataview,
+.wide-dataview .markdown-rendered .block-language-dataview {
+  width: calc(100vw - 12rem);
+  max-width: calc(100vw - 12rem);
+  margin-inline-start: calc(-1 * ((100vw - 12rem) - min(100%, var(--line-width))) / 2);
+}
+
+/* 更窄，用于专注写作 */
+.narrow-page {
+  --line-width: 34rem;
+  --file-line-width: 34rem;
+}
+
+/* --------------------------------------------------------------------------
+   2. 正文分栏（适合 MOC、索引、术语表）
+   -------------------------------------------------------------------------- */
+.columns-2 .markdown-preview-sizer,
+.columns-3 .markdown-preview-sizer {
+  column-gap: 2.8rem;
+  column-rule: 1px solid var(--ed-rule);
+}
+
+.columns-2 .markdown-preview-sizer {
+  column-count: 2;
+}
+
+.columns-3 .markdown-preview-sizer {
+  column-count: 3;
+}
+
+/* 标题不要被拆到栏尾，块级元素不要跨栏断开 */
+.columns-2 .markdown-preview-sizer :is(h1, h2, h3, h4, table, pre, .callout, .markdown-embed),
+.columns-3 .markdown-preview-sizer :is(h1, h2, h3, h4, table, pre, .callout, .markdown-embed) {
+  break-inside: avoid;
+}
+
+.columns-2 .markdown-preview-sizer :is(h1, h2, h3, h4),
+.columns-3 .markdown-preview-sizer :is(h1, h2, h3, h4) {
+  break-after: avoid;
+}
+
+/* 分栏时 H2 的上方发丝线会显得零碎，去掉 */
+.columns-2 .markdown-preview-sizer h2,
+.columns-3 .markdown-preview-sizer h2 {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 1.6em;
+}
+
+@media (max-width: 900px) {
+  .columns-2 .markdown-preview-sizer,
+  .columns-3 .markdown-preview-sizer {
+    column-count: 1;
+    column-rule: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. 列表双栏 / 卡片网格
+   同时支持两种写法：
+     a) frontmatter: cssclass: list-2col / cards
+     b) 行内标签：列表项里写 #cols2 / #cards（借用 MCL 的约定）
+   -------------------------------------------------------------------------- */
+
+/* ---- 3.1 双栏列表 ---- */
+.list-2col .markdown-preview-sizer > div > ul,
+.list-2col .markdown-rendered > ul,
+.markdown-rendered ul:has(a.tag[data-href="#cols2"]) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.1em 2rem;
+  padding-inline-start: 1.4em;
+}
+
+/* ---- 3.2 卡片网格 ---- */
+.cards .markdown-preview-sizer > div > ul,
+.cards .markdown-rendered > ul,
+.markdown-rendered ul:has(a.tag[data-href="#cards"]) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr));
+  gap: 0.9em;
+  padding-inline-start: 0;
+  list-style: none;
+}
+
+.cards .markdown-preview-sizer > div > ul > li,
+.cards .markdown-rendered > ul > li,
+.markdown-rendered ul:has(a.tag[data-href="#cards"]) > li {
+  margin: 0;
+  padding: 0.85em 1em;
+  border: 1px solid var(--ed-rule);
+  border-radius: var(--radius-m);
+  background: transparent;
+  transition: border-color var(--ed-fast) var(--ed-ease),
+    background-color var(--ed-fast) var(--ed-ease);
+}
+
+.cards .markdown-preview-sizer > div > ul > li:hover,
+.cards .markdown-rendered > ul > li:hover,
+.markdown-rendered ul:has(a.tag[data-href="#cards"]) > li:hover {
+  border-color: rgba(var(--ed-accent-rgb), 0.5);
+  background: rgba(var(--ed-accent-rgb), 0.03);
+}
+
+/* 卡片里的第一个粗体行当标题 */
+.cards ul > li > p:first-child {
+  margin-top: 0;
+  font-family: var(--ed-font-display);
+  font-size: 1.05em;
+}
+
+/* 卡片内部列表去掉缩进和标记 */
+.cards ul > li ul {
+  padding-inline-start: 1em;
+  margin-block: 0.3em;
+}
+
+.cards ul > li > ul > li::marker {
+  color: var(--ed-rule-strong);
+}
+
+/* --------------------------------------------------------------------------
+   4. 成稿模式：隐藏属性区、放宽行距，当作在读一篇定稿文章
+   -------------------------------------------------------------------------- */
+.article .metadata-container {
+  display: none;
+}
+
+.article .markdown-preview-sizer {
+  --line-height-normal: 1.9;
+}
+
+.article .markdown-preview-sizer h1::after,
+.article .inline-title::after {
+  width: 3.4em;
+}
+
+@media (min-width: 1200px) {
+  .article {
+    --line-width: 40rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. 首字下沉（中文按一个字下沉，英文自动落到首字母）
+   -------------------------------------------------------------------------- */
+.drop-cap .markdown-preview-sizer p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--ed-font-display);
+  font-size: 3.1em;
+  line-height: 0.92;
+  font-weight: 600;
+  color: var(--ed-accent);
+  margin: 0.04em 0.12em 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. 隐藏文件名标题（正文自带 H1 时用）
+   -------------------------------------------------------------------------- */
+.no-inline-title .inline-title {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. H2 吸顶：长文滚动时始终知道自己在哪一章
+   -------------------------------------------------------------------------- */
+.sticky-heading .markdown-preview-sizer h2 {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--background-primary);
+  border-top-color: transparent;
+  padding-top: 0.6em;
+  padding-bottom: 0.35em;
+  margin-top: 1.6em;
+}
+
+/* 吸顶时给一道底部发丝线，避免文字从标题下方穿出 */
+.sticky-heading .markdown-preview-sizer h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--ed-rule);
+  opacity: 0;
+  transition: opacity var(--ed-fast) var(--ed-ease);
+}
+
+/* --------------------------------------------------------------------------
+   8. 引用式批注：整页把 blockquote 当页边批注用
+   -------------------------------------------------------------------------- */
+.marginal .markdown-preview-sizer blockquote {
+  float: right;
+  clear: right;
+  width: 13rem;
+  margin: 0.4em 0 1.1em 1.7em;
+  padding: 0.5em 0 0.5em 0;
+  border-inline-start: none;
+  border-top: 1px solid var(--ed-rule-strong);
+  font-size: 0.85em;
+  line-height: 1.65;
+}
+
+@media (max-width: 720px) {
+  .marginal .markdown-preview-sizer blockquote {
+    float: none;
+    clear: none;
+    width: auto;
+    border-inline-start: 2px solid var(--ed-rule-strong);
+    border-top: none;
+    padding: 0.12em 0 0.12em 1.3em;
+  }
+}

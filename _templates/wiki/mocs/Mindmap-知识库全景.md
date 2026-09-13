@@ -13,7 +13,7 @@ status: finished
 
 > [!tip] 关于本页面
 > 本页所有图表使用 **Mermaid** 语法，Obsidian 原生支持，无需安装任何插件。
-> 图表配色由 `wiki-mermaid.css` 统一接管：**同一份源码在深色与浅色主题下都能正确显示**，
+> 图表配色由 CSS snippet 统一接管（`07-diagrams.css` + `08-mermaid.css`）：**同一份源码在深色与浅色主题下都能正确显示**，
 > 因此这里不使用 `style X fill:#...` 这类硬编码颜色，而是通过语义 `class` 引用配色变量。
 
 ## 架构总览
@@ -71,12 +71,16 @@ mindmap
         templates.json
         graph.json
       CSS 样式
-        wiki-reading
-        wiki-callouts
-        wiki-components
-        wiki-mermaid
-        wiki-markmap
-        wiki-canvas
+        01 设计基石
+        02 阅读排版
+        03 Callout 语汇
+        04 组件增强
+        05 版式模式
+        06 界面外壳
+        07 图表调色
+        08 Mermaid
+        09 Markmap
+        10 Canvas
       模板系统
         entity
         concept

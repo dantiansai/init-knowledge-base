@@ -1,0 +1,558 @@
+/* ==========================================================================
+   Editorial for Knowledge Base — 06 Chrome
+   界面外壳：侧边栏 / 标签页 / 状态栏 / 悬浮预览 / 命令面板 / 图谱 / 打印
+
+   原则：界面比正文更「安静」。用发丝线划分区域，用一条 2px 强调色短线
+   标记当前位置，不再用填充色块表达选中态。
+
+   借鉴来源（GitHub）：
+   - replete/obsidian-minimal-theme-css-snippets → Native Scrollbar styles、
+     Collapsible Right Headers、Compact File Explorer、Compact Tabs
+   - r-u-s-h-i-k-e-s-h/Obsidian-CSS-Snippets → Square tabs、Command palette
+     styling、Tooltip styling、Sidenote 面板的紧凑取向
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 阅读区留白与编辑区
+   -------------------------------------------------------------------------- */
+.markdown-preview-view,
+.markdown-source-view.mod-cm6 .cm-scroller {
+  padding-block: 3.2rem 6rem;
+}
+
+.markdown-preview-sizer,
+.markdown-source-view.mod-cm6 .cm-sizer {
+  padding-bottom: 2rem;
+}
+
+/* 行号槽与当前行 */
+.markdown-source-view.mod-cm6 .cm-gutters {
+  background-color: transparent;
+  border-inline-end: 1px solid var(--ed-rule);
+  color: var(--ed-ink-faint);
+}
+
+.markdown-source-view.mod-cm6 .cm-activeLineGutter {
+  background-color: transparent;
+  color: var(--ed-ink-muted);
+}
+
+.markdown-source-view.mod-cm6 .cm-activeLine {
+  background-color: rgba(var(--ed-accent-rgb), 0.045);
+}
+
+/* 光标用强调色 */
+.markdown-source-view.mod-cm6 .cm-cursor,
+.markdown-source-view.mod-cm6 .cm-fat-cursor {
+  border-inline-start-color: var(--ed-accent);
+}
+
+/* --------------------------------------------------------------------------
+   2. 侧边栏 / 文件树
+   -------------------------------------------------------------------------- */
+.nav-folder-title,
+.nav-file-title {
+  border-radius: var(--radius-s);
+  margin: 0 4px 1px;
+  padding: 3px 7px;
+  color: var(--ed-ink-muted);
+  transition: background-color var(--ed-fast) var(--ed-ease),
+    color var(--ed-fast) var(--ed-ease);
+}
+
+.nav-folder-title:hover,
+.nav-file-title:hover {
+  background-color: var(--ed-tint);
+  color: var(--text-normal);
+}
+
+/* 当前打开的文件：左侧一道 2px 强调线，而不是整条填色 */
+.nav-file-title.is-active {
+  background-color: transparent;
+  color: var(--ed-accent);
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--ed-accent);
+}
+
+.nav-file-title.is-active:hover {
+  background-color: rgba(var(--ed-accent-rgb), 0.06);
+}
+
+/* 文件夹用小三角，颜色压到最淡 */
+.nav-folder-title-content::before {
+  content: "";
+  display: inline-block;
+  width: 0.32em;
+  height: 0.32em;
+  margin-inline-end: 0.5em;
+  vertical-align: 0.08em;
+  border-style: solid;
+  border-width: 0.32em 0 0.32em 0.5em;
+  border-color: transparent transparent transparent var(--ed-ink-faint);
+  transition: transform var(--ed-fast) var(--ed-ease);
+}
+
+.nav-folder-title.is-collapsed .nav-folder-title-content::before {
+  transform: rotate(90deg);
+}
+
+/* 侧边栏分区标题：做成小型刊头 */
+.nav-header,
+.workspace-leaf-content[data-type="file-explorer"] .nav-buttons-container {
+  border-bottom: 1px solid var(--ed-rule);
+}
+
+/* 侧边栏面板上的「折叠态标题栏」弱化 */
+.workspace-leaf-header .view-header-title,
+.side-dock-settings {
+  color: var(--ed-ink-faint);
+}
+
+/* --------------------------------------------------------------------------
+   3. 标签页 / 视图头
+   -------------------------------------------------------------------------- */
+.workspace-tab-header {
+  border-radius: 0;
+  color: var(--ed-ink-muted);
+}
+
+.workspace-tab-header-inner {
+  border-radius: 0;
+  padding-inline: 10px;
+}
+
+.workspace-tab-header.is-active {
+  color: var(--text-normal);
+}
+
+/* 活动标签：底部一条强调线 */
+.workspace-tab-header.is-active::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 0;
+  height: 2px;
+  background: var(--ed-accent);
+}
+
+.workspace-tab-header-container {
+  border-bottom: 1px solid var(--ed-rule);
+}
+
+/* 视图头（文件名行）不要投影，用发丝线 */
+.view-header {
+  border-bottom: 1px solid var(--ed-rule);
+  background-color: var(--background-primary);
+}
+
+.view-header-title {
+  color: var(--ed-ink-muted);
+  font-size: 0.86em;
+  letter-spacing: 0.02em;
+}
+
+.view-header-title-parent,
+.view-header-breadcrumb {
+  color: var(--ed-ink-faint);
+}
+
+/* 侧边栏折叠按钮 */
+.workspace-tab-header-tab-list,
+.workspace-tab-header-new-tab,
+.workspace-tab-header-inner-close-button {
+  color: var(--ed-ink-faint);
+}
+
+/* --------------------------------------------------------------------------
+   4. 状态栏 / 工具栏
+   -------------------------------------------------------------------------- */
+.status-bar {
+  border-top: 1px solid var(--ed-rule);
+  background-color: var(--background-secondary);
+  color: var(--ed-ink-faint);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+}
+
+.status-bar-item:hover {
+  color: var(--ed-accent);
+}
+
+.workspace-ribbon,
+.side-dock-ribbon {
+  border-inline-end: 1px solid var(--ed-rule);
+  background-color: var(--background-secondary);
+}
+
+.side-dock-ribbon-action {
+  color: var(--ed-ink-faint);
+  border-radius: var(--radius-s);
+}
+
+.side-dock-ribbon-action:hover,
+.side-dock-ribbon-action.is-active {
+  color: var(--ed-accent);
+  background-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   5. 反链 / 大纲 / 搜索面板
+   -------------------------------------------------------------------------- */
+.backlink-pane,
+.outline,
+.search-results-info {
+  font-size: 0.9em;
+}
+
+.backlink-pane .search-result-file-title,
+.outline .tree-item-self.is-clickable {
+  color: var(--ed-ink-muted);
+}
+
+.backlink-pane .search-result-file-title:hover,
+.outline .tree-item-self:hover {
+  color: var(--ed-accent);
+}
+
+/* 反链里的上下文片段用左侧竖线分组 */
+.backlink-pane .search-result-file-matches {
+  border-inline-start: 1px solid var(--ed-rule);
+  padding-inline-start: 0.85em;
+  margin-inline-start: 0.25em;
+}
+
+.search-result-file-match {
+  border-radius: var(--radius-s);
+}
+
+/* 大纲层级用缩进和字重区分，不用色块 */
+.outline .tree-item-children {
+  border-inline-start: 1px solid var(--ed-tint);
+  margin-inline-start: 0.5em;
+}
+
+/* --------------------------------------------------------------------------
+   6. 悬浮预览 / 弹窗 / 命令面板
+   -------------------------------------------------------------------------- */
+.popover,
+.hover-popover {
+  border-radius: var(--radius-m);
+  border: 1px solid var(--ed-rule-strong);
+  box-shadow: var(--ed-shadow-3);
+  background-color: var(--background-primary);
+}
+
+.popover .markdown-preview-view {
+  padding: 1.4rem 1.6rem;
+}
+
+/* 悬浮预览里的标题缩小，避免抢戏 */
+.popover .markdown-preview-view h1,
+.popover .markdown-preview-view .inline-title {
+  font-size: 1.45em;
+}
+
+.popover .markdown-preview-view h1::after,
+.popover .markdown-preview-view .inline-title::after {
+  content: none;
+}
+
+.popover .markdown-preview-view h2 {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 1.4em;
+}
+
+.modal,
+.modal-container .modal {
+  border-radius: var(--radius-m);
+  border: 1px solid var(--ed-rule-strong);
+  box-shadow: var(--ed-shadow-3);
+}
+
+.prompt {
+  border-radius: var(--radius-m);
+  border: 1px solid var(--ed-rule-strong);
+  box-shadow: var(--ed-shadow-3);
+}
+
+.prompt-input {
+  border-radius: 0;
+  border-bottom: 1px solid var(--ed-rule);
+  background: transparent;
+}
+
+.suggestion-item {
+  border-radius: var(--radius-s);
+}
+
+.suggestion-item.is-selected {
+  background-color: rgba(var(--ed-accent-rgb), 0.1);
+  color: var(--ed-accent);
+}
+
+.menu {
+  border-radius: var(--radius-m);
+  border: 1px solid var(--ed-rule-strong);
+  box-shadow: var(--ed-shadow-3);
+}
+
+.menu-item {
+  border-radius: var(--radius-s);
+}
+
+.menu-item.selected {
+  background-color: rgba(var(--ed-accent-rgb), 0.1);
+  color: var(--ed-accent);
+}
+
+.tooltip,
+.tooltip.mod-top {
+  border-radius: var(--radius-s);
+  background-color: var(--ed-ink);
+  color: var(--ed-paper);
+  font-size: 0.82em;
+  padding: 0.3em 0.55em;
+}
+
+/* --------------------------------------------------------------------------
+   7. 表单元素统一
+   -------------------------------------------------------------------------- */
+input[type="text"],
+input[type="search"],
+input[type="number"],
+textarea,
+select,
+.dropdown {
+  border-radius: var(--input-radius);
+  border: 1px solid var(--ed-rule);
+  background-color: var(--ed-paper-raised);
+}
+
+input[type="text"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus,
+.dropdown:focus {
+  border-color: var(--ed-accent);
+  box-shadow: none;
+  outline: none;
+}
+
+button,
+.clickable-icon {
+  border-radius: var(--radius-s);
+}
+
+button.mod-cta {
+  background-color: var(--ed-accent);
+  color: var(--ed-paper);
+  border: none;
+}
+
+button.mod-cta:hover {
+  background-color: var(--ed-accent-hover);
+}
+
+/* 复选框整体归方 */
+input[type="checkbox"] {
+  border-radius: var(--checkbox-radius);
+}
+
+/* 折叠箭头统一线性化 */
+.collapse-icon svg,
+.tree-item-icon svg {
+  stroke-width: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   8. 图谱视图
+   -------------------------------------------------------------------------- */
+.graph-view.color-fill {
+  color: var(--ed-blue);
+}
+
+.graph-view.color-fill-highlight {
+  color: var(--ed-accent);
+}
+
+.graph-view.color-line {
+  color: var(--ed-rule);
+}
+
+.graph-view.color-line-highlight {
+  color: rgba(var(--ed-accent-rgb), 0.6);
+}
+
+.graph-view.color-text {
+  color: var(--ed-ink-muted);
+}
+
+.graph-view.color-circle {
+  color: var(--ed-accent);
+}
+
+.graph-view.color-arrow {
+  color: var(--ed-rule-strong);
+}
+
+.graph-view.color-fill-unresolved {
+  color: var(--ed-ink-faint);
+}
+
+.graph-view.color-fill-tag {
+  color: var(--ed-yellow);
+}
+
+.graph-view.color-fill-attachment {
+  color: var(--ed-green);
+}
+
+/* --------------------------------------------------------------------------
+   9. Canvas
+   Canvas 的节点 / 分组 / 连线样式由 `10-canvas.css` 负责（模板片段，大量使用
+   !important）。这里不再重复声明，只通过 `07-diagrams.css` 重赋 `--wiki-cv-*`
+   token 把它接到编辑风色板 —— 避免两处规则互相打架、留下一堆失效代码。
+   -------------------------------------------------------------------------- */
+
+/* 内嵌笔记不要重复绘制左侧批注线（模板已给了画布内的卡片样式） */
+.canvas-node-content.markdown-embed {
+  border-inline-start: none;
+}
+
+/* --------------------------------------------------------------------------
+   10. 滚动条：细、方、无轨道底
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--ed-rule);
+  border-radius: 0;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ed-rule-strong);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   11. 其他细节
+   -------------------------------------------------------------------------- */
+/* 选中文本 */
+::selection {
+  background-color: var(--ed-select);
+}
+
+/* 分隔线统一 */
+hr,
+.markdown-rendered hr {
+  border-color: var(--ed-rule);
+}
+
+/* 图片加载占位不要闪白 */
+img {
+  background-color: transparent;
+}
+
+/* 未加载/破图的边框 */
+.markdown-rendered img[alt]::after {
+  border-radius: var(--radius-m);
+}
+
+/* --------------------------------------------------------------------------
+   12. 打印：只留纸面与文字
+   -------------------------------------------------------------------------- */
+@media print {
+  .markdown-preview-view,
+  .markdown-rendered {
+    --line-width: 100%;
+    font-size: 11pt;
+    line-height: 1.7;
+    color: #000;
+    padding: 0;
+  }
+
+  .markdown-preview-view h1,
+  .markdown-rendered h1,
+  .markdown-preview-view h2,
+  .markdown-rendered h2 {
+    color: #111;
+    break-after: avoid;
+  }
+
+  .markdown-preview-view h1::after,
+  .markdown-rendered h1::after,
+  .inline-title::after {
+    background: #111;
+  }
+
+  .markdown-preview-view h2,
+  .markdown-rendered h2 {
+    border-top-color: #bbb;
+  }
+
+  /* 彩色元素在纸上全部转灰，避免暗底打印成黑块 */
+  .callout {
+    background: transparent !important;
+    border-color: #bbb !important;
+    border-inline-start-color: #666 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .callout .callout-title {
+    color: #111 !important;
+  }
+
+  .markdown-rendered pre,
+  .markdown-rendered .mermaid {
+    border: 1px solid #ccc;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .markdown-rendered img {
+    border: 1px solid #ccc;
+    max-width: 92%;
+  }
+
+  .markdown-rendered .internal-link,
+  .markdown-rendered .external-link {
+    color: #111;
+    text-decoration: underline;
+  }
+
+  .markdown-rendered .external-link::after {
+    content: none;
+  }
+
+  .metadata-container {
+    border-color: #ddd;
+  }
+
+  /* 界面元素一律不打印 */
+  .status-bar,
+  .workspace-ribbon,
+  .side-dock-ribbon,
+  .workspace-tab-header-container,
+  .view-header,
+  .backlink-pane,
+  .popover,
+  .callout[data-callout="caption"] {
+    display: none !important;
+  }
+}

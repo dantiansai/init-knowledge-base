@@ -1,0 +1,153 @@
+/* ==========================================================================
+   Editorial for Knowledge Base — 07 Diagrams
+   图表调色：把 Mermaid / Markmap / Canvas 三个片段的 token 挂到编辑风色板
+
+   背景：08/09/10 三个片段保持原样 —— 内部用 `--wiki-mmd-*` / `--wiki-mk-*` /
+   `--wiki-cv-*` 一整套 token 描述颜色和形态，默认值是 Nord 冷色 + 10~12px 圆角。
+   不重写那 1400 多行，只在高特异性上重新赋值这些 token —— 颜色接到 `--ed-*`
+   色板，形态接到编辑风的近直角。好处是这三个文件可以被独立升级。
+
+   为什么用 `body.theme-*`：这些片段把 token 声明在 `.theme-dark` / `.theme-light`
+   上（特异性 0,1,0），裸 `body`（0,0,1）压不过它，必须抬到 0,1,1。
+
+   注意：Markmap 的字体相关 token（`--wiki-mk-font`）**故意不动** —— 改字体会破坏
+   Markmap 自身的文本测量，导致节点文字被裁切。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 柔化底色透明度：深色底上需要更高的 alpha 才看得出层次
+   -------------------------------------------------------------------------- */
+body.theme-light {
+  --ed-soft-a: 0.13;
+  --ed-grid: rgba(35, 33, 28, 0.07);
+  --ed-diagram-shadow: rgba(35, 33, 28, 0.08);
+  --ed-seq-label-bg: #eef3ea;
+}
+
+body.theme-dark {
+  --ed-soft-a: 0.26;
+  --ed-grid: rgba(230, 226, 216, 0.06);
+  --ed-diagram-shadow: rgba(0, 0, 0, 0.4);
+  --ed-seq-label-bg: #2a3529;
+}
+
+/* --------------------------------------------------------------------------
+   2. Mermaid
+   -------------------------------------------------------------------------- */
+body.theme-light,
+body.theme-dark {
+  /* --- 语义色阶：Mermaid 源码里写 class 节点ID blue，颜色由这里给 --- */
+  --wiki-c-blue: var(--ed-blue);
+  --wiki-c-cyan: var(--ed-cyan);
+  --wiki-c-green: var(--ed-green);
+  --wiki-c-yellow: var(--ed-yellow);
+  --wiki-c-orange: var(--ed-orange);
+  --wiki-c-red: var(--ed-red);
+  --wiki-c-purple: var(--ed-purple);
+
+  --wiki-c-blue-soft: rgba(var(--ed-blue-rgb), var(--ed-soft-a));
+  --wiki-c-cyan-soft: rgba(var(--ed-cyan-rgb), var(--ed-soft-a));
+  --wiki-c-green-soft: rgba(var(--ed-green-rgb), var(--ed-soft-a));
+  --wiki-c-yellow-soft: rgba(var(--ed-yellow-rgb), var(--ed-soft-a));
+  --wiki-c-orange-soft: rgba(var(--ed-orange-rgb), var(--ed-soft-a));
+  --wiki-c-red-soft: rgba(var(--ed-red-rgb), var(--ed-soft-a));
+  --wiki-c-purple-soft: rgba(var(--ed-purple-rgb), var(--ed-soft-a));
+
+  /* --- 画布 --- */
+  --wiki-mmd-canvas-bg: var(--ed-paper-raised);
+  --wiki-mmd-canvas-border: var(--ed-rule);
+  --wiki-mmd-canvas-inset: none;
+
+  /* --- 文字 --- */
+  --wiki-mmd-fg: var(--ed-ink);
+  --wiki-mmd-fg-dim: var(--ed-ink-muted);
+  --wiki-mmd-fg-faint: var(--ed-ink-faint);
+  --wiki-mmd-on-solid: var(--ed-paper);
+
+  /* --- 节点 --- */
+  --wiki-mmd-node-bg: var(--ed-paper-raised);
+  --wiki-mmd-node-bg-alt: var(--ed-paper-sunk);
+  --wiki-mmd-node-border: var(--ed-rule-strong);
+  --wiki-mmd-node-shadow: var(--ed-diagram-shadow);
+
+  /* --- 连线 --- */
+  --wiki-mmd-line: var(--ed-rule-strong);
+  --wiki-mmd-line-strong: var(--ed-accent);
+
+  /* --- 标签胶囊 --- */
+  --wiki-mmd-label-bg: var(--ed-tint);
+  --wiki-mmd-label-fg: var(--ed-ink-muted);
+
+  /* --- 分组框 --- */
+  --wiki-mmd-cluster-bg: rgba(var(--ed-blue-rgb), 0.05);
+  --wiki-mmd-cluster-border: rgba(var(--ed-blue-rgb), 0.3);
+  --wiki-mmd-cluster-fg: var(--ed-blue);
+
+  /* --- 时序图 --- */
+  --wiki-mmd-actor-bg: var(--ed-paper-sunk);
+  --wiki-mmd-actor-border: var(--ed-blue);
+  --wiki-mmd-lifeline: rgba(var(--ed-blue-rgb), 0.35);
+  --wiki-mmd-seq-msg: var(--ed-ink-muted);
+  --wiki-mmd-seq-note-bg: rgba(var(--ed-yellow-rgb), 0.12);
+  --wiki-mmd-seq-note-border: var(--ed-yellow);
+  --wiki-mmd-seq-frame: rgba(var(--ed-green-rgb), 0.42);
+  --wiki-mmd-seq-label-bg: var(--ed-seq-label-bg);
+  --wiki-mmd-seq-label-fg: var(--ed-green);
+  --wiki-mmd-seq-activation: rgba(var(--ed-blue-rgb), 0.35);
+
+  /* --- 网格 / 表格 --- */
+  --wiki-mmd-grid: var(--ed-grid);
+  --wiki-mmd-stripe: var(--ed-tint);
+
+  /* --- 形态：10px → 近直角，描边收细一档 --- */
+  --wiki-mmd-radius: var(--radius-m);
+  --wiki-mmd-radius-sm: var(--radius-s);
+  --wiki-mmd-stroke: 1.25px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Markmap（思维导图）
+   字体 token 不动，避免破坏文本测量
+   -------------------------------------------------------------------------- */
+body.theme-light,
+body.theme-dark {
+  --wiki-mk-canvas-bg: var(--ed-paper-raised);
+  --wiki-mk-canvas-border: var(--ed-rule);
+  --wiki-mk-grid: var(--ed-grid);
+  --wiki-mk-fg: var(--ed-ink);
+  --wiki-mk-fg-dim: var(--ed-ink-muted);
+  --wiki-mk-link: rgba(var(--ed-blue-rgb), 0.5);
+  --wiki-mk-link-hover: var(--ed-accent);
+  --wiki-mk-dot-ring: var(--ed-paper-raised);
+  --wiki-mk-hover-bg: rgba(var(--ed-accent-rgb), 0.12);
+  --wiki-mk-radius: var(--radius-m);
+}
+
+/* --------------------------------------------------------------------------
+   4. Canvas 白板
+   -------------------------------------------------------------------------- */
+body.theme-light,
+body.theme-dark {
+  --wiki-cv-node-bg: var(--ed-paper-raised);
+  --wiki-cv-node-border: var(--ed-rule);
+  --wiki-cv-node-border-hover: var(--ed-rule-strong);
+  --wiki-cv-node-shadow: var(--ed-diagram-shadow);
+  --wiki-cv-focus-ring: rgba(var(--ed-accent-rgb), 0.5);
+  --wiki-cv-fg: var(--ed-ink);
+  --wiki-cv-fg-dim: var(--ed-ink-muted);
+  --wiki-cv-edge: var(--ed-rule-strong);
+  --wiki-cv-edge-arrow: var(--ed-accent);
+  --wiki-cv-group-bg: rgba(var(--ed-accent-rgb), 0.05);
+  --wiki-cv-group-border: rgba(var(--ed-accent-rgb), 0.3);
+  --wiki-cv-group-label: var(--ed-accent);
+  --wiki-cv-radius: var(--radius-m);
+}
+
+/* Canvas 背景与编辑风底色对齐（模板未定义这个 token，单独给） */
+body.theme-light .canvas-background {
+  background-color: var(--ed-paper-sunk);
+}
+
+body.theme-dark .canvas-background {
+  background-color: var(--ed-paper-sunk);
+}

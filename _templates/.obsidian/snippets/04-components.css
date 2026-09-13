@@ -1,0 +1,380 @@
+/* ==========================================================================
+   Editorial for Knowledge Base — 04 Components
+   组件层：双链 / 外部链接 / 标签 / 代码 / 属性区 / 嵌入 / 反链
+
+   全局手法：把「面」换成「线」。圆角药丸、色块底、投影全部退场，
+   改用发丝描边 + 细下划线 + 位移很小的颜色变化来表达状态。
+
+   借鉴来源（GitHub）：
+   - r-u-s-h-i-k-e-s-h/Obsidian-CSS-Snippets → tag styling「simple tags」
+     「hide hash symbol」、code block styling、External link styling
+   - replete/obsidian-minimal-theme-css-snippets → 「Compact Properties」
+     「Custom Tag styles」、Native Scrollbar styles
+   - kepano/obsidian-minimal → --tag-* / --embed-* / --code-* 变量钩子
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 双链（内部链接）
+   细下划线 + 微弱的强调色底，hover 时线变实
+   -------------------------------------------------------------------------- */
+.markdown-rendered .internal-link,
+.markdown-preview-view .internal-link,
+.markdown-source-view.mod-cm6 .cm-hmd-internal-link {
+  color: var(--ed-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--ed-accent-rgb), 0.35);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  font-weight: 500;
+  border-bottom: none;
+  background: none;
+  border-radius: var(--radius-s);
+  transition: text-decoration-color var(--ed-fast) var(--ed-ease),
+    background-color var(--ed-fast) var(--ed-ease);
+}
+
+.markdown-rendered .internal-link:hover,
+.markdown-preview-view .internal-link:hover,
+.markdown-source-view.mod-cm6 .cm-hmd-internal-link:hover {
+  text-decoration-color: var(--ed-accent);
+  background-color: rgba(var(--ed-accent-rgb), 0.07);
+}
+
+/* 尚未创建的页面：虚线，说明「有待补上」 */
+.markdown-rendered .internal-link.is-unresolved,
+.markdown-preview-view .internal-link.is-unresolved {
+  color: var(--ed-ink-faint);
+  text-decoration-style: dashed;
+  text-decoration-color: var(--ed-rule-strong);
+  font-weight: 400;
+}
+
+.markdown-rendered .internal-link.is-unresolved:hover,
+.markdown-preview-view .internal-link.is-unresolved:hover {
+  color: var(--ed-ink-muted);
+  background-color: var(--ed-tint);
+}
+
+/* --------------------------------------------------------------------------
+   2. 外部链接
+   -------------------------------------------------------------------------- */
+.markdown-rendered .external-link,
+.markdown-preview-view .external-link {
+  color: var(--ed-blue);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--ed-blue-rgb), 0.35);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  background-image: none;
+  padding-right: 0.9em;
+  position: relative;
+  transition: text-decoration-color var(--ed-fast) var(--ed-ease);
+}
+
+.markdown-rendered .external-link::after,
+.markdown-preview-view .external-link::after {
+  content: "↗";
+  position: absolute;
+  right: 0;
+  top: -0.12em;
+  font-size: 0.72em;
+  color: rgba(var(--ed-blue-rgb), 0.7);
+  text-decoration: none;
+}
+
+.markdown-rendered .external-link:hover,
+.markdown-preview-view .external-link:hover {
+  text-decoration-color: var(--ed-blue);
+}
+
+/* --------------------------------------------------------------------------
+   3. 标签：发丝描边的小方签
+   -------------------------------------------------------------------------- */
+.markdown-rendered a.tag,
+.markdown-preview-view a.tag,
+.markdown-source-view.mod-cm6 .cm-hashtag,
+.metadata-container .multi-select-pill {
+  background-color: transparent;
+  border: 1px solid var(--ed-rule);
+  border-radius: var(--radius-s);
+  color: var(--ed-ink-muted);
+  padding: 0.06em 0.42em;
+  font-size: 0.82em;
+  font-weight: 500;
+  text-decoration: none;
+  line-height: 1.5;
+  transition: border-color var(--ed-fast) var(--ed-ease),
+    color var(--ed-fast) var(--ed-ease);
+}
+
+.markdown-rendered a.tag:hover,
+.markdown-preview-view a.tag:hover,
+.markdown-source-view.mod-cm6 .cm-hashtag:hover,
+.metadata-container .multi-select-pill:hover {
+  color: var(--ed-accent);
+  border-color: rgba(var(--ed-accent-rgb), 0.55);
+}
+
+/* 标签面板里的标签也统一 */
+.tag-container .tag {
+  background-color: transparent;
+  border: 1px solid var(--ed-rule);
+  border-radius: var(--radius-s);
+  color: var(--ed-ink-muted);
+  font-size: 0.84em;
+}
+
+.tag-container .tag:hover {
+  color: var(--ed-accent);
+  border-color: rgba(var(--ed-accent-rgb), 0.55);
+}
+
+/* --------------------------------------------------------------------------
+   4. 行内代码与代码块
+   -------------------------------------------------------------------------- */
+.markdown-rendered :not(pre) > code,
+.markdown-source-view.mod-cm6 .cm-inline-code {
+  background-color: var(--ed-code-bg);
+  color: var(--ed-code-ink);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-s);
+  border: none;
+  font-family: var(--ed-font-mono);
+  font-size: 0.88em;
+  font-weight: 450;
+}
+
+.markdown-rendered pre,
+.markdown-preview-view pre {
+  position: relative;
+  background-color: var(--ed-paper-raised);
+  border: 1px solid var(--ed-rule);
+  border-radius: var(--radius-m);
+  padding: 1.1em 1.2em;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  box-shadow: none;
+}
+
+.markdown-rendered pre > code,
+.markdown-preview-view pre > code {
+  background: transparent;
+  color: var(--text-normal);
+  padding: 0;
+  border: none;
+  font-family: var(--ed-font-mono);
+  font-size: 0.85em;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+/* 语言标签：Obsidian 不会给 pre 加 data-language，这里按语言类名逐个补 */
+.markdown-rendered pre > code[class*="language-"]::before {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  padding: 0.18em 0.6em;
+  font-family: var(--ed-font-mono);
+  font-size: 0.68em;
+  letter-spacing: 0.08em;
+  color: var(--ed-ink-faint);
+  background: var(--ed-tint);
+  border-inline-start: 1px solid var(--ed-rule);
+  border-bottom: 1px solid var(--ed-rule);
+  border-end-end-radius: var(--radius-s);
+  pointer-events: none;
+}
+
+.markdown-rendered pre > code.language-json::before { content: "JSON"; }
+.markdown-rendered pre > code.language-jsonc::before { content: "JSONC"; }
+.markdown-rendered pre > code.language-yaml::before,
+.markdown-rendered pre > code.language-yml::before { content: "YAML"; }
+.markdown-rendered pre > code.language-toml::before { content: "TOML"; }
+.markdown-rendered pre > code.language-ini::before { content: "INI"; }
+.markdown-rendered pre > code.language-javascript::before,
+.markdown-rendered pre > code.language-js::before { content: "JS"; }
+.markdown-rendered pre > code.language-typescript::before,
+.markdown-rendered pre > code.language-ts::before { content: "TS"; }
+.markdown-rendered pre > code.language-jsx::before { content: "JSX"; }
+.markdown-rendered pre > code.language-tsx::before { content: "TSX"; }
+.markdown-rendered pre > code.language-python::before,
+.markdown-rendered pre > code.language-py::before { content: "PYTHON"; }
+.markdown-rendered pre > code.language-bash::before,
+.markdown-rendered pre > code.language-sh::before,
+.markdown-rendered pre > code.language-shell::before,
+.markdown-rendered pre > code.language-zsh::before { content: "SHELL"; }
+.markdown-rendered pre > code.language-powershell::before { content: "PS1"; }
+.markdown-rendered pre > code.language-sql::before { content: "SQL"; }
+.markdown-rendered pre > code.language-html::before { content: "HTML"; }
+.markdown-rendered pre > code.language-css::before { content: "CSS"; }
+.markdown-rendered pre > code.language-scss::before { content: "SCSS"; }
+.markdown-rendered pre > code.language-xml::before { content: "XML"; }
+.markdown-rendered pre > code.language-markdown::before,
+.markdown-rendered pre > code.language-md::before { content: "MARKDOWN"; }
+.markdown-rendered pre > code.language-diff::before { content: "DIFF"; }
+.markdown-rendered pre > code.language-go::before { content: "GO"; }
+.markdown-rendered pre > code.language-rust::before { content: "RUST"; }
+.markdown-rendered pre > code.language-java::before { content: "JAVA"; }
+.markdown-rendered pre > code.language-c::before { content: "C"; }
+.markdown-rendered pre > code.language-cpp::before { content: "C++"; }
+.markdown-rendered pre > code.language-r::before { content: "R"; }
+.markdown-rendered pre > code.language-graphql::before { content: "GRAPHQL"; }
+.markdown-rendered pre > code.language-text::before,
+.markdown-rendered pre > code.language-txt::before,
+.markdown-rendered pre > code.language-plaintext::before { content: "TEXT"; }
+
+/* 编辑模式代码块：与阅读视图保持一致 */
+.markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background-color: var(--ed-paper-raised);
+  font-family: var(--ed-font-mono);
+}
+
+.markdown-source-view.mod-cm6 .cm-formatting-code-block {
+  color: var(--ed-ink-faint);
+}
+
+/* --------------------------------------------------------------------------
+   5. 属性区（Frontmatter / Properties）
+   用上下两条发丝线包住，像刊物的「报头信息条」
+   -------------------------------------------------------------------------- */
+.metadata-container {
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--ed-rule);
+  border-bottom: 1px solid var(--ed-rule);
+  border-radius: 0;
+  padding: 0.6em 0.1em;
+  margin-block: 0 2.2em;
+  font-size: 0.86em;
+  --metadata-label-text-color: var(--ed-ink-faint);
+  --metadata-input-text-color: var(--text-normal);
+  --metadata-divider-color: transparent;
+}
+
+.metadata-property {
+  padding: 0.18em 0;
+  align-items: baseline;
+}
+
+.metadata-property-key {
+  color: var(--ed-ink-faint);
+  font-size: 0.94em;
+  letter-spacing: 0.03em;
+  font-weight: 500;
+}
+
+.metadata-property-icon {
+  color: var(--ed-ink-faint);
+}
+
+.metadata-property-value,
+.metadata-input-longtext {
+  color: var(--text-normal);
+}
+
+.metadata-property-key-input {
+  color: var(--ed-ink-faint);
+}
+
+/* 属性区在「源码」显示模式下的兜底 */
+.markdown-rendered pre.frontmatter,
+.markdown-preview-view pre.frontmatter {
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--ed-rule);
+  border-bottom: 1px solid var(--ed-rule);
+  border-radius: 0;
+  color: var(--ed-ink-muted);
+  font-size: 0.84em;
+  padding: 0.7em 0.1em;
+  margin-bottom: 2.2em;
+}
+
+/* --------------------------------------------------------------------------
+   6. 嵌入内容（Transclusion）
+   去掉卡片盒子，改成左侧一道淡强调线 + 缩进，像被引出来的段落
+   -------------------------------------------------------------------------- */
+.markdown-rendered .markdown-embed,
+.markdown-preview-view .markdown-embed {
+  border: none;
+  border-inline-start: 2px solid rgba(var(--ed-accent-rgb), 0.35);
+  border-radius: 0;
+  padding: 0.2em 0 0.2em 1.1em;
+  margin: 1.4em 0;
+  background-color: transparent;
+}
+
+.markdown-rendered .markdown-embed-title,
+.markdown-preview-view .markdown-embed-title {
+  font-family: var(--ed-font-display);
+  font-size: 1.02em;
+  font-weight: 600;
+  color: var(--ed-ink-muted);
+  margin-bottom: 0.4em;
+}
+
+.markdown-rendered .markdown-embed-link,
+.markdown-preview-view .markdown-embed-link {
+  color: var(--ed-ink-faint);
+  top: 0.3em;
+  right: 0.4em;
+  opacity: 0;
+  transition: opacity var(--ed-fast) var(--ed-ease);
+}
+
+.markdown-rendered .markdown-embed:hover .markdown-embed-link,
+.markdown-preview-view .markdown-embed:hover .markdown-embed-link {
+  opacity: 1;
+}
+
+.markdown-rendered .markdown-embed-link:hover,
+.markdown-preview-view .markdown-embed-link:hover {
+  color: var(--ed-accent);
+}
+
+/* 嵌入里的一级标题不要再撑大版面 */
+.markdown-embed .markdown-rendered h1,
+.markdown-embed h1 {
+  font-size: 1.35em;
+  border: none;
+}
+
+.markdown-embed h1::after {
+  content: none;
+}
+
+/* 嵌入的图片、表格跟随容器宽度 */
+.markdown-embed img {
+  max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   7. 搜索命中 / 高亮
+   -------------------------------------------------------------------------- */
+.markdown-rendered .search-highlight,
+.markdown-preview-view .search-highlight,
+.search-result-file-match mark,
+.backlink-pane mark {
+  background-color: var(--ed-mark);
+  color: var(--ed-mark-text);
+  border-radius: var(--radius-s);
+  padding: 0 0.12em;
+}
+
+/* --------------------------------------------------------------------------
+   8. 脚注引用上下标
+   -------------------------------------------------------------------------- */
+.markdown-rendered .footnote-ref,
+.markdown-preview-view .footnote-ref {
+  font-size: 0.78em;
+  color: var(--ed-accent);
+  text-decoration: none;
+}
+
+/* --------------------------------------------------------------------------
+   9. 脚注链接在悬浮预览里的容器
+   -------------------------------------------------------------------------- */
+.markdown-rendered .footnote-backref {
+  color: var(--ed-ink-faint);
+  text-decoration: none;
+}

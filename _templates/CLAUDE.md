@@ -19,11 +19,6 @@ flowchart TB
 
     RAW ==>|"ingest 编译"| WIKI
     WIKI -.->|"![[嵌入]]"| AST
-
-    class RAW red
-    class AST orange
-    class WIKI green
-
 ```
 
 - `/raw/` (不可变层 - Immutable)：

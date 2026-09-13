@@ -24,7 +24,7 @@
 | 知识库客户端 | [Obsidian](https://obsidian.md/)（桌面端） | 用户主要的阅读与编辑界面 |
 | 数据查询 | Dataview（Obsidian 社区插件） | `wiki/index.md` 动态仪表盘依赖此插件 |
 | 模板引擎 | Templater（Obsidian 社区插件） | `templates/` 目录下的 4 个模板由其解析 |
-| 样式 | CSS Snippets | `.obsidian/snippets/` 下的 6 个 CSS 文件 |
+| 样式 | CSS Snippets | `.obsidian/snippets/` 下的 10 个编辑风 CSS 文件 |
 | 版本控制 | Git | 仅追踪配置与内容，排除插件二进制文件 |
 
 ### 运行时架构
@@ -61,10 +61,18 @@ CLI 读取本项目的 SKILL.md
     │   ├── appearance.json           # 外观 + 启用的 CSS 片段清单
     │   ├── core-plugins.json         # 核心插件开关列表
     │   ├── community-plugins.json    # 推荐社区插件列表（dataview, templater 等）
-    │   └── snippets/                 # CSS 样式片段
-    │       ├── wiki-reading.css      # 阅读排版优化
-    │       ├── wiki-callouts.css     # Callout 语义化颜色 + 左侧边条
-    │       └── wiki-components.css   # 双链、外部链接、标签、图片、代码块增强
+    │   ├── snippets/                 # Editorial 编辑风样式（10 个片段）
+    │   │   ├── 01-foundation.css      # 配色 / 字体 / 圆角 token
+    │   │   ├── 02-typography.css      # 标题层级、三线表、引用
+    │   │   ├── 03-callouts.css        # Callout 语汇 + 多栏 / 画廊 / 边注
+    │   │   ├── 04-components.css      # 双链、外链、标签、代码块
+    │   │   ├── 05-layout.css          # 版式模式（cssclass）
+    │   │   ├── 06-chrome.css          # 界面外壳（侧栏 / 标签页 / 图谱）
+    │   │   ├── 07-diagrams.css        # 图表 token 调色
+    │   │   ├── 08-mermaid.css         # Mermaid 全类型图表
+    │   │   ├── 09-markmap.css         # Markmap 思维导图
+    │   │   └── 10-canvas.css          # Canvas 白板
+    │   └── snippets-legacy/           # Nord 冷色版备用样式（*.css.disabled）
     ├── templates/                    # Templater 模板文件夹
     │   ├── entity.md                 # 实体模板（人物、公司、工具、产品）
     │   ├── concept.md                # 概念模板（框架、方法论）
@@ -273,9 +281,12 @@ status: draft | finished | archived
 | 外观和 CSS 片段开关 | `_templates/.obsidian/appearance.json` |
 | 核心插件列表 | `_templates/.obsidian/core-plugins.json` |
 | 社区插件推荐 | `_templates/.obsidian/community-plugins.json` |
-| 阅读排版样式 | `_templates/.obsidian/snippets/wiki-reading.css` |
-| Callout 样式 | `_templates/.obsidian/snippets/wiki-callouts.css` |
-| 链接/标签/代码块样式 | `_templates/.obsidian/snippets/wiki-components.css` |
+| 样式总纲（配色 / 字体 token） | `_templates/.obsidian/snippets/01-foundation.css` |
+| 阅读排版样式 | `_templates/.obsidian/snippets/02-typography.css` |
+| Callout 样式 | `_templates/.obsidian/snippets/03-callouts.css` |
+| 链接 / 标签 / 代码块样式 | `_templates/.obsidian/snippets/04-components.css` |
+| 图表调色（接管 Mermaid / Markmap / Canvas） | `_templates/.obsidian/snippets/07-diagrams.css` |
+| 样式指南（活样式表，含全部语法样例） | `_templates/STYLE-GUIDE.md` |
 | 实体页面模板 | `_templates/templates/entity.md` |
 | 概念页面模板 | `_templates/templates/concept.md` |
 | 来源摘要模板 | `_templates/templates/source.md` |

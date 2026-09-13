@@ -1,519 +1,445 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="theme-dark">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wiki 样式预览 — Transformer 架构</title>
+<title>Wiki 样式预览 · Editorial 编辑风 —— 知识库样式活样式表</title>
+
+<!-- ==========================================================================
+     本页直接引用 _templates/.obsidian/snippets/ 下的真实样式片段，
+     不做任何配色/排版的二次复制 —— 片段一改，这里立刻跟着变。
+     ========================================================================== -->
+<link rel="stylesheet" href="../_templates/.obsidian/snippets/01-foundation.css">
+<link rel="stylesheet" href="../_templates/.obsidian/snippets/02-typography.css">
+<link rel="stylesheet" href="../_templates/.obsidian/snippets/03-callouts.css">
+<link rel="stylesheet" href="../_templates/.obsidian/snippets/04-components.css">
+<link rel="stylesheet" href="../_templates/.obsidian/snippets/05-layout.css">
+<link rel="stylesheet" href="../_templates/.obsidian/snippets/06-chrome.css">
+
 <style>
-/* ==================== wiki-reading.css v2 ==================== */
-.theme-dark {
-  --wiki-accent: #5e81ac;
-  --wiki-accent-light: #81a1c1;
-  --wiki-accent-rgb: 94, 129, 172;
-  --wiki-accent-light-rgb: 129, 161, 193;
-  --wiki-bg-primary: #1e1e1e;
-  --wiki-bg-secondary: #252526;
-  --wiki-bg-tertiary: #2d2d30;
-  --wiki-text-normal: #d4d4d4;
-  --wiki-text-muted: #808080;
-  --wiki-text-faint: #606060;
-  --wiki-border: #3e3e42;
-  --wiki-line-height: 1.75;
-  --wiki-paragraph-spacing: 0.8em;
-  --wiki-code-color: #d08770;
-  --wiki-shadow: rgba(0, 0, 0, 0.15);
-  --wiki-shadow-hover: rgba(0, 0, 0, 0.25);
-}
-.theme-light {
-  --wiki-accent: #4c7899;
-  --wiki-accent-light: #6c9abb;
-  --wiki-accent-rgb: 76, 120, 153;
-  --wiki-accent-light-rgb: 108, 154, 187;
-  --wiki-bg-primary: #fafafa;
-  --wiki-bg-secondary: #f5f5f5;
-  --wiki-bg-tertiary: #eeeeee;
-  --wiki-text-normal: #2e2e2e;
-  --wiki-text-muted: #666666;
-  --wiki-text-faint: #999999;
-  --wiki-border: #e0e0e0;
-  --wiki-line-height: 1.75;
-  --wiki-paragraph-spacing: 0.8em;
-  --wiki-code-color: #b85c2e;
-  --wiki-shadow: rgba(0, 0, 0, 0.08);
-  --wiki-shadow-hover: rgba(0, 0, 0, 0.15);
+/* ==========================================================================
+   下面全部是「浏览器预览外壳」所需的补充样式，不含任何排版与配色定义。
+   真正的内容样式来自上面 6 个片段；本页只负责：
+     1. 提供 HTML 页面底座（背景 / 字体 / 阅读列宽）
+     2. 模拟 Obsidian 的界面骨架（侧边栏、主题切换）
+     3. 提供几个只用于本页的演示道具（色板小方块、模式隔离容器）
+   ========================================================================== */
+
+body.theme-dark { color-scheme: dark; }
+body.theme-light { color-scheme: light; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--background-primary);
+  color: var(--text-normal);
+  font-family: var(--font-text);
+  font-size: 16px;
+  line-height: var(--line-height-normal);
 }
 
-.markdown-preview-view, .markdown-rendered {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-  line-height: var(--wiki-line-height);
-  color: var(--wiki-text-normal);
+/* 阅读列宽：Obsidian 里由 Minimal 消费 --line-width，浏览器里补上同一条 */
+.markdown-preview-view.is-readable-line-width > .markdown-preview-sizer {
+  max-width: var(--line-width);
+  margin-inline: auto;
 }
-.markdown-preview-view.is-readable-line-width .markdown-preview-sizer {
-  max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.markdown-preview-view h1,.markdown-preview-view h2,.markdown-preview-view h3,
-.markdown-preview-view h4,.markdown-preview-view h5,.markdown-preview-view h6 {
-  font-weight: 600; line-height: 1.3; margin-top: 1.8em; margin-bottom: 0.6em; letter-spacing: -0.01em;
-}
-.markdown-preview-view h1 { font-size: 2em; color: var(--wiki-accent); border-bottom: 2px solid var(--wiki-border); padding-bottom: 0.3em; }
-.markdown-preview-view h2 { font-size: 1.65em; color: var(--wiki-text-normal); border-bottom: 1px solid var(--wiki-border); padding-bottom: 0.25em; }
-.markdown-preview-view h3 { font-size: 1.35em; color: var(--wiki-accent-light); }
-.markdown-preview-view h4 { font-size: 1.15em; color: var(--wiki-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.markdown-preview-view h5 { font-size: 1em; color: var(--wiki-text-muted); }
-.markdown-preview-view h6 { font-size: 0.9em; color: var(--wiki-text-faint); font-weight: 500; }
-.markdown-preview-view h2::before { content: "\00a7"; color: var(--wiki-accent); margin-right: 0.4em; font-weight: 400; opacity: 0.7; }
-.markdown-preview-view h3::before { content: "\203A"; color: var(--wiki-accent-light); margin-right: 0.4em; font-weight: 700; }
-.markdown-preview-view p { margin-block-start: var(--wiki-paragraph-spacing); margin-block-end: var(--wiki-paragraph-spacing); }
-.markdown-preview-view ul,.markdown-preview-view ol { padding-left: 1.6em; margin-block-start: 0.5em; margin-block-end: 0.5em; }
-.markdown-preview-view li { margin-block-start: 0.25em; margin-block-end: 0.25em; }
-.markdown-preview-view .task-list-item-checkbox { margin-right: 0.5em; border-radius: 3px; }
-.markdown-preview-view .task-list-item.is-checked { color: var(--wiki-text-faint); text-decoration: line-through; text-decoration-color: var(--wiki-text-faint); }
-.markdown-preview-view blockquote {
-  border-left: 3px solid var(--wiki-accent); background-color: var(--wiki-bg-secondary);
-  padding: 0.8em 1em 0.8em 1.2em; margin: 1em 0; border-radius: 0 6px 6px 0; font-style: italic; color: var(--wiki-text-muted);
-}
-.markdown-preview-view blockquote p:first-child { margin-top: 0; }
-.markdown-preview-view blockquote p:last-child { margin-bottom: 0; }
-.markdown-preview-view blockquote blockquote { border-left-color: var(--wiki-accent-light); margin: 0.5em 0; }
-.markdown-preview-view hr { border: none; border-top: 1px solid var(--wiki-border); margin: 2.5em 0; position: relative; }
-.markdown-preview-view hr::after {
-  content: "\25C6"; color: var(--wiki-accent); position: absolute; left: 50%; top: -0.6em;
-  background: var(--wiki-bg-primary); padding: 0 0.8em; font-size: 0.75em; transform: translateX(-50%);
-}
-.markdown-preview-view table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.95em; }
-.markdown-preview-view th { background-color: var(--wiki-bg-tertiary); color: var(--wiki-accent); font-weight: 600; text-align: left; padding: 0.6em 0.8em; border-bottom: 2px solid var(--wiki-accent); }
-.markdown-preview-view td { padding: 0.5em 0.8em; border-bottom: 1px solid var(--wiki-border); }
-.markdown-preview-view tr:hover td { background-color: var(--wiki-bg-secondary); }
-.markdown-preview-view .dataview th, .markdown-preview-view .table-view-table th {
-  background-color: var(--wiki-bg-tertiary); color: var(--wiki-accent); font-weight: 600; border-bottom: 2px solid var(--wiki-accent); padding: 0.5em 0.8em;
-}
-.markdown-preview-view .dataview td, .markdown-preview-view .table-view-table td { padding: 0.4em 0.8em; border-bottom: 1px solid var(--wiki-border); font-size: 0.92em; }
-.markdown-preview-view .dataview.list-view-ul { padding-left: 1.4em; }
-.markdown-preview-view .dataview.list-view-ul li { margin-block-start: 0.3em; margin-block-end: 0.3em; }
-.markdown-preview-view .dataview a { color: var(--wiki-accent); text-decoration: none; font-weight: 500; }
-.markdown-preview-view .dataview a:hover { color: var(--wiki-accent-light); }
-.markdown-preview-view .dataview.no-result { color: var(--wiki-text-faint); font-style: italic; font-size: 0.9em; }
-.markdown-preview-view .metadata-container {
-  background-color: var(--wiki-bg-secondary); border: 1px solid var(--wiki-border);
-  border-radius: 8px; padding: 0.8em 1em; margin-bottom: 1.5em; font-size: 0.9em;
-}
-.markdown-preview-view .metadata-container .metadata-property-key { color: var(--wiki-accent); font-weight: 500; }
-.markdown-preview-view .metadata-container .multi-select-pill {
-  background-color: rgba(var(--wiki-accent-rgb), 0.12); color: var(--wiki-accent);
-  border-radius: 4px; padding: 0.1em 0.5em; font-size: 0.85em; display: inline-block; margin: 0.1em;
-}
-.markdown-preview-view .markdown-embed {
-  border: 1px solid var(--wiki-border); border-radius: 8px; padding: 0.8em 1.2em;
-  margin: 1em 0; background-color: var(--wiki-bg-secondary);
-}
-.markdown-preview-view .markdown-embed-title { color: var(--wiki-accent); font-weight: 600; font-size: 1em; margin-bottom: 0.5em; }
 
-/* ==================== wiki-callouts.css v2 ==================== */
-.theme-dark {
-  --callout-note: #5e81ac; --callout-abstract: #a3be8c; --callout-info: #81a1c1;
-  --callout-todo: #88c0d0; --callout-tip: #ebcb8b; --callout-success: #a3be8c;
-  --callout-warning: #d08770; --callout-danger: #bf616a; --callout-example: #b48ead;
-  --callout-quote: #888888; --callout-question: #81a1c1;
-  --callout-bg-opacity: 0.08; --callout-shadow: 0 1px 3px rgba(0,0,0,0.12);
-}
-.theme-light {
-  --callout-note: #4c7899; --callout-abstract: #5a8a3a; --callout-info: #5a87a8;
-  --callout-todo: #3a9baf; --callout-tip: #b8860b; --callout-success: #5a8a3a;
-  --callout-warning: #c25e3a; --callout-danger: #b04050; --callout-example: #8e5e87;
-  --callout-quote: #777777; --callout-question: #5a87a8;
-  --callout-bg-opacity: 0.06; --callout-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-.callout {
-  border-radius: 8px; border: none; padding: 1em 1.2em; margin: 1em 0;
-  position: relative; overflow: hidden; background-color: var(--wiki-bg-secondary);
-  box-shadow: var(--callout-shadow);
-}
-.callout-title { font-weight: 600; font-size: 0.95em; gap: 0.5em; margin-bottom: 0.5em; display: flex; align-items: center; }
-.callout-icon { display: flex; align-items: center; margin-right: 0.4em; }
-.callout-content { font-size: 0.95em; line-height: 1.7; }
-.callout-content > p:first-child { margin-top: 0; }
-.callout-content > p:last-child { margin-bottom: 0; }
-.callout::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 8px 0 0 8px; }
-.callout[data-callout="note"] { background-color: rgba(94,129,172,var(--callout-bg-opacity)); }
-.callout[data-callout="note"]::before { background-color: var(--callout-note); }
-.callout[data-callout="note"] .callout-title { color: var(--callout-note); }
-.callout[data-callout="abstract"] { background-color: rgba(163,190,140,var(--callout-bg-opacity)); }
-.callout[data-callout="abstract"]::before { background-color: var(--callout-abstract); }
-.callout[data-callout="abstract"] .callout-title { color: var(--callout-abstract); }
-.callout[data-callout="info"] { background-color: rgba(129,161,193,var(--callout-bg-opacity)); }
-.callout[data-callout="info"]::before { background-color: var(--callout-info); }
-.callout[data-callout="info"] .callout-title { color: var(--callout-info); }
-.callout[data-callout="tip"] { background-color: rgba(235,203,139,var(--callout-bg-opacity)); }
-.callout[data-callout="tip"]::before { background-color: var(--callout-tip); }
-.callout[data-callout="tip"] .callout-title { color: var(--callout-tip); }
-.callout[data-callout="success"] { background-color: rgba(163,190,140,calc(var(--callout-bg-opacity) + 0.02)); }
-.callout[data-callout="success"]::before { background-color: var(--callout-success); }
-.callout[data-callout="success"] .callout-title { color: var(--callout-success); }
-.callout[data-callout="warning"] { background-color: rgba(208,135,112,var(--callout-bg-opacity)); }
-.callout[data-callout="warning"]::before { background-color: var(--callout-warning); }
-.callout[data-callout="warning"] .callout-title { color: var(--callout-warning); }
-.callout[data-callout="danger"] { background-color: rgba(191,97,106,var(--callout-bg-opacity)); }
-.callout[data-callout="danger"]::before { background-color: var(--callout-danger); }
-.callout[data-callout="danger"] .callout-title { color: var(--callout-danger); }
-.callout[data-callout="example"] { background-color: rgba(180,142,173,var(--callout-bg-opacity)); }
-.callout[data-callout="example"]::before { background-color: var(--callout-example); }
-.callout[data-callout="example"] .callout-title { color: var(--callout-example); }
-.callout[data-callout="quote"] { background-color: rgba(128,128,128,calc(var(--callout-bg-opacity)*0.5)); font-style: italic; }
-.callout[data-callout="quote"]::before { background-color: var(--callout-quote); }
-.callout[data-callout="quote"] .callout-title { color: var(--callout-quote); }
-.callout[data-callout="question"] { background-color: rgba(129,161,193,var(--callout-bg-opacity)); }
-.callout[data-callout="question"]::before { background-color: var(--callout-question); }
-.callout[data-callout="question"] .callout-title { color: var(--callout-question); }
-.callout.is-collapsible > .callout-title { cursor: pointer; }
-.callout.is-collapsed { padding-bottom: 0.8em; }
-.callout.is-collapsed > .callout-title { margin-bottom: 0; }
-.callout .callout-fold { transition: transform 0.15s ease; }
-.callout.is-collapsed .callout-fold { transform: rotate(-90deg); }
-.callout .callout { margin: 0.5em 0; box-shadow: none; }
-.callout-content ul,.callout-content ol { padding-left: 1.4em; margin-block-start: 0.3em; margin-block-end: 0.3em; }
-.callout-content pre { margin: 0.5em 0; }
+/* Obsidian 里每个块都包在 <div> 中，此处补一层以免选择器失配 */
+.markdown-preview-sizer > * { margin-block: 0; }
 
-/* ==================== wiki-components.css v2 ==================== */
-.markdown-preview-view .internal-link {
-  color: var(--wiki-accent); text-decoration: none; border-bottom: 1px dotted var(--wiki-accent);
-  transition: color 0.15s ease, border-bottom-style 0.15s ease, background-color 0.15s ease; font-weight: 500;
-}
-.markdown-preview-view .internal-link:hover {
-  color: var(--wiki-accent-light); border-bottom-style: solid;
-  background-color: rgba(var(--wiki-accent-rgb), 0.08); border-radius: 2px;
-}
-.markdown-preview-view .internal-link.is-unresolved { color: var(--wiki-text-muted); border-bottom: 1px dotted var(--wiki-text-muted); opacity: 0.65; }
-.markdown-preview-view .external-link {
-  color: var(--wiki-accent-light); text-decoration: none; border-bottom: 1px solid rgba(var(--wiki-accent-light-rgb), 0.4);
-  transition: all 0.15s ease; background-image: none; padding-right: 1.3em; position: relative;
-}
-.markdown-preview-view .external-link::after { content: "\2197"; font-size: 0.75em; margin-left: 0.2em; opacity: 0.6; position: absolute; right: 0; top: 0.1em; }
-.markdown-preview-view .external-link:hover { border-bottom-color: var(--wiki-accent-light); background-color: rgba(var(--wiki-accent-light-rgb), 0.06); }
-.markdown-preview-view a.tag {
-  background-color: rgba(var(--wiki-accent-rgb), 0.1); color: var(--wiki-accent);
-  padding: 0.15em 0.5em; border-radius: 4px; font-size: 0.85em; text-decoration: none; font-weight: 500;
-  transition: background-color 0.15s ease;
-}
-.markdown-preview-view a.tag:hover { background-color: rgba(var(--wiki-accent-rgb), 0.2); }
-.markdown-preview-view img {
-  display: block; margin-left: auto; margin-right: auto; max-width: 100%; border-radius: 6px;
-  box-shadow: 0 2px 8px var(--wiki-shadow); transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.markdown-preview-view code {
-  background-color: var(--wiki-bg-tertiary); color: var(--wiki-code-color); padding: 0.15em 0.4em;
-  border-radius: 4px; font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", "Noto Sans Mono", "Fira Code", Consolas, monospace; font-size: 0.9em; font-weight: 500;
-}
-.markdown-preview-view pre {
-  background-color: var(--wiki-bg-secondary); border-radius: 8px; padding: 1em 1.2em; margin: 1em 0;
-  overflow-x: auto; border: 1px solid var(--wiki-border); position: relative;
-}
-.markdown-preview-view pre code { background-color: transparent; color: var(--wiki-text-normal); padding: 0; font-size: 0.9em; line-height: 1.6; font-weight: 400; }
-.markdown-preview-view .dataview tr:hover td, .markdown-preview-view .table-view-table tr:hover td { background-color: rgba(var(--wiki-accent-rgb), 0.04); }
-.markdown-preview-view .dataview.list-view-ul li::marker { color: var(--wiki-accent); }
-.markdown-preview-view .dataview.small-text { color: var(--wiki-text-faint); font-size: 0.85em; }
-.markdown-preview-view mark { background-color: rgba(var(--wiki-accent-rgb), 0.2); color: var(--wiki-text-normal); border-radius: 2px; padding: 0.05em 0.15em; }
-
-/* ==================== 页面框架 ==================== */
-body { margin: 0; padding: 0; background: var(--wiki-bg-primary); min-height: 100vh; }
-.app-frame { max-width: 800px; margin: 0 auto; padding: 2em 1em 4em; }
-.theme-toggle {
-  position: fixed; top: 16px; right: 16px; z-index: 999;
-  background: var(--wiki-bg-tertiary); color: var(--wiki-accent); border: 1px solid var(--wiki-border);
-  border-radius: 8px; padding: 0.5em 1em; cursor: pointer; font-size: 0.85em; font-weight: 500;
-  transition: all 0.15s ease;
-}
-.theme-toggle:hover { background: rgba(var(--wiki-accent-rgb), 0.12); }
-.fake-sidebar {
-  position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
-  background: var(--wiki-bg-secondary); border-right: 1px solid var(--wiki-border);
-  padding: 1em 0.5em; overflow-y: auto; font-size: 0.85em;
-}
-.fake-sidebar .nav-folder-title { border-radius: 4px; margin: 1px 4px; padding: 3px 6px; color: var(--wiki-text-normal); }
-.fake-sidebar .nav-folder-title-content::before { content: "\25B8 "; color: var(--wiki-accent); font-size: 0.85em; }
-.fake-sidebar .nav-folder-title.is-collapsed .nav-folder-title-content::before { content: "\25BE "; }
-.fake-sidebar .nav-file-title { border-radius: 4px; margin: 1px 4px; padding: 3px 6px 3px 20px; color: var(--wiki-text-normal); }
-.fake-sidebar .nav-file-title.is-active { background-color: rgba(var(--wiki-accent-rgb), 0.15); color: var(--wiki-accent); font-weight: 600; }
-.fake-sidebar .nav-file-title:hover, .fake-sidebar .nav-folder-title:hover { background-color: var(--wiki-bg-tertiary); }
+/* ---- 预览外壳布局 ---- */
 .app-frame { margin-left: 240px; }
-@media (max-width: 900px) { .fake-sidebar { display: none; } .app-frame { margin-left: 0; } }
+.demo-sidebar {
+  position: fixed; inset: 0 auto 0 0; width: 240px; overflow-y: auto;
+  background-color: var(--background-secondary);
+  border-inline-end: 1px solid var(--background-modifier-border);
+  padding: 0.9em 0.5em; font-size: 0.85em;
+}
+.demo-sidebar .nav-folder-title-content::before { content: "▸ "; font-size: 0.85em; }
+.demo-sidebar .nav-folder-title.is-collapsed .nav-folder-title-content::before { content: "▾ "; }
+.demo-sidebar .nav-file-title.is-active { font-weight: 600; }
 
-/* 模拟 Obsidian 滚动条 */
+.theme-toggle {
+  position: fixed; top: 16px; right: 16px; z-index: 99;
+  background-color: var(--background-primary-alt);
+  color: var(--text-normal);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  padding: 0.45em 0.9em; cursor: pointer; font-size: 0.82em;
+  font-family: var(--font-text);
+}
+.theme-toggle:hover { background-color: var(--background-modifier-hover); }
+
+@media (max-width: 900px) {
+  .demo-sidebar { display: none; }
+  .app-frame { margin-left: 0; }
+}
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--wiki-border); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--wiki-text-faint); }
+::-webkit-scrollbar-thumb { background-color: var(--background-modifier-border); border-radius: 4px; }
 
-/* callout icon 用 emoji 模拟 */
+/* Callout 图标：片段只管颜色，形状由本页用字符模拟 */
 .ci { font-style: normal; }
+
+/* ---- 演示道具：色板小方块 ---- */
+.sw-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 0.6em 0 1.4em; }
+.sw {
+  width: 46px; height: 46px; border-radius: var(--radius-s);
+  border: 1px solid var(--background-modifier-border);
+  display: flex; align-items: flex-end; justify-content: center;
+  font-size: 0.6em; color: var(--text-faint); padding-bottom: 2px;
+}
+
+/* 演示道具：隔离一个 cssclass 版式模式的容器 */
+.mode-stage {
+  border: 1px dashed var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  padding: 0.4em 1em; margin: 0.8em 0 1.6em;
+}
+.mode-stage .markdown-preview-sizer { padding: 0; max-width: none; }
 </style>
 </head>
-<body>
 
-<div class="fake-sidebar">
+<body class="theme-dark">
+<button class="theme-toggle" onclick="toggleTheme()">🌗 切换明暗</button>
+
+<nav class="demo-sidebar">
   <div class="nav-folder-title"><span class="nav-folder-title-content">wiki</span></div>
   <div class="nav-folder-title is-collapsed"><span class="nav-folder-title-content">mocs</span></div>
-  <div class="nav-folder-title is-collapsed"><span class="nav-folder-title-content">entities</span></div>
+  <div class="nav-file-title is-active">STYLE-GUIDE</div>
   <div class="nav-folder-title"><span class="nav-folder-title-content">concepts</span></div>
-  <div class="nav-file-title is-active">Transformer</div>
+  <div class="nav-file-title">Transformer</div>
   <div class="nav-file-title">Attention Mechanism</div>
-  <div class="nav-file-title">BERT</div>
+  <div class="nav-folder-title is-collapsed"><span class="nav-folder-title-content">entities</span></div>
   <div class="nav-folder-title is-collapsed"><span class="nav-folder-title-content">sources</span></div>
-  <div class="nav-folder-title is-collapsed"><span class="nav-folder-title-content">syntheses</span></div>
-</div>
-
-<button class="theme-toggle" onclick="toggleTheme()">🌙 暗色 / ☀️ 亮色</button>
+</nav>
 
 <div class="app-frame">
-<div class="markdown-preview-view is-readable-line-width">
+<div class="markdown-preview-view markdown-rendered is-readable-line-width">
 <div class="markdown-preview-sizer">
 
-<div class="metadata-container">
-  <div style="margin-bottom: 0.3em;"><span class="metadata-property-key">title</span> &nbsp; Transformer 架构</div>
-  <div style="margin-bottom: 0.3em;"><span class="metadata-property-key">type</span> &nbsp; concept</div>
-  <div style="margin-bottom: 0.3em;"><span class="metadata-property-key">complexity</span> &nbsp; ⭐⭐⭐⭐⭐</div>
-  <div style="margin-bottom: 0.3em;"><span class="metadata-property-key">tags</span> &nbsp;
-    <span class="multi-select-pill">ai</span>
-    <span class="multi-select-pill">nlp</span>
-    <span class="multi-select-pill">技术</span>
-    <span class="multi-select-pill">architecture</span>
+<div class="callout" data-callout="tip">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">💡</span></span> 关于本页</div>
+  <div class="callout-content">
+    <p>这是 <strong>Editorial 编辑风</strong>的浏览器预览。页面本身不定义任何样式，排版与配色全部来自 <code>_templates/.obsidian/snippets/</code> 下的 6 个真实片段 —— 片段一改，本页立刻跟着变。</p>
+    <p>在 Obsidian 里打开 <code>_templates/STYLE-GUIDE.md</code> 可以看到同一套样式的完整版本（含图表配色）。</p>
   </div>
-  <div style="margin-bottom: 0.3em;"><span class="metadata-property-key">sources</span> &nbsp; raw/02-papers/attention-is-all-you-need.md</div>
-  <div style="margin-bottom: 0.3em;"><span class="metadata-property-key">created</span> &nbsp; 2026-06-04</div>
-  <div style="margin-bottom: 0.3em;"><span class="metadata-property-key">last_updated</span> &nbsp; 2026-08-15</div>
-  <div style="margin-bottom: 0.3em;"><span class="metadata-property-key">last_refreshed</span> &nbsp; 2026-08-15</div>
-  <div><span class="metadata-property-key">status</span> &nbsp; finished</div>
 </div>
 
-<h1>Transformer 架构</h1>
+<div class="metadata-container">
+  <div><span class="metadata-property-key">title</span>&nbsp; 样式指南 · Editorial</div>
+  <div><span class="metadata-property-key">type</span>&nbsp; doc</div>
+  <div><span class="metadata-property-key">tags</span>&nbsp;
+    <span class="multi-select-pill">meta/style</span>
+    <span class="multi-select-pill">编辑风</span>
+  </div>
+  <div><span class="metadata-property-key">底座主题</span>&nbsp; Minimal</div>
+  <div><span class="metadata-property-key">status</span>&nbsp; stable</div>
+</div>
 
-<p>Transformer 是一种完全基于 <a class="internal-link" href="#">注意力机制</a> 的深度学习架构，由 Google 团队在 2017 年提出。它彻底改变了 <a class="internal-link" href="#">NLP</a> 领域，是 <a class="internal-link" href="#">GPT</a>、<a class="internal-link" href="#">BERT</a> 等现代大语言模型的基石。</p>
+<h1>样式指南 · Editorial</h1>
 
-> [!important] 核心贡献
-> 用自注意力（Self-Attention）取代了 RNN 和 CNN，实现了完全并行的序列计算。这一突破使得训练超大规模模型成为可能。
+<p>编辑风的定位是<strong>中文出版物的版面感</strong>：标题走衬线承担「版面」职责，正文走黑体保证屏幕可读性；表格只留横线，引用去底色只留竖线；界面用发丝线分区，用一道 2px 强调色短线标记当前位置。</p>
 
-<h2>一句话定义</h2>
+<h2>一、色彩系统</h2>
 
-<p>Transformer 是一种基于 ==自注意力机制== 的编码器-解码器架构，通过并行计算处理序列数据，无需循环或卷积操作。</p>
+<p>明色为「宣纸」，暗色为「夜墨」。强调色取<strong>胭脂</strong>，语义色全部压到出版级低饱和。</p>
 
-<h2>为什么重要</h2>
+<table>
+  <thead>
+    <tr><th>用途</th><th>明色「宣纸」</th><th>暗色「夜墨」</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>纸面底色</td><td><code>#FCFBF7</code></td><td><code>#1B1A18</code></td></tr>
+    <tr><td>侧栏 / 凹陷面</td><td><code>#F3F1EA</code></td><td><code>#141312</code></td></tr>
+    <tr><td>正文墨色</td><td><code>#23211C</code></td><td><code>#E6E2D8</code></td></tr>
+    <tr><td>发丝线</td><td><code>#E4E0D6</code></td><td><code>#302D29</code></td></tr>
+    <tr><td>强调（胭脂）</td><td><code>#A34A52</code></td><td><code>#E0919A</code></td></tr>
+  </tbody>
+</table>
 
-<p>在 Transformer 出现之前，序列建模主要依赖 <code>RNN</code> 和 <code>LSTM</code>，它们存在三个核心问题：</p>
+<div class="sw-row">
+  <div class="sw" style="background: var(--ed-red);">朱</div>
+  <div class="sw" style="background: var(--ed-orange);">赭</div>
+  <div class="sw" style="background: var(--ed-yellow);">琥珀</div>
+  <div class="sw" style="background: var(--ed-green);">苔绿</div>
+  <div class="sw" style="background: var(--ed-cyan);">青</div>
+  <div class="sw" style="background: var(--ed-blue);">墨蓝</div>
+  <div class="sw" style="background: var(--ed-purple);">紫檀</div>
+  <div class="sw" style="background: var(--ed-accent);">强调</div>
+</div>
+
+<h2>二、排版层级</h2>
+
+<h3>这是 H3（黑体，1.2em）</h3>
+
+<p>正文 16px，行高 1.8，字距 +0.012em —— 中文长文在这个组合下最省力。栏宽 42rem（约 34 个汉字/行），是屏幕阅读的舒适上限。</p>
+
+<p>加粗用 <strong>650 字重</strong>而不是 700，避免中文字面糊成一团。<em>斜体走真斜体</em>，<code>行内代码走等宽 + 浅底</code>。关键词高亮：<mark>被标记的句子会垫一层蜂蜜金</mark>。</p>
+
+<h4>这是 H4（1.06em，黑体）</h4>
+<h5>这是 H5（0.97em，压暗）</h5>
+<h6>这是 H6（0.88em，字距拉开，最淡）</h6>
+
+<p>层级靠字体族和线来区分，不靠大小硬撑：H1 带一道短胭脂线 → H2 带上方发丝线（像印刷品的分栏线）→ H3 起转为黑体。</p>
+
+<h2>三、列表与任务</h2>
+
+<p>无序列表（圆点压到最淡，缩进参考线几乎看不见）：</p>
 
 <ul>
-  <li><strong>串行计算</strong>：必须按顺序处理每个 token，无法并行化</li>
-  <li><strong>长距离依赖弱</strong>：信息在长序列中逐渐衰减</li>
-  <li><strong>梯度问题</strong>：梯度消失/爆炸限制了对长序列的学习</li>
+  <li>第一层，圆点压到最淡
+    <ul>
+      <li>第二层</li>
+    </ul>
+  </li>
+  <li>回到第一层</li>
 </ul>
 
-<p>Transformer 通过自注意力机制一次性解决了这三个问题。详见 <a class="external-link" href="https://arxiv.org/abs/1706.03762">原始论文 ↗</a>。</p>
-
-<h2>核心原理</h2>
-
-<h3>关键要素</h3>
+<p>有序列表（编号用衬线 + 胭脂色，是版面里少数允许「出声」的地方）：</p>
 
 <ol>
-  <li><strong>编码器（Encoder）</strong>：将输入序列编码为连续表示，堆叠 N=6 层</li>
-  <li><strong>解码器（Decoder）</strong>：自回归生成输出序列，同样堆叠 N=6 层</li>
-  <li><strong>自注意力层</strong>：计算序列中每个位置与其他所有位置的关系</li>
-  <li><strong>前馈网络（FFN）</strong>：对每个位置独立做非线性变换</li>
+  <li>界定研究问题</li>
+  <li>收集来源并评估可信度</li>
+  <li>交叉验证，标记冲突</li>
 </ol>
 
-<h3>运作机制</h3>
-
-<p>注意力计算的核心公式：</p>
-
-<pre><code>Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V</code></pre>
-
-<p>其中 <code>Q</code>（Query）、<code>K</code>（Key）、<code>V</code>（Value）分别由输入线性变换得到，<code>d_k</code> 是 Key 的维度。</p>
-
-> [!example] 多头注意力
-> 多头注意力将 Q、K、V 投影到 h=8 个不同的子空间，分别计算注意力后拼接：
-> ```
-> MultiHead(Q,K,V) = Concat(head_1, ..., head_h) W^O
-> head_i = Attention(QW_i^Q, KW_i^K, VW_i^V)
-> ```
-> 这使得模型能同时关注不同位置的不同表示子空间。
-
-<h2>类比理解</h2>
-
-<blockquote>
-  <p>就像一个会议室里所有人同时交换名片一样——每个人（Query）都可以直接看向其他任何人（Key），并根据相关性决定从谁那里获取多少信息（Value），而不需要像传话游戏那样一个接一个地传递。</p>
-</blockquote>
-
-<h2>演进脉络</h2>
-
-<table>
-  <thead>
-    <tr><th>时间</th><th>里程碑</th><th>关键人物/来源</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>2014</td><td>Bahdanau 提出 Attention 机制</td><td>Bahdanau et al.</td></tr>
-    <tr><td>2017.06</td><td>Transformer 架构发表</td><td><a class="internal-link" href="#">Vaswani</a> et al. (Google)</td></tr>
-    <tr><td>2018.10</td><td>BERT：仅编码器，预训练+微调</td><td><a class="internal-link" href="#">Google AI</a></td></tr>
-    <tr><td>2018.06</td><td>GPT：仅解码器，自回归生成</td><td><a class="internal-link" href="#">OpenAI</a></td></tr>
-    <tr><td>2020.05</td><td>GPT-3：175B 参数，涌现能力</td><td>OpenAI</td></tr>
-    <tr><td>2026</td><td>万亿参数模型成为标配</td><td>多家机构</td></tr>
-  </tbody>
-</table>
-
-<h2>常见误区</h2>
+<p>任务列表（复选框是 2px 圆角的方块，不是圆点）：</p>
 
 <ul>
-  <li><strong>误区 1</strong>：Transformer 只能用于 NLP
-    <ul><li><em>正确理解</em>：Vision Transformer (ViT) 已证明其在图像、音频、视频等模态同样有效</li></ul>
-  </li>
-  <li><strong>误区 2</strong>：注意力权重等于重要性
-    <ul><li><em>正确理解</em>：注意力权重反映的是 Query-Key 的相似度，不直接等同于特征重要性</li></ul>
-  </li>
+  <li class="task-list-item is-checked"><input type="checkbox" class="task-list-item-checkbox" checked disabled> 已完成的条目会压暗并划掉</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled> 未完成条目保持常态</li>
 </ul>
 
-<hr>
-
-<h2>Callout 样式展示</h2>
-
-> [!note] Note 笔记
-> 这是一段笔记型 Callout，用于记录一般性信息。
-
-> [!tip] Tip 提示
-> 使用 <code>--wiki-accent</code> CSS 变量可以自定义整个知识库的主题色。
-
-> [!warning] Warning 警告
-> 修改 <code>.obsidian/</code> 下的 JSON 配置时务必先备份，JSON 语法错误会导致 Obsidian 无法打开 Vault。
-
-> [!danger] Danger 危险
-> 绝对不要修改 <code>raw/</code> 目录下的原始文件。这是知识库不可变层的唯一约束。
-
-> [!success] Success 成功
-> 知识库初始化完成！所有 CSS 片段已自动启用。
-
-> [!question]- FAQ 常见问题（点击展开）
-> <p><strong>Q: Dataview 查询不显示结果怎么办？</strong></p>
-> <p>A: 检查页面 frontmatter 中是否有 <code>type</code> 字段，Dataview 依赖这些字段进行过滤。</p>
-
-> [!example] Example 示例
-> 这是一个示例 Callout，用于展示代码和用法。
-
-> [!quote] Quote 引用
-> "Attention Is All You Need" — 这篇论文的标题本身就是一个时代宣言。
-
-> [!abstract] Abstract 摘要
-> Transformer 架构通过自注意力机制实现了序列建模的范式转移，成为现代深度学习的核心基础设施。
-
-<h2>Dataview 模拟输出</h2>
-
-<h3>概念库（Dataview TABLE）</h3>
-
-<div class="block-language-dataview">
-<table class="dataview table-view-table">
-  <thead>
-    <tr><th>复杂度</th><th>更新日期</th><th>状态</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><a class="internal-link" href="#">Transformer</a></td><td>2026-08-15</td><td>finished</td></tr>
-    <tr><td><a class="internal-link" href="#">Attention Mechanism</a></td><td>2026-08-10</td><td>finished</td></tr>
-    <tr><td><a class="internal-link" href="#">BERT</a></td><td>2026-07-22</td><td>finished</td></tr>
-    <tr><td><a class="internal-link" href="#">GPT</a></td><td>2026-08-14</td><td>finished</td></tr>
-    <tr><td><a class="internal-link is-unresolved" href="#">Mixture of Experts</a></td><td>2026-08-01</td><td>draft</td></tr>
-  </tbody>
-</table>
-</div>
-
-<h3>草稿页面（Dataview LIST）</h3>
-
-<div class="block-language-dataview">
-<ul class="dataview list-view-ul">
-  <li><a class="internal-link is-unresolved" href="#">Mixture of Experts</a></li>
-  <li><a class="internal-link is-unresolved" href="#">Flash Attention</a></li>
-  <li><a class="internal-link is-unresolved" href="#">RLHF</a></li>
-</ul>
-</div>
-
-<p class="dataview small-text">共 3 个草稿页面 · 最后更新：2026-08-15</p>
-
-<h2>时效性更新</h2>
-
-<div class="callout" data-callout="info">
-  <div class="callout-title"><span class="callout-icon"><span class="ci">ℹ</span></span> 联网刷新 — 2026-08-15</div>
-  <div class="callout-content">
-    <p>已通过联网搜索验证并更新本页面内容。</p>
-    <ul>
-      <li><strong>追加</strong>：GPT-5 已于 2026 年 Q1 发布，参数规模达 3 万亿 — 来源：<a class="external-link" href="#">openai.com/blog/gpt-5 ↗</a></li>
-      <li><strong>更新</strong>：最大模型参数量从 175B → 3T — 来源：<a class="external-link" href="#">arxiv.org/abs/2603.12345 ↗</a></li>
-    </ul>
-  </div>
-</div>
-
-<h2>知识冲突</h2>
+<h2>四、表格（三线表）</h2>
 
 <table>
   <thead>
-    <tr><th>观点 A</th><th>观点 B</th><th>我的判断</th></tr>
+    <tr><th>维度</th><th>旧样式</th><th>编辑风</th><th align="right">收益</th></tr>
   </thead>
   <tbody>
-    <tr>
-      <td>Scaling Law 在 10T 参数后开始饱和</td>
-      <td>Scaling Law 仍未见饱和迹象</td>
-      <td>⏳ 待确认，存在实验条件差异</td>
-    </tr>
+    <tr><td>边框</td><td>全网格线</td><td>只有三条横线</td><td align="right">视觉噪音↓</td></tr>
+    <tr><td>表头</td><td>灰底 + 蓝字</td><td>无底 + 1.5px 主分隔线</td><td align="right">像出版物</td></tr>
+    <tr><td>行分隔</td><td>1px 灰线</td><td>1px 发丝线</td><td align="right">依然可读</td></tr>
+    <tr><td>第一列</td><td>与正文同</td><td>加重为行标题</td><td align="right">扫读更快</td></tr>
   </tbody>
 </table>
+
+<p>数字列用 <code>&lt;td align="right"&gt;</code> 会自动启用等宽数字对齐（上表最后一列）。</p>
+
+<h2>五、全部 Callout 类型</h2>
+
+<div class="callout" data-callout="note">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">✎</span></span> 笔记 / note / info</div>
+  <div class="callout-content"><p>墨蓝。左侧 2px 实色竖线 + 一圈发丝描边，底色只留 4.5% 透明度。</p></div>
+</div>
+
+<div class="callout" data-callout="abstract">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">▤</span></span> 摘要 / abstract</div>
+  <div class="callout-content"><p>青。适合放在页面顶部的「一句话总结」。</p></div>
+</div>
+
+<div class="callout" data-callout="todo">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">☑</span></span> 待办 / todo</div>
+  <div class="callout-content"><p>青。与摘要同色系。</p></div>
+</div>
+
+<div class="callout" data-callout="tip">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">✦</span></span> 提示 / tip / important</div>
+  <div class="callout-content"><p>琥珀。适合放「此处的坑」。</p></div>
+</div>
+
+<div class="callout" data-callout="success">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">✓</span></span> 成功 / success / done</div>
+  <div class="callout-content"><p>苔绿。</p></div>
+</div>
+
+<div class="callout" data-callout="question">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">?</span></span> 问题 / question / faq</div>
+  <div class="callout-content"><p>紫檀。</p></div>
+</div>
 
 <div class="callout" data-callout="warning">
-  <div class="callout-title"><span class="callout-icon"><span class="ci">⚠</span></span> 需要人工确认</div>
+  <div class="callout-title"><span class="callout-icon"><span class="ci">⚠</span></span> 警告 / warning / caution</div>
+  <div class="callout-content"><p>赭石。</p></div>
+</div>
+
+<div class="callout" data-callout="danger">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">✕</span></span> 危险 / danger / error</div>
+  <div class="callout-content"><p>朱。</p></div>
+</div>
+
+<div class="callout" data-callout="example">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">◈</span></span> 示例 / example</div>
+  <div class="callout-content"><p>紫檀。</p></div>
+</div>
+
+<div class="callout" data-callout="quote">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">❝</span></span> 引用 / quote / cite</div>
+  <div class="callout-content"><p>这个变体会自动切换到衬线字体，当引文用。</p></div>
+</div>
+
+<p>折叠式（标题末尾加 <code>-</code> 默认折叠，箭头会旋转，展开高度不跳动）：</p>
+
+<div class="callout is-collapsible is-collapsed" data-callout="faq">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">?</span></span> 点开看答案 <span class="callout-fold">▾</span></div>
+  <div class="callout-content"><p>折叠状态的箭头会旋转，展开高度不跳动。</p></div>
+</div>
+
+<h2>六、版式扩展示例</h2>
+
+<h3>6.1 多栏</h3>
+
+<div class="callout" data-callout="multi-column">
   <div class="callout-content">
-    <p>联网发现的信息与知识库现有内容存在冲突，请核实后决定保留哪个版本。</p>
+    <div class="callout" data-callout="note">
+      <div class="callout-title"><span class="callout-icon"><span class="ci">✎</span></span> 左栏</div>
+      <div class="callout-content"><p>子块按可用宽度自动等分，放不下就换行。</p></div>
+    </div>
+    <div class="callout" data-callout="warning">
+      <div class="callout-title"><span class="callout-icon"><span class="ci">⚠</span></span> 中栏</div>
+      <div class="callout-content"><p>指定栏数用 <code>|2col</code>、<code>3col</code>、<code>4col</code>。</p></div>
+    </div>
+    <div class="callout" data-callout="success">
+      <div class="callout-title"><span class="callout-icon"><span class="ci">✓</span></span> 右栏</div>
+      <div class="callout-content"><p>窄屏（&lt; 640px）自动退回单栏。</p></div>
+    </div>
   </div>
 </div>
 
-<h2>应用场景</h2>
+<h3>6.2 浮动批注框</h3>
+
+<div class="callout" data-callout="info" data-callout-metadata="right-medium">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">ℹ</span></span> 右侧浮动</div>
+  <div class="callout-content">
+    <p>这段文字会被放在正文右侧，正文自动绕排。窄屏下自动取消浮动，回到正常流。</p>
+    <p>尺寸可选 <code>small</code> / <code>medium</code> / <code>large</code>，方向可选 <code>left</code> / <code>right</code>。</p>
+  </div>
+</div>
+
+<p>正文继续推进，观察右侧的批注框如何与段落并行排布。这是报纸与学术出版物里常见的排版手法，让补充信息不打断主线阅读节奏。</p>
+
+<h3>6.3 页边注</h3>
+
+<div class="callout" data-callout="sidenote">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">▏</span></span> 边注</div>
+  <div class="callout-content"><p>Tufte 式页边批注：只留一条顶线，字号 0.82em，适合放「补充说明」「我的怀疑」这类不影响主线的信息。</p></div>
+</div>
+
+<h3>6.4 图片画廊</h3>
+
+<div class="callout" data-callout="note" data-callout-metadata="gallery">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">▦</span></span> 画廊（等高等宽裁切网格）</div>
+  <div class="callout-content">
+    <p><code>&gt; [!note|gallery]</code> 内的图片会自动排成等高裁切网格。</p>
+  </div>
+</div>
+
+<h2>七、链接与标签</h2>
+
+<ul>
+  <li>已存在的页面：<a class="internal-link" href="#">Transformer</a> — 细下划线 + 淡胭脂底，hover 时下划线转实</li>
+  <li>尚不存在的页面：<a class="internal-link is-unresolved" href="#">Flash Attention</a> — 虚线，提示「有待补上」</li>
+  <li>外部链接：<a class="external-link" href="#">Karpathy 的 LLM Wiki gist</a> — 墨蓝 + 右上箭头</li>
+</ul>
+
+<p>标签走发丝描边方签：<a class="tag" href="#">#meta</a> <a class="tag" href="#">#meta/style</a> <a class="tag" href="#">#待整理</a></p>
+
+<h2>八、代码</h2>
+
+<p>行内代码：<code>--line-width: 42rem</code>。代码块右上角会显示语言标签。</p>
+
+<pre><code class="language-yaml">title: "示例"
+type: concept
+complexity: ⭐⭐⭐☆☆
+status: "draft"</code></pre>
+
+<pre><code class="language-python">def compile_to_wiki(raw_path: Path, wiki_root: Path) -> list[str]:
+    """把 raw/ 下的资料编译进 wiki/ 并回写双链"""
+    pages: list[str] = []
+    for doc in iter_documents(raw_path):
+        page = render_page(doc)
+        pages.append(write(wiki_root, page))
+    return pages</code></pre>
+
+<h2>九、版式模式（cssclass）</h2>
+
+<p>在笔记 frontmatter 里写 <code>cssclass: wide-page cards</code> 即可叠加，无需改动样式文件。</p>
 
 <table>
-  <thead>
-    <tr><th>场景</th><th>说明</th></tr>
-  </thead>
+  <thead><tr><th>cssclass</th><th>效果</th></tr></thead>
   <tbody>
-    <tr><td>机器翻译</td><td>Transformer 最初的设计目标，Google Translate 已全面采用</td></tr>
-    <tr><td>文本生成</td><td>GPT 系列证明自回归生成能力可涌现复杂推理</td></tr>
-    <tr><td>代码补全</td><td>Codex / Copilot 基于 GPT 架构</td></tr>
-    <tr><td>图像生成</td><td>DiT (Diffusion Transformer) 将 Transformer 引入扩散模型</td></tr>
+    <tr><td><code>wide-page</code></td><td>整页满宽，Dataview 仪表盘和大表格用</td></tr>
+    <tr><td><code>wide-table</code></td><td>只放宽表格，正文保持舒适栏宽</td></tr>
+    <tr><td><code>narrow-page</code></td><td>收窄到 34rem，专注写作</td></tr>
+    <tr><td><code>columns-2 / columns-3</code></td><td>正文分栏，适合 MOC、索引、术语表</td></tr>
+    <tr><td><code>list-2col</code></td><td>顶层列表变双栏</td></tr>
+    <tr><td><code>cards</code></td><td>顶层列表变卡片网格</td></tr>
+    <tr><td><code>article</code></td><td>成稿模式：隐藏属性区，行高提到 1.9</td></tr>
+    <tr><td><code>drop-cap</code></td><td>首段首字下沉</td></tr>
+    <tr><td><code>sticky-heading</code></td><td>H2 滚动吸顶，长文里始终知道自己在哪一章</td></tr>
+    <tr><td><code>marginal</code></td><td>整页的 blockquote 变成页边批注</td></tr>
+    <tr><td><code>no-inline-title</code></td><td>隐藏文件名标题（正文自带 H1 时用）</td></tr>
   </tbody>
 </table>
 
-<h2>关联连接</h2>
+<h3>cards 模式实样</h3>
 
-<ul>
-  <li><a class="internal-link" href="#">Attention Mechanism</a> — 核心机制详解</li>
-  <li><a class="internal-link" href="#">BERT</a> — 仅使用编码器的变体</li>
-  <li><a class="internal-link" href="#">GPT</a> — 仅使用解码器的变体</li>
-  <li><a class="internal-link" href="#">Vaswani</a> — 论文第一作者</li>
-  <li><a class="internal-link is-unresolved" href="#">Flash Attention</a> — 注意力计算加速（待创建）</li>
-</ul>
+<div class="cards mode-stage">
+  <div class="markdown-preview-sizer">
+    <div>
+      <ul>
+        <li><strong>概念页</strong> 定义、原理、类比、误区、应用场景</li>
+        <li><strong>实体页</strong> 人物、公司、工具、产品的档案卡</li>
+        <li><strong>来源摘要</strong> 原始资料的提炼与可信度评估</li>
+        <li><strong>综合分析</strong> 跨来源的结论与行动建议</li>
+      </ul>
+    </div>
+  </div>
+</div>
 
-<h2>待深入</h2>
+<h2>十、设计 Token</h2>
 
-<ul>
-  <li class="task-list-item is-checked"><input type="checkbox" checked disabled> 补充数学公式/形式化定义</li>
-  <li class="task-list-item is-checked"><input type="checkbox" checked disabled> 补充历史演进脉络</li>
-  <li class="task-list-item"><input type="checkbox" disabled> 添加 ViT 多模态扩展案例</li>
-  <li class="task-list-item"><input type="checkbox" disabled> 对比 Mamba / State Space Model 架构</li>
-</ul>
+<p>想改配色或字体，只改 <code>01-foundation.css</code> 顶部的变量即可，其余九个文件全部跟着走。</p>
 
-<h2>嵌入内容示例</h2>
+<table>
+  <thead><tr><th>Token</th><th>值</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td><code>--ed-font-body</code></td><td>PingFang SC → Hiragino Sans GB → …</td><td>正文黑体</td></tr>
+    <tr><td><code>--ed-font-display</code></td><td>Charter → Iowan Old Style → Songti SC → …</td><td>标题衬线</td></tr>
+    <tr><td><code>--ed-font-mono</code></td><td>SF Mono → MesloLGS NF → …</td><td>等宽</td></tr>
+    <tr><td><code>--ed-accent</code></td><td><code>#A34A52</code> / <code>#E0919A</code></td><td>强调色（胭脂）</td></tr>
+    <tr><td><code>--radius-s/m/l</code></td><td>2 / 3 / 4px</td><td>圆角几近归零</td></tr>
+    <tr><td><code>--line-width</code></td><td><code>42rem</code></td><td>阅读栏宽</td></tr>
+    <tr><td><code>--line-height-normal</code></td><td><code>1.8</code></td><td>正文行高</td></tr>
+  </tbody>
+</table>
 
-<div class="markdown-embed">
-  <div class="markdown-embed-title">🔗 嵌入自：Attention Mechanism</div>
-  <p>注意力机制的核心思想是：对于给定的查询（Query）和一组键值对（Key-Value pairs），通过计算查询与每个键的相似度得到权重，再对对应的值进行加权求和。</p>
-  <p>公式：<code>Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V</code></p>
+<h2>十一、图表配色</h2>
+
+<p>Mermaid / Markmap / Canvas 的配色由 <code>07-diagrams.css</code> 统一接管，源码里<strong>只写语义 class，不写色值</strong>：</p>
+
+<pre><code class="language-markdown">flowchart LR
+    A["原始资料"] --&gt; B["ingest 编译"]
+    B --&gt; C["wiki 知识库"]
+
+    class A blue
+    class B green
+    class C cyan</code></pre>
+
+<p>可用语义 class：<code>blue</code> <code>cyan</code> <code>green</code> <code>yellow</code> <code>orange</code> <code>red</code> <code>purple</code>，以及实心强调用的 <code>solid</code>。</p>
+
+<div class="callout" data-callout="danger">
+  <div class="callout-title"><span class="callout-icon"><span class="ci">✕</span></span> 两条禁令</div>
+  <div class="callout-content">
+    <p><strong>不要写 <code>classDef xxx fill:var(--x)</code> 或 <code>fill:rgba(...)</code></strong> —— Mermaid 的 classDef 只接受简单色值，写变量或 rgba 会直接抛解析错误，整张图渲染失败。</p>
+    <p><strong>也不要写 <code>style 节点 fill:#hex</code></strong> —— 那样绕过了主题变量，暗色模式下必然失配。</p>
+  </div>
 </div>
 
 <hr>
 
-<p style="text-align: center; color: var(--wiki-text-faint); font-size: 0.85em; font-style: italic;">
-  本页面由 AI 维护 · 最后更新：2026-08-15 · 联网刷新：2026-08-15
-</p>
+<p class="dataview small-text">本页由 6 个真实 CSS 片段驱动 · 与 _templates/STYLE-GUIDE.md 同源 · 图表预览见 demo/mermaid-preview.html</p>
 
 </div>
 </div>
@@ -521,20 +447,16 @@ body { margin: 0; padding: 0; background: var(--wiki-bg-primary); min-height: 10
 
 <script>
 function toggleTheme() {
-  const html = document.documentElement;
-  if (html.classList.contains('theme-dark')) {
-    html.classList.remove('theme-dark');
-    html.classList.add('theme-light');
-  } else {
-    html.classList.remove('theme-light');
-    html.classList.add('theme-dark');
-  }
+  var b = document.body;
+  var dark = b.classList.contains('theme-dark');
+  b.classList.toggle('theme-dark', !dark);
+  b.classList.toggle('theme-light', dark);
 }
-
-document.querySelectorAll('.callout.is-collapsible').forEach(c => {
-  c.addEventListener('click', () => c.classList.toggle('is-collapsed'));
+document.querySelectorAll('.callout.is-collapsible > .callout-title').forEach(function (t) {
+  t.addEventListener('click', function () {
+    t.parentElement.classList.toggle('is-collapsed');
+  });
 });
 </script>
-
 </body>
 </html>

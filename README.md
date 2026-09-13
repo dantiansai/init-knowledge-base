@@ -11,7 +11,7 @@
 - 📁 **标准目录结构**：`raw/`（原始资料）、`wiki/`（知识编译输出）、`assets/`（媒体资源）
 - 📝 **4 种标准模板**：Entity（实体）、Concept（概念）、Source（来源摘要）、Synthesis（综合分析）
 - ⚙️ **统一 Obsidian 配置**：预置核心插件清单、社区插件推荐、编辑器设置、模板路径预设、图谱颜色分组
-- 🎨 **6 个 CSS 样式片段**：`wiki-reading`（阅读排版）、`wiki-callouts`（语义化提示框）、`wiki-components`（双链/标签/代码块）、`wiki-mermaid`（图表美化）、`wiki-markmap`（思维导图）、`wiki-canvas`（白板）
+- 🎨 **10 个 CSS 样式片段（Editorial 编辑风）**：`01-foundation`（配色/字体/圆角 token）、`02-typography`（标题层级/三线表/引用）、`03-callouts`（Callout 语汇 + 多栏/画廊/页边注）、`04-components`（双链/标签/代码块）、`05-layout`（cssclass 版式模式）、`06-chrome`（界面外壳）、`07-diagrams`（图表 token 调色）、`08-mermaid`、`09-markmap`、`10-canvas`；底座主题 **Minimal**，全部语法样例见 `STYLE-GUIDE.md`
 - 📊 **Dataview 动态仪表盘**：`wiki/index.md` 自动聚合概念库、实体库、待处理清单、时效性监控
 - 🤖 **6 个 Agent Skills**：`ingest`（增量编译+讨论确认+URL摄入）、`query`（智能查询）、`lint`（健康检查+概念空缺检测）、`refresh`（联网时效性更新）、`obsidian-markdown`（语法规范）、`json-canvas`（知识可视化）
 - 🗺️ **Markmap 思维导图**：预置知识库全景思维导图，安装插件后可交互浏览项目架构
@@ -67,10 +67,18 @@ Skill 将自动生成完整的项目结构，你可以直接在 Obsidian 中打�
 │   ├── community-plugins.json # 推荐社区插件
 │   ├── templates.json        # 模板文件夹路径预设
 │   ├── graph.json            # 图谱视图颜色分组预设
-│   └── snippets/             # CSS 样式片段
-│       ├── wiki-reading.css
-│       ├── wiki-callouts.css
-│       └── wiki-components.css
+│   ├── snippets/             # Editorial 编辑风样式（10 个片段）
+│   │   ├── 01-foundation.css
+│   │   ├── 02-typography.css
+│   │   ├── 03-callouts.css
+│   │   ├── 04-components.css
+│   │   ├── 05-layout.css
+│   │   ├── 06-chrome.css
+│   │   ├── 07-diagrams.css
+│   │   ├── 08-mermaid.css
+│   │   ├── 09-markmap.css
+│   │   └── 10-canvas.css
+│   └── snippets-legacy/      # Nord 冷色版备用样式（*.css.disabled）
 └── .claude/
     └── skills/               # Agent Skills
         ├── ingest/           # 将 raw/ 资料编译到 wiki/（支持讨论确认）

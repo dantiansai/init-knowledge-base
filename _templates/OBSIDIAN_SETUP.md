@@ -9,7 +9,7 @@
 | 配置文件 | 预设内容 |
 |---------|---------|
 | `app.json` | 默认阅读模式（`defaultViewMode: reading`）、新文件存入 `wiki/`、附件存入 `assets/`、最短路径链接格式 |
-| `appearance.json` | 主题色 `#5e81ac`（Nord 蓝）、自动启用 3 个 CSS 片段 |
+| `appearance.json` | 主题色 `#A34A52`（胭脂）、`cssTheme: Minimal`、自动启用 10 个编辑风 CSS 片段 |
 | `templates.json` | 核心 Templates 插件模板文件夹 → `templates/` |
 | `graph.json` | 图谱视图按目录着色：概念(蓝)、实体(绿)、来源(橙)、综合(紫)、MOC(黄) |
 | `core-plugins.json` | 启用 Graph、Backlink、Page Preview、Templates、Outline、Tag Pane 等 |
@@ -62,22 +62,49 @@
 
 ## CSS 样式片段
 
-位于 `.obsidian/snippets/`，已自动启用：
+位于 `.obsidian/snippets/`，按加载顺序编号，已全部启用。整体风格为中文出版物的**编辑风**：标题走衬线（Charter / 宋体）承担版面职责，正文走黑体保证屏幕可读性；表格只留横线（三线表），引用去底色只留竖线；界面用发丝线分区，用一道 2px 强调色短线标记当前位置。
 
 | 片段 | 说明 |
 |------|------|
-| `wiki-reading.css` | 阅读排版优化：标题层级、段落间距、引用块、表格 |
-| `wiki-callouts.css` | Callout 美化：语义化颜色 + 左侧边条 |
-| `wiki-components.css` | 组件增强：双链、外部链接、标签、图片、代码块 |
-| `wiki-mermaid.css` | 图表美化：时序图、流程图、思维导图、类图、状态图、ER 图、甘特图、饼图、时间线、象限图等 |
-| `wiki-markmap.css` | 思维导图（Markmap）：节点圆点、连线质感、悬停与折叠反馈 |
-| `wiki-canvas.css` | Canvas 白板：节点卡片、分组、连线、聚焦态 |
+| `01-foundation.css` | 设计基石：宣纸 / 夜墨双主题配色、字体栈、圆角、栏宽行高 token |
+| `02-typography.css` | 阅读排版：标题层级（H1 短胭脂线 / H2 上方发丝线 / H3 起转黑体）、三线表、引用、图片题注、分隔线 |
+| `03-callouts.css` | Callout 语汇：发丝描边 + 2px 语义色竖线；含多栏、画廊、浮动批注、页边注、信息框 |
+| `04-components.css` | 双链、外部链接、标签、代码块（含语言标签）、属性区、嵌入内容 |
+| `05-layout.css` | 版式模式：`wide-page` / `columns-2` / `cards` / `article` / `drop-cap` / `sticky-heading` 等 |
+| `06-chrome.css` | 界面外壳：侧边栏、标签页、状态栏、悬浮预览、命令面板、图谱、打印 |
+| `07-diagrams.css` | 图表调色：把 Mermaid / Markmap / Canvas 的 token 接到编辑风色板 |
+| `08-mermaid.css` | Mermaid 全图表类型样式 |
+| `09-markmap.css` | Markmap 思维导图 |
+| `10-canvas.css` | Canvas 白板 |
 
-> 图表类片段（mermaid / markmap / canvas）全部基于语义 CSS 变量实现明暗双主题自适应，
-> 因此 Mermaid 源码中**不需要**写 `style X fill:#...` 这类硬编码颜色，
-> 用语义 `class` 即可（见 `Mindmap-知识库全景.md` 的示例）。
+> `08` / `09` / `10` 内部沿用 `--wiki-*` token 命名，由 `07-diagrams.css` 统一重新赋值到编辑风色板。这三个文件与通用 token 解耦，可以独立升级。
 
-如需调整样式，可在 **Settings → Appearance → CSS Snippets** 中开关单个片段。
+### 图表配色约定（重要）
+
+Mermaid 源码里**只写语义 class，不写色值**：
+
+```mermaid
+flowchart LR
+    A["原始资料"] --> B["ingest 编译"]
+    B --> C["wiki 知识库"]
+
+    class A blue
+    class B green
+    class C cyan
+```
+
+可用 class：`blue` `cyan` `green` `yellow` `orange` `red` `purple`，以及实心强调用的 `solid`。
+
+- **不要写 `classDef xxx fill:var(--x)` 或 `fill:rgba(...)`** —— Mermaid 的 classDef 只接受简单色值，写变量或 rgba 会直接抛解析错误，导致整张图渲染失败。
+- **也不要写 `style 节点 fill:#hex`** —— 那样绕过了主题变量，暗色模式下必然失配。
+
+> **完整样式指南见 [`STYLE-GUIDE.md`](STYLE-GUIDE.md)** —— 那一页本身就是样例，在 Obsidian 中打开即可看到所有效果与写法。
+
+### 调整与回退
+
+- **改配色 / 换字体**：只改 `01-foundation.css` 顶部的 token 变量，其余九个文件全部跟着走。
+- **开关单个片段**：**Settings → Appearance → CSS Snippets**。
+- **切换风格**：`.obsidian/snippets-legacy/` 里另存了一套 Nord 冷色版（`wiki-reading` / `wiki-callouts` / `wiki-components`，扩展名为 `.css.disabled`）。想换回去，先把 `01`–`06` 停用或移出 `snippets/`，再去掉这三个文件的 `.disabled` 后缀并移回 `snippets/` 目录。
 
 ## 标准模板
 
@@ -140,11 +167,10 @@
 
 ## 推荐主题
 
-本 CSS 片段不依赖特定主题，在默认主题下效果最佳。如需更换主题，建议：
+编辑风样式以 **Minimal** 为底座（`appearance.json` 中 `cssTheme` 已预设为 `Minimal`）—— 栏宽、卡片、Style Settings 接口都由 Minimal 提供，样式片段在此之上做编辑风改造。
 
-- **Minimal** — 极简高定制（配合 Style Settings 使用）
-- **Things** — 清爽语义化配色
-- **AnuPpuccin** — 柔和护眼
+- **Minimal**（推荐 / 默认）— 极简高定制，编辑风的基础
+- 其他主题也可用，但栏宽、圆角、卡片等部分会回落到该主题的默认表现
 
 ## Obsidian Markdown 高级语法
 
@@ -291,7 +317,7 @@ flowchart TD
 1. 在 Obsidian 中打开本文件夹作为 Vault
 2. 前往 **Settings → Community plugins**，关闭 Restricted mode
 3. 按上表安装需要的社区插件（至少安装 **Dataview** 和 **Templater**）
-4. 在 **Appearance → CSS Snippets** 中确认三个片段已启用（已预配置自动启用）
+4. 在 **Appearance → CSS Snippets** 中确认十个片段已启用（已预配置自动启用）
 5. Templater 的模板文件夹已在 `templates.json` 中预设为 `templates/`（如使用 Templater 插件，需在 **Settings → Templater** 中手动设置一次）
 6. 图谱视图颜色分组已在 `graph.json` 中预设，打开图谱视图即可看到分类着色
 7. 将原始资料放入 raw/ 目录，或直接执行 `/ingest <url>` 抓取网页

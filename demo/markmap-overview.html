@@ -5,31 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wiki Markmap 思维导图预览</title>
 
-  <!-- 直接复用生产环境的 CSS snippet，节点与连线样式与 Obsidian 内一致 -->
-  <link rel="stylesheet" href="../_templates/.obsidian/snippets/wiki-markmap.css">
+  <!-- 直接复用生产环境的 CSS snippet，节点与连线样式与 Obsidian 内一致。
+       01-foundation 提供配色/字体 token，07-diagrams 把图表 token 接到编辑风色板，
+       09-markmap 才是 Markmap 本体样式 —— 三者缺一不可。 -->
+  <link rel="stylesheet" href="../_templates/.obsidian/snippets/01-foundation.css">
+  <link rel="stylesheet" href="../_templates/.obsidian/snippets/07-diagrams.css">
+  <link rel="stylesheet" href="../_templates/.obsidian/snippets/09-markmap.css">
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* 页面外壳配色直接引用编辑风 token，随 snippet 自动变化 */
     .theme-dark {
-      --pg-bg: #1a1a1d;
-      --pg-panel: #202024;
-      --pg-border: #33333a;
-      --pg-text: #d8d8dc;
-      --pg-dim: #8f8f99;
-      --pg-accent: #81a1c1;
-      --pg-accent-soft: rgba(129, 161, 193, 0.12);
-      --pg-accent-line: rgba(129, 161, 193, 0.28);
+      --pg-bg: var(--ed-paper);
+      --pg-panel: var(--ed-paper-raised);
+      --pg-border: var(--ed-rule);
+      --pg-text: var(--ed-ink);
+      --pg-dim: var(--ed-ink-muted);
+      --pg-accent: var(--ed-accent);
+      --pg-accent-soft: rgba(var(--ed-accent-rgb), 0.1);
+      --pg-accent-line: rgba(var(--ed-accent-rgb), 0.28);
     }
     .theme-light {
-      --pg-bg: #f2f4f8;
-      --pg-panel: #ffffff;
-      --pg-border: #e0e4ea;
-      --pg-text: #2b2f36;
-      --pg-dim: #6b7280;
-      --pg-accent: #4c7899;
-      --pg-accent-soft: rgba(76, 120, 153, 0.1);
-      --pg-accent-line: rgba(76, 120, 153, 0.24);
+      --pg-bg: var(--ed-paper);
+      --pg-panel: var(--ed-paper-raised);
+      --pg-border: var(--ed-rule);
+      --pg-text: var(--ed-ink);
+      --pg-dim: var(--ed-ink-muted);
+      --pg-accent: var(--ed-accent);
+      --pg-accent-soft: rgba(var(--ed-accent-rgb), 0.08);
+      --pg-accent-line: rgba(var(--ed-accent-rgb), 0.24);
     }
 
     html, body { height: 100%; }
@@ -146,9 +151,16 @@
     #stats b { color: var(--pg-accent); font-weight: 700; }
   </style>
 
+  <!-- 主源 jsdelivr；不通时用 document.write 同步兜底到 fastly / unpkg -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script>window.d3 || document.write('<script src="https://fastly.jsdelivr.net/npm/d3@7"><\/script>')</script>
+  <script>window.d3 || document.write('<script src="https://unpkg.com/d3@7"><\/script>')</script>
   <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.17"></script>
+  <script>window.markmap || document.write('<script src="https://fastly.jsdelivr.net/npm/markmap-view@0.17"><\/script>')</script>
+  <script>window.markmap || document.write('<script src="https://unpkg.com/markmap-view@0.17"><\/script>')</script>
   <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.17"></script>
+  <script>window.markmap || document.write('<script src="https://fastly.jsdelivr.net/npm/markmap-lib@0.17"><\/script>')</script>
+  <script>window.markmap || document.write('<script src="https://unpkg.com/markmap-lib@0.17"><\/script>')</script>
 </head>
 
 <body class="theme-dark">
@@ -254,24 +266,32 @@
 - 默认阅读模式
 - 附件路径 assets/
 ### appearance.json
-- 主题色 #5e81ac
-- 6 个 CSS 片段自动启用
+- 主题色 #A34A52（胭脂）
+- 10 个编辑风片段自动启用
 ### templates.json
 - 模板文件夹预设
 ### graph.json
 - 5 色分组着色
 ### snippets/
-#### wiki-reading.css
-- 标题层级 / 段落 / 引用 / 表格
-#### wiki-callouts.css
-- 语义化颜色 / 折叠动画
-#### wiki-components.css
+#### 01-foundation.css
+- 配色 / 字体 / 圆角 token
+#### 02-typography.css
+- 标题层级 / 三线表 / 引用
+#### 03-callouts.css
+- Callout 语汇 / 多栏 / 页边注
+#### 04-components.css
 - 双链 / 外链 / 标签 / 代码块
-#### wiki-mermaid.css
+#### 05-layout.css
+- wide-page / columns / cards
+#### 06-chrome.css
+- 侧栏 / 标签页 / 图谱 / 打印
+#### 07-diagrams.css
+- 图表 token 调色
+#### 08-mermaid.css
 - 时序图 / 流程图 / 类图 / 甘特图
-#### wiki-markmap.css
+#### 09-markmap.css
 - 思维导图节点与连线
-#### wiki-canvas.css
+#### 10-canvas.css
 - Canvas 卡片与连线
 
 ## 🤖 .claude/skills/
@@ -451,8 +471,8 @@
      2. 调色板 —— 修正原版引号混用导致的数组解析失败
      ====================================================================== */
   const PALETTE = {
-    dark: ['#5e81ac', '#88c0d0', '#a3be8c', '#ebcb8b', '#d08770', '#b48ead', '#81a1c1'],
-    light: ['#4c7899', '#3a8ea0', '#6a9455', '#b8860b', '#c25e3a', '#8e5e87', '#6c9abb']
+    dark: ['#8faece', '#7fb8b4', '#8fb58f', '#d4b65f', '#dca36b', '#b79cc4', '#8faece'],
+    light: ['#3f6484', '#3e7a78', '#4f7a52', '#a8871f', '#c07a3e', '#7a5a86', '#3f6484']
   };
 
   /* ======================================================================

@@ -1,0 +1,295 @@
+/* ==========================================================================
+   Editorial for Knowledge Base — 01 Foundation
+   设计基石：配色 / 字体 / 圆角 / 度量
+
+   风格定位：中文出版物的「编辑风」——纸面底色、墨色文字、近直角、
+   发丝级描边、克制的单一强调色。所有观感细节由本文件的 token 驱动，
+   想换色/换字体只需要改这里。
+
+   借鉴来源（GitHub）：
+   - kepano/obsidian-minimal            → 变量命名与默认度量
+   - replete/obsidian-minimal-theme-…   → 「Themed colours」按主题统一定义强调色的思路
+   - r-u-s-h-i-k-e-s-h/Obsidian-CSS-Snippets → 圆形圆角归零、紧凑视觉的取向
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   A. 非色彩 token（字体 / 圆角 / 度量）— 明暗通用
+   -------------------------------------------------------------------------- */
+:root {
+  /* ---- 字体栈 ---------------------------------------------------------
+     正文：中文黑体优先，Latin 落到系统 UI 无衬线
+     标题：Latin 衬线优先（Charter / Iowan Old Style），中文落到宋体
+     等宽：SF Mono / Meslo（已装 Nerd Font）/ JetBrains Mono 兜底         */
+  --ed-font-body: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+
+  --ed-font-display: "Charter", "Iowan Old Style", "Palatino", "Baskerville", Georgia,
+    "Times New Roman", "Songti SC", "STSong", "Source Han Serif SC", "Noto Serif SC", serif;
+
+  --ed-font-mono: "SF Mono", "MesloLGS NF", ui-monospace, Menlo, Monaco,
+    "JetBrains Mono", "Cascadia Code", Consolas, "Noto Sans Mono", monospace;
+
+  /* ---- 圆角：编辑风一律近乎直角，只留 2–4px 消除锐利感 --------------- */
+  --radius-s: 2px;
+  --radius-m: 3px;
+  --radius-l: 4px;
+  --radius-xl: 6px;
+  --callout-radius: 3px;
+  --checkbox-radius: 2px;
+  --tag-radius: 2px;
+  --input-radius: 3px;
+  --modal-radius: 4px;
+  --menu-radius: 4px;
+
+  /* ---- 度量：行宽 ~42rem（中文约 34 字/行），行高 1.8 适合长文 ------- */
+  --line-width: 42rem;          /* Minimal 的阅读栏宽 */
+  --file-line-width: 42rem;     /* 原生变量 */
+  --max-width: 92%;
+  --line-height-normal: 1.8;
+  --line-height-tight: 1.35;
+  --line-height-tightest: 1.2;
+  --line-height: 1.8;           /* Minimal 覆盖 */
+  --p-spacing: 1.15em;
+  --heading-spacing: 2.1em;
+  --list-indent: 1.75em;
+  --list-spacing: 0.22em;
+  --nested-padding: 1.1em;
+  --border-width: 1px;
+  --table-cell-padding: 7px 14px;
+
+  /* ---- 字号：扁平化的 Minimal 标题层级不便于扫读，这里重建层级 ------ */
+  --h1-size: 1.9em;
+  --h2-size: 1.45em;
+  --h3-size: 1.2em;
+  --h4-size: 1.06em;
+  --h5-size: 0.97em;
+  --h6-size: 0.88em;
+  --h1-weight: 600;
+  --h2-weight: 600;
+  --h3-weight: 650;
+  --h4-weight: 650;
+  --h5-weight: 600;
+  --h6-weight: 600;
+
+  /* ---- 缓动：全部走短促的线性/缓出，避免弹跳 ------------------------- */
+  --ed-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ed-fast: 0.12s;
+  --ed-slow: 0.22s;
+
+  /* ---- 把上面这些挂到 Obsidian 自己的变量上 ------------------------- */
+  --font-text: var(--ed-font-body);
+  --font-interface: var(--ed-font-body);
+  --font-monospace: var(--ed-font-mono);
+  --font-text-override: var(--ed-font-body);
+  --font-editor-override: var(--ed-font-display);
+  --font-mono: var(--ed-font-mono);
+
+  --inline-title-font: var(--ed-font-display);
+  --inline-title-size: 2.05em;
+  --inline-title-weight: 600;
+  --inline-title-color: var(--text-normal);
+  --inline-title-margin-bottom: 0.7em;
+}
+
+/* --------------------------------------------------------------------------
+   B. 明色主题 —— 「宣纸」
+   底色偏暖的纸白，文字用暖墨色而非纯黑，强调色取胭脂（低饱和朱红）
+   -------------------------------------------------------------------------- */
+body.theme-light {
+  /* 纸面层次 */
+  --ed-paper: #fcfbf7;
+  --ed-paper-sunk: #f6f4ee;
+  --ed-paper-raised: #ffffff;
+  --ed-sidebar: #f3f1ea;
+  --ed-rule: #e4e0d6;
+  --ed-rule-strong: #d2ccbe;
+  --ed-tint: rgba(35, 33, 28, 0.035);
+  --ed-hover-bg: rgba(163, 74, 82, 0.06);
+  --ed-active-bg: rgba(163, 74, 82, 0.11);
+
+  /* 墨色文字 */
+  --ed-ink: #23211c;
+  --ed-ink-muted: #6e6a60;
+  --ed-ink-faint: #9c978c;
+
+  /* 强调色：胭脂 */
+  --ed-accent: #a34a52;
+  --ed-accent-hover: #863b44;
+  --ed-accent-rgb: 163, 74, 82;
+
+  /* 高亮取蜂蜜金（沿用你聚焦环的色相），选区取稀释的胭脂 */
+  --ed-mark: rgba(245, 201, 122, 0.42);
+  --ed-mark-text: #3a2f18;
+  --ed-select: rgba(163, 74, 82, 0.14);
+
+  /* 语义色：全部降到出版级低饱和 */
+  --ed-red: #b4453f;   --ed-red-rgb: 180, 69, 63;
+  --ed-orange: #c07a3e; --ed-orange-rgb: 192, 122, 62;
+  --ed-yellow: #a8871f; --ed-yellow-rgb: 168, 135, 31;
+  --ed-green: #4f7a52; --ed-green-rgb: 79, 122, 82;
+  --ed-cyan: #3e7a78;  --ed-cyan-rgb: 62, 122, 120;
+  --ed-blue: #3f6484;  --ed-blue-rgb: 63, 100, 132;
+  --ed-purple: #7a5a86; --ed-purple-rgb: 122, 90, 134;
+  --ed-pink: #a34a52;  --ed-pink-rgb: 163, 74, 82;
+  --ed-neutral: #8a857a; --ed-neutral-rgb: 138, 133, 122;
+
+  /* 阴影：短距、低透明，只用来表达层级不表达情绪 */
+  --ed-shadow-1: 0 1px 2px rgba(35, 33, 28, 0.05);
+  --ed-shadow-2: 0 2px 8px rgba(35, 33, 28, 0.07);
+  --ed-shadow-3: 0 6px 24px rgba(35, 33, 28, 0.1);
+  --ed-code-bg: rgba(35, 33, 28, 0.045);
+  --ed-code-ink: #8d4a2f;
+}
+
+/* --------------------------------------------------------------------------
+   C. 暗色主题 —— 「夜墨」
+   不用纯黑也不偏蓝，取暖炭灰；强调色提亮为浅胭脂以保证对比度
+   -------------------------------------------------------------------------- */
+body.theme-dark {
+  --ed-paper: #1b1a18;
+  --ed-paper-sunk: #161513;
+  --ed-paper-raised: #232120;
+  --ed-sidebar: #141312;
+  --ed-rule: #302d29;
+  --ed-rule-strong: #423e38;
+  --ed-tint: rgba(230, 226, 216, 0.045);
+  --ed-hover-bg: rgba(224, 145, 154, 0.08);
+  --ed-active-bg: rgba(224, 145, 154, 0.15);
+
+  --ed-ink: #e6e2d8;
+  --ed-ink-muted: #9b958a;
+  --ed-ink-faint: #6e6961;
+
+  --ed-accent: #e0919a;
+  --ed-accent-hover: #f0aeb5;
+  --ed-accent-rgb: 224, 145, 154;
+
+  --ed-mark: rgba(245, 201, 122, 0.2);
+  --ed-mark-text: #f0e3c4;
+  --ed-select: rgba(224, 145, 154, 0.2);
+
+  --ed-red: #de8580;    --ed-red-rgb: 222, 133, 128;
+  --ed-orange: #dca36b; --ed-orange-rgb: 220, 163, 107;
+  --ed-yellow: #d4b65f; --ed-yellow-rgb: 212, 182, 95;
+  --ed-green: #8fb58f;  --ed-green-rgb: 143, 181, 143;
+  --ed-cyan: #7fb8b4;   --ed-cyan-rgb: 127, 184, 180;
+  --ed-blue: #8faece;   --ed-blue-rgb: 143, 174, 206;
+  --ed-purple: #b79cc4; --ed-purple-rgb: 183, 156, 196;
+  --ed-pink: #de9199;   --ed-pink-rgb: 222, 145, 153;
+  --ed-neutral: #8e887e; --ed-neutral-rgb: 142, 136, 126;
+
+  --ed-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ed-shadow-2: 0 2px 8px rgba(0, 0, 0, 0.36);
+  --ed-shadow-3: 0 6px 24px rgba(0, 0, 0, 0.46);
+  --ed-code-bg: rgba(230, 226, 216, 0.07);
+  --ed-code-ink: #e0a184;
+}
+
+/* --------------------------------------------------------------------------
+   D. 色彩 token → Obsidian 语义变量
+   用 body.theme-* 提高一层特异性，确保压过主题自身的声明
+   -------------------------------------------------------------------------- */
+body.theme-light,
+body.theme-dark {
+  --background-primary: var(--ed-paper);
+  --background-primary-alt: var(--ed-paper-sunk);
+  --background-secondary: var(--ed-sidebar);
+  --background-secondary-alt: var(--ed-sidebar);
+  --background-table-rows: transparent;
+
+  --background-modifier-border: var(--ed-rule);
+  --background-modifier-border-hover: var(--ed-rule-strong);
+  --background-modifier-border-focus: var(--ed-accent);
+  --background-modifier-hover: var(--ed-hover-bg);
+  --background-modifier-active-hover: var(--ed-active-bg);
+  --background-modifier-form-field: var(--ed-paper-raised);
+  --background-modifier-form-field-highlighted: var(--ed-paper-raised);
+  --background-modifier-box-shadow: var(--ed-shadow-2);
+
+  --text-normal: var(--ed-ink);
+  --text-muted: var(--ed-ink-muted);
+  --text-faint: var(--ed-ink-faint);
+  --text-accent: var(--ed-accent);
+  --text-accent-hover: var(--ed-accent-hover);
+  --text-selection: var(--ed-select);
+  --text-highlight-bg: var(--ed-mark);
+  --text-highlight-fg: var(--ed-mark-text);
+  --text-on-accent: var(--ed-paper);
+
+  --interactive-accent: var(--ed-accent);
+  --interactive-accent-hover: var(--ed-accent-hover);
+  --interactive-accent-rgb: var(--ed-accent-rgb);
+  --interactive-normal: var(--ed-paper-raised);
+  --interactive-hover: var(--ed-tint);
+
+  --link-color: var(--ed-accent);
+  --link-color-hover: var(--ed-accent-hover);
+  --link-decoration: none;
+  --link-decoration-hover: none;
+  --link-external-color: var(--ed-blue);
+  --link-external-color-hover: var(--ed-blue);
+  --link-unresolved-color: var(--ed-ink-faint);
+  --link-unresolved-opacity: 0.75;
+
+  --color-red: var(--ed-red);
+  --color-orange: var(--ed-orange);
+  --color-yellow: var(--ed-yellow);
+  --color-green: var(--ed-green);
+  --color-cyan: var(--ed-cyan);
+  --color-blue: var(--ed-blue);
+  --color-purple: var(--ed-purple);
+  --color-pink: var(--ed-pink);
+  --color-red-rgb: var(--ed-red-rgb);
+  --color-orange-rgb: var(--ed-orange-rgb);
+  --color-yellow-rgb: var(--ed-yellow-rgb);
+  --color-green-rgb: var(--ed-green-rgb);
+  --color-cyan-rgb: var(--ed-cyan-rgb);
+  --color-blue-rgb: var(--ed-blue-rgb);
+  --color-purple-rgb: var(--ed-purple-rgb);
+  --color-pink-rgb: var(--ed-pink-rgb);
+
+  --divider-color: var(--ed-rule);
+  --divider-color-hover: var(--ed-rule-strong);
+  --hr-color: var(--ed-rule);
+  --hr-thickness: 1px;
+
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: var(--ed-rule);
+  --scrollbar-active-thumb-bg: var(--ed-rule-strong);
+}
+
+/* --------------------------------------------------------------------------
+   E. 全局观感：字体渲染与中文排版细节
+   -------------------------------------------------------------------------- */
+body {
+  font-family: var(--ed-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.markdown-rendered,
+.markdown-preview-view,
+.markdown-source-view.mod-cm6 .cm-content {
+  font-family: var(--ed-font-body);
+  /* 中文正文给一点点字距，长段落更透气 */
+  letter-spacing: 0.012em;
+  /* 中文避头尾 + 允许英数在必要时断行 */
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: break-word;
+  /* 支持 text-spacing-trim 的版本会顺手压掉中日韩标点多余空隙 */
+  text-spacing-trim: space-first;
+}
+
+/* 取消 Minimal 的「紧凑模式」副作用，保证段落呼吸感 */
+.markdown-rendered p,
+.markdown-preview-view p {
+  text-wrap: pretty;
+}
+
+/* 无障碍：键盘聚焦环统一为低调的强调色描边 */
+:focus-visible {
+  outline: 2px solid var(--ed-accent);
+  outline-offset: 2px;
+}

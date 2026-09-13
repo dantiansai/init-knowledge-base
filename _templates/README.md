@@ -24,14 +24,19 @@
 │   ├── entities/           ← 人物、公司、工具
 │   ├── sources/            ← 原始资料摘要
 │   └── syntheses/          ← 综合分析报告
-└── .claude/skills/         ← Agent Skills
-    ├── ingest/             # 将 raw/ 资料编译到 wiki/（支持讨论确认）
-    ├── query/              # 在知识库中搜索与回答
-    ├── lint/               # 检查死链、孤儿页面、概念空缺、逻辑冲突
-    ├── refresh/            # 联网搜索更新陈旧知识，确保时效性
-    ├── obsidian-markdown/  # Obsidian Markdown 语法规范
-    └── json-canvas/        # Canvas 可视化与知识图谱
+├── .claude/skills/         ← Agent Skills
+│   ├── ingest/             # 将 raw/ 资料编译到 wiki/（支持讨论确认）
+│   ├── query/              # 在知识库中搜索与回答
+│   ├── lint/               # 检查死链、孤儿页面、概念空缺、逻辑冲突
+│   ├── refresh/            # 联网搜索更新陈旧知识，确保时效性
+│   ├── obsidian-markdown/  # Obsidian Markdown 语法规范
+│   └── json-canvas/        # Canvas 可视化与知识图谱
+└── STYLE-GUIDE.md          ← 样式指南（编辑风样式的活样式表）
 ```
+
+## 外观
+
+知识库使用「Editorial 编辑风」样式，由 `.obsidian/snippets/` 下 10 个 CSS 片段构成，底座为主题 **Minimal**（均已在 `appearance.json` 中预设）。完整说明与所有语法样例见 [`STYLE-GUIDE.md`](STYLE-GUIDE.md)。
 
 ## 使用方式
 

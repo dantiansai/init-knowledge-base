@@ -42,13 +42,18 @@ _templates/
 │   ├── community-plugins.json
 │   ├── templates.json
 │   ├── graph.json
-│   └── snippets/
-│       ├── wiki-reading.css
-│       ├── wiki-callouts.css
-│       ├── wiki-components.css
-│       ├── wiki-mermaid.css      # Mermaid 全类型图表（含时序图）
-│       ├── wiki-markmap.css      # Markmap 思维导图
-│       └── wiki-canvas.css       # Canvas 白板
+│   ├── snippets/                 # Editorial 编辑风样式（10 个片段）
+│   │   ├── 01-foundation.css     # 配色 / 字体 / 圆角 token
+│   │   ├── 02-typography.css     # 标题层级、三线表、引用
+│   │   ├── 03-callouts.css       # Callout 语汇 + 多栏 / 画廊 / 边注
+│   │   ├── 04-components.css     # 双链、外链、标签、代码块
+│   │   ├── 05-layout.css         # 版式模式（cssclass）
+│   │   ├── 06-chrome.css         # 界面外壳（侧栏 / 标签页 / 图谱）
+│   │   ├── 07-diagrams.css       # 图表 token 调色
+│   │   ├── 08-mermaid.css        # Mermaid 全类型图表（含时序图）
+│   │   ├── 09-markmap.css        # Markmap 思维导图
+│   │   └── 10-canvas.css         # Canvas 白板
+│   └── snippets-legacy/          # Nord 冷色版备用样式（*.css.disabled）
 ├── templates/
 │   ├── entity.md
 │   ├── concept.md
@@ -119,13 +124,18 @@ _templates/
 │   ├── community-plugins.json
 │   ├── templates.json
 │   ├── graph.json
-│   └── snippets/
-│       ├── wiki-reading.css
-│       ├── wiki-callouts.css
-│       ├── wiki-components.css
-│       ├── wiki-mermaid.css      # Mermaid 全类型图表（含时序图）
-│       ├── wiki-markmap.css      # Markmap 思维导图
-│       └── wiki-canvas.css       # Canvas 白板
+│   ├── snippets/                 # Editorial 编辑风样式（10 个片段）
+│   │   ├── 01-foundation.css     # 配色 / 字体 / 圆角 token
+│   │   ├── 02-typography.css     # 标题层级、三线表、引用
+│   │   ├── 03-callouts.css       # Callout 语汇 + 多栏 / 画廊 / 边注
+│   │   ├── 04-components.css     # 双链、外链、标签、代码块
+│   │   ├── 05-layout.css         # 版式模式（cssclass）
+│   │   ├── 06-chrome.css         # 界面外壳（侧栏 / 标签页 / 图谱）
+│   │   ├── 07-diagrams.css       # 图表 token 调色
+│   │   ├── 08-mermaid.css        # Mermaid 全类型图表（含时序图）
+│   │   ├── 09-markmap.css        # Markmap 思维导图
+│   │   └── 10-canvas.css         # Canvas 白板
+│   └── snippets-legacy/          # Nord 冷色版备用样式（*.css.disabled）
 └── .claude/
     └── skills/
         ├── ingest/
@@ -198,13 +208,13 @@ _templates/
 - 📁 目录结构：raw/, wiki/, assets/, templates/, .claude/skills/（含 .gitkeep 占位）
 - 📄 核心文件：README.md, CLAUDE.md, wiki/index.md, wiki/log.md
 - 📝 标准模板：entity / concept / source / synthesis（共 4 个）
-- ⚙️ Obsidian 配置：统一插件清单 + 模板/图谱预设 + 3 个 CSS 阅读样式
+- ⚙️ Obsidian 配置：统一插件清单 + 模板/图谱预设 + 10 个编辑风 CSS 片段（Minimal 底座）
 - 🤖 Agent Skills: ingest（增量+讨论+URL摄入）, query, lint（+概念空缺）, refresh（联网更新）, obsidian-markdown（语法规范）, json-canvas（可视化）
 
 ### 首次使用 Obsidian
 1. 在 Obsidian 中打开此文件夹作为 Vault
 2. 参考 `OBSIDIAN_SETUP.md` 安装推荐社区插件
-3. 确认 **Settings → Appearance → CSS Snippets** 中六个片段已启用
+3. 确认 **Settings → Appearance → CSS Snippets** 中十个片段已启用
 4. 模板文件夹已通过 `templates.json` 自动配置为 `templates/`
 5. 图谱视图颜色分组已通过 `graph.json` 预设
 6. 将原始资料放入 raw/ 目录，或直接执行 `/ingest <url>` 抓取网页

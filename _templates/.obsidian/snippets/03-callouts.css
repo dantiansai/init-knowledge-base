@@ -1,0 +1,410 @@
+/* ==========================================================================
+   Editorial for Knowledge Base — 03 Callouts
+   Callout 语汇：发丝描边 + 2px 语义色竖线，去掉色块与阴影
+
+   设计取舍：旧版用「4px 圆角色条 + 半透明底块 + 投影」，偏 App 风味。
+   编辑风改成印刷批注的做法 —— 左侧一条实色竖线（批注线），四周一圈
+   发丝描边，底色只留极低透明度，让语义色本身承担信息量。
+
+   颜色不是硬编码，而是通过 Obsidian 的 --callout-color 三元组变量驱动，
+   所以明暗主题、以及你自己新增的 callout 类型都会自动跟着走。
+
+   借鉴来源（GitHub）：
+   - efemkay/obsidian-modular-css-layout → [!multi-column] / gallery / float 语法与实现
+   - xhuajin/obsidian-sidenote-callout → [!sidenote] 边注（Tufte 式页边批注）
+   - r-u-s-h-i-k-e-s-h/Obsidian-CSS-Snippets → Callout「outlined / minimal」变体
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 壳体：所有 Callout 共用
+   用 [data-callout] 提高特异性，稳过主题与 Obsidian 自带样式
+   -------------------------------------------------------------------------- */
+.callout[data-callout] {
+  --callout-border-width: 1px;
+  --callout-border-opacity: 1;
+  --callout-blend-mode: normal;
+  --callout-radius: var(--radius-m);
+  --callout-title-size: 0.9em;
+  --callout-padding: 1em 1.15em;
+
+  position: relative;
+  border-radius: var(--radius-m);
+  border: 1px solid rgba(var(--callout-color), 0.26);
+  border-inline-start: 2px solid rgba(var(--callout-color), 0.8);
+  background-color: rgba(var(--callout-color), 0.045);
+  padding: 1em 1.15em;
+  margin: 1.6em 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* 去掉旧版残留的装饰色条 */
+.callout[data-callout]::before {
+  content: none;
+}
+
+.callout[data-callout] > .callout-title {
+  gap: 0.5em;
+  margin-bottom: 0.55em;
+  padding: 0;
+  font-family: var(--ed-font-body);
+  font-weight: 650;
+  font-size: var(--callout-title-size);
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: rgba(var(--callout-color), 1);
+}
+
+.callout[data-callout] > .callout-title .callout-icon {
+  display: flex;
+  align-items: center;
+  color: rgba(var(--callout-color), 1);
+}
+
+.callout[data-callout] > .callout-title .callout-icon svg {
+  width: 1.05em;
+  height: 1.05em;
+}
+
+.callout[data-callout] > .callout-title .callout-fold {
+  color: rgba(var(--callout-color), 0.7);
+}
+
+.callout[data-callout] > .callout-content {
+  font-size: 0.95em;
+  line-height: 1.75;
+  color: var(--text-normal);
+}
+
+.callout[data-callout] > .callout-content > p:first-child {
+  margin-block-start: 0;
+}
+
+.callout[data-callout] > .callout-content > p:last-child {
+  margin-block-end: 0;
+}
+
+.callout[data-callout] > .callout-content ul,
+.callout[data-callout] > .callout-content ol {
+  padding-inline-start: 1.35em;
+  margin-block: 0.35em;
+}
+
+.callout[data-callout] > .callout-content pre {
+  margin: 0.6em 0;
+}
+
+/* --------------------------------------------------------------------------
+   2. 折叠交互
+   -------------------------------------------------------------------------- */
+.callout.is-collapsible > .callout-title {
+  cursor: pointer;
+}
+
+.callout.is-collapsed {
+  padding-bottom: 0.85em;
+}
+
+.callout.is-collapsed > .callout-title {
+  margin-bottom: 0;
+}
+
+.callout .callout-fold {
+  transition: transform var(--ed-slow) var(--ed-ease);
+}
+
+/* --------------------------------------------------------------------------
+   3. 语义色映射
+   显式声明 --callout-color 三元组，既统一调色板也顺手接管图标颜色
+   -------------------------------------------------------------------------- */
+
+/* 笔记 / 信息 —— 墨蓝 */
+.callout[data-callout="note"],
+.callout[data-callout="info"],
+.callout[data-callout="笔记"],
+.callout[data-callout="信息"] {
+  --callout-color: var(--ed-blue-rgb);
+}
+
+/* 摘要 / 待办 —— 青 */
+.callout[data-callout="abstract"],
+.callout[data-callout="summary"],
+.callout[data-callout="tldr"],
+.callout[data-callout="todo"],
+.callout[data-callout="摘要"],
+.callout[data-callout="待办"] {
+  --callout-color: var(--ed-cyan-rgb);
+}
+
+/* 提示 / 重要 —— 琥珀 */
+.callout[data-callout="tip"],
+.callout[data-callout="hint"],
+.callout[data-callout="important"],
+.callout[data-callout="提示"] {
+  --callout-color: var(--ed-yellow-rgb);
+}
+
+/* 成功 / 完成 —— 苔绿 */
+.callout[data-callout="success"],
+.callout[data-callout="check"],
+.callout[data-callout="done"],
+.callout[data-callout="成功"] {
+  --callout-color: var(--ed-green-rgb);
+}
+
+/* 问题 / 疑问 —— 紫檀 */
+.callout[data-callout="question"],
+.callout[data-callout="faq"],
+.callout[data-callout="help"],
+.callout[data-callout="问题"] {
+  --callout-color: var(--ed-purple-rgb);
+}
+
+/* 示例 —— 紫檀（比问题浅一档的用法，靠标题区分） */
+.callout[data-callout="example"],
+.callout[data-callout="示例"] {
+  --callout-color: var(--ed-purple-rgb);
+}
+
+/* 警告 / 注意 —— 赭石 */
+.callout[data-callout="warning"],
+.callout[data-callout="caution"],
+.callout[data-callout="attention"],
+.callout[data-callout="警告"] {
+  --callout-color: var(--ed-orange-rgb);
+}
+
+/* 危险 / 错误 / 缺陷 —— 朱 */
+.callout[data-callout="danger"],
+.callout[data-callout="error"],
+.callout[data-callout="bug"],
+.callout[data-callout="fail"],
+.callout[data-callout="failure"],
+.callout[data-callout="missing"],
+.callout[data-callout="危险"] {
+  --callout-color: var(--ed-red-rgb);
+}
+
+/* 引用 / 出处 —— 中性灰，走衬线引言样式 */
+.callout[data-callout="quote"],
+.callout[data-callout="cite"],
+.callout[data-callout="引用"] {
+  --callout-color: var(--ed-neutral-rgb);
+}
+
+.callout[data-callout="quote"] > .callout-content,
+.callout[data-callout="cite"] > .callout-content,
+.callout[data-callout="引用"] > .callout-content {
+  font-family: var(--ed-font-display);
+  font-size: 1.02em;
+  line-height: 1.75;
+  color: var(--ed-ink-muted);
+}
+
+/* 未归类的自定义 callout 兜底为中性灰 */
+.callout[data-callout]:not([data-callout="note"]):not([data-callout="info"]):not([data-callout="abstract"]):not([data-callout="summary"]):not([data-callout="tldr"]):not([data-callout="todo"]):not([data-callout="tip"]):not([data-callout="hint"]):not([data-callout="important"]):not([data-callout="success"]):not([data-callout="check"]):not([data-callout="done"]):not([data-callout="question"]):not([data-callout="faq"]):not([data-callout="help"]):not([data-callout="warning"]):not([data-callout="caution"]):not([data-callout="attention"]):not([data-callout="danger"]):not([data-callout="error"]):not([data-callout="bug"]):not([data-callout="fail"]):not([data-callout="failure"]):not([data-callout="missing"]):not([data-callout="example"]):not([data-callout="quote"]):not([data-callout="cite"]):not([data-callout="caption"]):not([data-callout="blank"]):not([data-callout="sidenote"]):not([data-callout="infobox"]):not([data-callout="multi-column"]) {
+  --callout-color: var(--ed-neutral-rgb);
+}
+
+/* --------------------------------------------------------------------------
+   4. 嵌套 Callout：去掉重复描边，只保留竖向层次
+   -------------------------------------------------------------------------- */
+.callout [data-callout] {
+  margin: 0.6em 0;
+  background-color: rgba(var(--callout-color), 0.035);
+}
+
+/* --------------------------------------------------------------------------
+   5. 布局扩展（语法来自 efemkay/obsidian-modular-css-layout）
+   -------------------------------------------------------------------------- */
+
+/* ---- 5.1 多栏：> [!multi-column] 内嵌若干 callout ---------------------- */
+.callout[data-callout="multi-column"] {
+  --callout-color: var(--ed-neutral-rgb);
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 1.8em 0;
+}
+
+.callout[data-callout="multi-column"] > .callout-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 1em;
+  align-items: start;
+}
+
+.callout[data-callout="multi-column"] > .callout-content > .callout {
+  margin: 0;
+  height: 100%;
+}
+
+/* 指定栏数：> [!multi-column|2col] */
+.callout[data-callout="multi-column"][data-callout-metadata~="2col"] > .callout-content {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.callout[data-callout="multi-column"][data-callout-metadata~="3col"] > .callout-content {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.callout[data-callout="multi-column"][data-callout-metadata~="4col"] > .callout-content {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* 窄屏一律退回单栏 */
+@media (max-width: 640px) {
+  .callout[data-callout="multi-column"] > .callout-content {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* ---- 5.2 图片画廊：> [!note|gallery] ---------------------------------- */
+.callout[data-callout-metadata~="gallery"] > .callout-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.5em;
+}
+
+.callout[data-callout-metadata~="gallery"] > .callout-content > p {
+  margin: 0;
+}
+
+.callout[data-callout-metadata~="gallery"] img,
+.callout[data-callout-metadata~="gallery"] .image-embed img {
+  width: 100%;
+  height: 11rem;
+  object-fit: cover;
+  border: none;
+  border-radius: var(--radius-s);
+  transition: opacity var(--ed-slow) var(--ed-ease);
+}
+
+.callout[data-callout-metadata~="gallery"] img:hover {
+  opacity: 0.86;
+}
+
+/* ---- 5.3 浮动批注框：> [!info|right-medium] ---------------------------
+   注意：Obsidian 把 `|` 之后整串原样写进 data-callout-metadata，
+   所以 `right-medium` 是「一个」词，用 `~=`（空格分隔的词匹配）会失配。
+   这里统一用 `*=`（子串匹配），`right-medium` 与 `right medium` 两种写法都认。 */
+.callout[data-callout-metadata*="right"] {
+  float: right;
+  clear: right;
+  margin: 0.35em 0 1em 1.6em;
+}
+
+.callout[data-callout-metadata*="left"] {
+  float: left;
+  clear: left;
+  margin: 0.35em 1.6em 1em 0;
+}
+
+.callout[data-callout-metadata*="small"] {
+  width: 13rem;
+}
+
+.callout[data-callout-metadata*="medium"] {
+  width: 18rem;
+}
+
+.callout[data-callout-metadata*="large"] {
+  width: 24rem;
+}
+
+/* ---- 5.4 页边注：> [!sidenote] （Tufte 风格） ------------------------- */
+.callout[data-callout="sidenote"] {
+  --callout-color: var(--ed-neutral-rgb);
+  float: right;
+  clear: right;
+  width: 14rem;
+  margin: 0.4em 0 1.1em 1.7em;
+  padding: 0.5em 0 0.5em 0;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--ed-rule-strong);
+  border-radius: 0;
+}
+
+.callout[data-callout="sidenote"] > .callout-title {
+  font-size: 0.86em;
+  font-weight: 650;
+  color: var(--ed-ink-muted);
+  margin-bottom: 0.25em;
+}
+
+.callout[data-callout="sidenote"] > .callout-title .callout-icon {
+  color: var(--ed-ink-faint);
+}
+
+.callout[data-callout="sidenote"] > .callout-content {
+  font-size: 0.82em;
+  line-height: 1.65;
+  color: var(--ed-ink-muted);
+}
+
+/* ---- 5.5 信息框：> [!infobox]（右浮动小卡） -------------------------- */
+.callout[data-callout="infobox"] {
+  --callout-color: var(--ed-neutral-rgb);
+  float: right;
+  clear: right;
+  width: 17rem;
+  margin: 0.35em 0 1em 1.7em;
+  padding: 0.85em 0.95em;
+  font-size: 0.9em;
+}
+
+.callout[data-callout="infobox"] > .callout-content {
+  font-size: 0.86em;
+}
+
+.callout[data-callout="infobox"] table {
+  margin: 0.4em 0 0;
+  font-size: 0.95em;
+}
+
+/* ---- 5.6 图注：> [!caption] ----------------------------------------- */
+.callout[data-callout="caption"] {
+  --callout-color: var(--ed-neutral-rgb);
+  background: transparent;
+  border: none;
+  padding: 0.3em 0 0;
+  margin: -0.5em 0 1.6em;
+}
+
+.callout[data-callout="caption"] > .callout-title {
+  display: none;
+}
+
+.callout[data-callout="caption"] > .callout-content {
+  font-size: 0.84em;
+  line-height: 1.6;
+  color: var(--ed-ink-faint);
+  text-align: center;
+}
+
+/* ---- 5.7 透明容器：> [!blank]（只当分组盒子用） ---------------------- */
+.callout[data-callout="blank"] {
+  --callout-color: var(--ed-neutral-rgb);
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 1.4em 0;
+}
+
+.callout[data-callout="blank"] > .callout-title {
+  display: none;
+}
+
+/* ---- 5.8 窄屏下取消所有浮动，避免文字被挤成一根 ---------------------- */
+@media (max-width: 720px) {
+  .callout[data-callout-metadata*="right"],
+  .callout[data-callout-metadata*="left"],
+  .callout[data-callout="sidenote"],
+  .callout[data-callout="infobox"] {
+    float: none;
+    clear: none;
+    width: auto;
+    margin: 1.4em 0;
+  }
+}

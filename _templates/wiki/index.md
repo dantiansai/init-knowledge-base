@@ -7,13 +7,13 @@
 
 ```mermaid
 flowchart LR
-    RAW["📥 raw/"] -->|/ingest| IG["🤖 编译"]
-    URL["🌐 URL"] -->|/ingest url| IG
+    RAW["📥 raw/"] -->|"/ingest"| IG["🤖 编译"]
+    URL["🌐 URL"] -->|"/ingest url"| IG
     IG --> WIKI["🧠 wiki/"]
-    WIKI -->|/query| ANS["💬 回答"]
-    WIKI -->|/lint| RPT["📋 健康报告"]
-    WIKI -->|/refresh| UPD["🔄 联网更新"]
-    WIKI -->|/canvas| GRP["🎨 图谱"]
+    WIKI -->|"/query"| ANS["💬 回答"]
+    WIKI -->|"/lint"| RPT["📋 健康报告"]
+    WIKI -->|"/refresh"| UPD["🔄 联网更新"]
+    WIKI -->|"/canvas"| GRP["🎨 图谱"]
 
     class RAW,URL blue
     class IG green
@@ -21,8 +21,10 @@ flowchart LR
     class ANS purple
     class RPT,UPD orange
     class GRP yellow
-
 ```
+
+> 配色由 CSS snippet 按语义 class 提供（`07-diagrams.css` + `08-mermaid.css`），
+> 不要在源码里写 `style ... fill:#hex`，也不要用 `classDef` + `var()` —— 后者会直接抛解析错误。
 
 ---
 

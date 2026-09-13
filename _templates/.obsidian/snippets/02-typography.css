@@ -1,0 +1,481 @@
+/* ==========================================================================
+   Editorial for Knowledge Base — 02 Typography
+   阅读排版层：标题层级 / 段落 / 列表 / 引用 / 表格 / 图片 / 分隔线
+
+   核心手法：标题用衬线（Charter / 宋体）承担「版面感」，正文用黑体保证
+   屏幕可读性；表格走 booktabs（只留横线）路线；引用块去掉底色只留竖线。
+
+   借鉴来源（GitHub）：
+   - r-u-s-h-i-k-e-s-h/Obsidian-CSS-Snippets → Table styling「first column header」
+     「centred table」、Blockquote styling、Heading indicators 的取舍思路
+   - replete/obsidian-minimal-theme-css-snippets → 「Typography fixes」
+   - kepano/obsidian-minimal → --table-* / --blockquote-border-* 变量钩子
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 内联标题（笔记文件名）
+   -------------------------------------------------------------------------- */
+.inline-title {
+  font-family: var(--ed-font-display);
+  font-size: var(--inline-title-size);
+  font-weight: 600;
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.012em;
+  color: var(--text-normal);
+  margin-bottom: var(--inline-title-margin-bottom);
+  text-wrap: balance;
+}
+
+/* 标题下方一道短强调线 —— 编辑风的签名细节 */
+.inline-title::after {
+  content: "";
+  display: block;
+  width: 2.6em;
+  height: 2px;
+  margin-top: 0.42em;
+  background: var(--ed-accent);
+  opacity: 0.9;
+}
+
+/* --------------------------------------------------------------------------
+   2. 标题层级
+   H1 衬线 + 短强调线 / H2 衬线 + 上方发丝线 / H3 以下转为黑体
+   -------------------------------------------------------------------------- */
+.markdown-rendered h1,
+.markdown-preview-view h1,
+.markdown-source-view.mod-cm6 .HyperMD-header-1 .cm-header {
+  font-family: var(--ed-font-display);
+  font-size: var(--h1-size);
+  font-weight: var(--h1-weight);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--text-normal);
+  margin-top: 0.6em;
+  margin-bottom: 0.9em;
+  text-wrap: balance;
+}
+
+.markdown-rendered h2,
+.markdown-preview-view h2,
+.markdown-source-view.mod-cm6 .HyperMD-header-2 .cm-header {
+  font-family: var(--ed-font-display);
+  font-size: var(--h2-size);
+  font-weight: var(--h2-weight);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.01em;
+  color: var(--text-normal);
+  /* 章节上方的发丝线：模拟印刷品分栏线 */
+  border-top: 1px solid var(--ed-rule);
+  padding-top: 0.72em;
+  margin-top: 2.5em;
+  margin-bottom: 0.85em;
+  text-wrap: balance;
+}
+
+.markdown-rendered h3,
+.markdown-preview-view h3,
+.markdown-source-view.mod-cm6 .HyperMD-header-3 .cm-header {
+  font-family: var(--ed-font-body);
+  font-size: var(--h3-size);
+  font-weight: var(--h3-weight);
+  line-height: var(--line-height-tight);
+  letter-spacing: 0;
+  color: var(--text-normal);
+  margin-top: 1.9em;
+  margin-bottom: 0.6em;
+}
+
+.markdown-rendered h4,
+.markdown-preview-view h4,
+.markdown-source-view.mod-cm6 .HyperMD-header-4 .cm-header {
+  font-family: var(--ed-font-body);
+  font-size: var(--h4-size);
+  font-weight: var(--h4-weight);
+  line-height: var(--line-height-tight);
+  color: var(--text-normal);
+  margin-top: 1.7em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-rendered h5,
+.markdown-preview-view h5,
+.markdown-source-view.mod-cm6 .HyperMD-header-5 .cm-header {
+  font-family: var(--ed-font-body);
+  font-size: var(--h5-size);
+  font-weight: var(--h5-weight);
+  color: var(--ed-ink-muted);
+  margin-top: 1.5em;
+  margin-bottom: 0.4em;
+}
+
+.markdown-rendered h6,
+.markdown-preview-view h6,
+.markdown-source-view.mod-cm6 .HyperMD-header-6 .cm-header {
+  font-family: var(--ed-font-body);
+  font-size: var(--h6-size);
+  font-weight: var(--h6-weight);
+  color: var(--ed-ink-faint);
+  letter-spacing: 0.06em;
+  margin-top: 1.4em;
+  margin-bottom: 0.35em;
+}
+
+/* H1 下方的短强调线（正文内出现的一级标题，与内联标题呼应） */
+.markdown-preview-view h1::after,
+.markdown-rendered h1::after {
+  content: "";
+  display: block;
+  width: 2.2em;
+  height: 2px;
+  margin-top: 0.3em;
+  background: var(--ed-accent);
+  opacity: 0.75;
+}
+
+/* 聚焦折叠箭头时不要偏移标题 */
+.markdown-preview-view .heading-collapse-indicator {
+  color: var(--ed-ink-faint);
+}
+
+/* --------------------------------------------------------------------------
+   3. 正文、强调、链接基础
+   -------------------------------------------------------------------------- */
+.markdown-rendered p,
+.markdown-preview-view p {
+  margin-block: var(--p-spacing);
+}
+
+.markdown-rendered strong,
+.markdown-preview-view strong {
+  font-weight: 650;
+  color: var(--text-normal);
+}
+
+.markdown-rendered em,
+.markdown-preview-view em {
+  font-style: italic;
+}
+
+/* 下划线不再用默认的粗线，改成细线下沉，读起来更干净 */
+.markdown-rendered u,
+.markdown-preview-view u {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--ed-accent);
+}
+
+/* 删除线 */
+.markdown-rendered del,
+.markdown-preview-view del {
+  color: var(--ed-ink-faint);
+  text-decoration-thickness: 1px;
+}
+
+/* ==高亮== ：沿用蜂蜜金色相，深色文字保证可读 */
+.markdown-rendered mark,
+.markdown-preview-view mark,
+.markdown-rendered .cm-highlight,
+.markdown-source-view.mod-cm6 .cm-highlight {
+  background-color: var(--ed-mark);
+  color: var(--ed-mark-text);
+  padding: 0.05em 0.18em;
+  border-radius: var(--radius-s);
+}
+
+/* --------------------------------------------------------------------------
+   4. 列表
+   -------------------------------------------------------------------------- */
+.markdown-rendered ul,
+.markdown-rendered ol,
+.markdown-preview-view ul,
+.markdown-preview-view ol {
+  padding-inline-start: var(--list-indent);
+  margin-block: 0.55em;
+}
+
+.markdown-rendered li,
+.markdown-preview-view li {
+  margin-block: var(--list-spacing);
+}
+
+/* 无序列表圆点压低存在感 */
+.markdown-rendered ul > li::marker,
+.markdown-preview-view ul > li::marker {
+  color: var(--ed-ink-faint);
+}
+
+/* 有序列表编号用衬线 + 强调色，是版面里少数允许「出声」的地方 */
+.markdown-rendered ol > li::marker,
+.markdown-preview-view ol > li::marker {
+  font-family: var(--ed-font-display);
+  font-size: 0.94em;
+  color: var(--ed-accent);
+}
+
+/* 任务列表：方形复选框，勾选后压暗并划掉 */
+.markdown-rendered .task-list-item-checkbox,
+.markdown-preview-view .task-list-item-checkbox {
+  border-radius: var(--checkbox-radius);
+  border: 1px solid var(--ed-rule-strong);
+  transition: background-color var(--ed-fast) var(--ed-ease),
+    border-color var(--ed-fast) var(--ed-ease);
+}
+
+.markdown-rendered .task-list-item-checkbox:hover,
+.markdown-preview-view .task-list-item-checkbox:hover {
+  border-color: var(--ed-accent);
+}
+
+.markdown-rendered li.is-checked,
+.markdown-preview-view li.is-checked {
+  color: var(--ed-ink-faint);
+}
+
+.markdown-rendered li.is-checked > *,
+.markdown-preview-view li.is-checked > * {
+  text-decoration: line-through;
+  text-decoration-color: var(--ed-rule-strong);
+  text-decoration-thickness: 1px;
+}
+
+/* 嵌套列表的缩进参考线弱化 */
+.markdown-source-view.mod-cm6 .cm-indent::before,
+.markdown-source-view.mod-cm6 .cm-hmd-list-indent::before {
+  border-inline-end: 1px solid var(--ed-tint);
+}
+
+/* --------------------------------------------------------------------------
+   5. 引用块：去底色，只留一条竖线 + 墨色压暗
+   -------------------------------------------------------------------------- */
+.markdown-rendered blockquote,
+.markdown-preview-view blockquote,
+.markdown-source-view.mod-cm6 .cm-quote {
+  border-inline-start: 2px solid var(--ed-rule-strong);
+  background: transparent;
+  padding: 0.12em 0 0.12em 1.3em;
+  margin: 1.5em 0 1.5em 0.15em;
+  color: var(--ed-ink-muted);
+  font-style: normal;
+}
+
+.markdown-rendered blockquote p:first-child,
+.markdown-preview-view blockquote p:first-child {
+  margin-block-start: 0;
+}
+
+.markdown-rendered blockquote p:last-child,
+.markdown-preview-view blockquote p:last-child {
+  margin-block-end: 0;
+}
+
+/* 引用里的引用：竖线更淡，形成深浅层次 */
+.markdown-rendered blockquote blockquote,
+.markdown-preview-view blockquote blockquote {
+  border-inline-start-color: var(--ed-rule);
+  margin-block: 0.6em;
+}
+
+/* --------------------------------------------------------------------------
+   6. 分隔线：发丝线 + 居中菱形装饰
+   -------------------------------------------------------------------------- */
+.markdown-rendered hr,
+.markdown-preview-view hr,
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-hr {
+  border: none;
+  border-top: 1px solid var(--ed-rule);
+  height: 0;
+  margin: 3em 0;
+  position: relative;
+  overflow: visible;
+}
+
+.markdown-rendered hr::after,
+.markdown-preview-view hr::after {
+  content: "❖";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+  background: var(--background-primary);
+  color: var(--ed-accent);
+  padding: 0 0.85em;
+  font-size: 0.62em;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+/* --------------------------------------------------------------------------
+   7. 表格：booktabs 路线，只保留横线，去掉所有底色
+   -------------------------------------------------------------------------- */
+.markdown-rendered table,
+.markdown-preview-view table,
+.markdown-rendered table.dataview,
+.markdown-rendered .table-view-table {
+  border-collapse: collapse;
+  border: none;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.93em;
+  --table-border-width: 0px;
+  --table-header-border-width: 0px;
+  --table-column-first-border-width: 0px;
+  --table-column-last-border-width: 0px;
+  --table-row-last-border-width: 0px;
+  --table-cell-padding: 7px 12px;
+  --table-header-size: 0.92em;
+}
+
+.markdown-rendered th,
+.markdown-preview-view th,
+.markdown-rendered .table-view-table th {
+  background: transparent;
+  color: var(--text-normal);
+  font-weight: 650;
+  font-size: 0.92em;
+  letter-spacing: 0.02em;
+  text-align: start;
+  vertical-align: bottom;
+  padding: 0.5em 0.75em;
+  border: none;
+  /* 表头下方的主分隔线：全表最重的一条线 */
+  border-bottom: 1.5px solid var(--ed-rule-strong);
+}
+
+.markdown-rendered td,
+.markdown-preview-view td,
+.markdown-rendered .table-view-table td {
+  border: none;
+  border-bottom: 1px solid var(--ed-rule);
+  padding: 0.5em 0.75em;
+  vertical-align: top;
+}
+
+/* 最后一行收口，与表头呼应，形成「三线表」 */
+.markdown-rendered tbody tr:last-child td,
+.markdown-preview-view tbody tr:last-child td,
+.markdown-rendered .table-view-table tbody tr:last-child td {
+  border-bottom: 1.5px solid var(--ed-rule-strong);
+}
+
+.markdown-rendered tbody tr:hover td,
+.markdown-preview-view tbody tr:hover td {
+  background: var(--ed-tint);
+}
+
+/* 第一列做语义上的「行标题」 */
+.markdown-rendered tbody td:first-child,
+.markdown-preview-view tbody td:first-child {
+  color: var(--text-normal);
+  font-weight: 500;
+}
+
+/* 数字右对齐（依赖表格插件或手写 HTML 时可用） */
+.markdown-rendered table :is(td, th)[align="right"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dataview 空结果 */
+.markdown-rendered .dataview.no-result {
+  color: var(--ed-ink-faint);
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+/* --------------------------------------------------------------------------
+   8. 图片与题注
+   题注走 markdown 惯例：图片下方紧跟一行斜体文字
+     ![[图.png]]
+     *图 1 · 说明文字*
+   -------------------------------------------------------------------------- */
+.markdown-rendered img,
+.markdown-preview-view img {
+  display: block;
+  margin-inline: auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-m);
+  border: 1px solid var(--ed-rule);
+  box-shadow: none;
+  transition: border-color var(--ed-fast) var(--ed-ease);
+}
+
+.markdown-rendered img:hover,
+.markdown-preview-view img:hover {
+  border-color: var(--ed-rule-strong);
+}
+
+/* 图注 */
+.markdown-rendered p:has(> .image-embed, > img) + p > em:only-child,
+.markdown-preview-view p:has(> .image-embed, > img) + p > em:only-child {
+  display: block;
+  text-align: center;
+  font-family: var(--ed-font-body);
+  font-size: 0.84em;
+  line-height: 1.6;
+  color: var(--ed-ink-faint);
+  margin-top: -0.5em;
+}
+
+/* 嵌入的图片容器去掉多余内边距 */
+.markdown-rendered .image-embed,
+.markdown-preview-view .image-embed {
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   9. Mermaid 图表：居中 + 纸卡描边
+   -------------------------------------------------------------------------- */
+.markdown-rendered .mermaid,
+.markdown-preview-view .mermaid,
+.markdown-rendered .block-language-mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 1.6em 0;
+  padding: 1.2em 1em;
+  border: 1px solid var(--ed-rule);
+  border-radius: var(--radius-m);
+  background: var(--ed-paper-raised);
+}
+
+.markdown-rendered .mermaid svg,
+.markdown-preview-view .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --------------------------------------------------------------------------
+   10. 数学公式
+   -------------------------------------------------------------------------- */
+.markdown-rendered mjx-container,
+.markdown-preview-view mjx-container {
+  font-size: 1.02em;
+  color: var(--text-normal);
+}
+
+.markdown-rendered mjx-container[display="true"],
+.markdown-preview-view mjx-container[display="true"] {
+  margin: 1.4em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   11. 正文脚注
+   -------------------------------------------------------------------------- */
+.markdown-rendered .footnotes,
+.markdown-preview-view .footnotes {
+  margin-top: 3em;
+  padding-top: 1.2em;
+  border-top: 1px solid var(--ed-rule);
+  font-size: 0.88em;
+  color: var(--ed-ink-muted);
+}
+
+.markdown-rendered .footnotes li,
+.markdown-preview-view .footnotes li {
+  margin-block: 0.35em;
+}

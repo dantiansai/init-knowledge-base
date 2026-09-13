@@ -5,32 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wiki Mermaid 图表样式预览</title>
 
-  <!-- 直接复用生产环境的 CSS snippet，预览效果与 Obsidian 内一致 -->
-  <link rel="stylesheet" href="../_templates/.obsidian/snippets/wiki-mermaid.css">
+  <!-- 直接复用生产环境的 CSS snippet，预览效果与 Obsidian 内一致。
+       01-foundation 提供配色/字体 token，07-diagrams 把图表 token 接到编辑风色板，
+       08-mermaid 才是 Mermaid 本体样式 —— 三者缺一不可。 -->
+  <link rel="stylesheet" href="../_templates/.obsidian/snippets/01-foundation.css">
+  <link rel="stylesheet" href="../_templates/.obsidian/snippets/07-diagrams.css">
+  <link rel="stylesheet" href="../_templates/.obsidian/snippets/08-mermaid.css">
 
   <style>
-    /* 页面外壳样式（非图表部分），图表样式全部来自 wiki-mermaid.css */
+    /* 页面外壳样式（非图表部分），图表样式来自 08-mermaid.css（配 07-diagrams.css 调色） */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* 页面外壳配色直接引用编辑风 token，随 snippet 自动变化 */
     .theme-dark {
-      --pg-bg: #1a1a1d;
-      --pg-panel: #202024;
-      --pg-border: #33333a;
-      --pg-text: #d8d8dc;
-      --pg-dim: #8f8f99;
-      --pg-accent: #81a1c1;
-      --pg-accent-soft: rgba(129, 161, 193, 0.12);
-      --pg-accent-line: rgba(129, 161, 193, 0.28);
+      --pg-bg: var(--ed-paper);
+      --pg-panel: var(--ed-paper-raised);
+      --pg-border: var(--ed-rule);
+      --pg-text: var(--ed-ink);
+      --pg-dim: var(--ed-ink-muted);
+      --pg-accent: var(--ed-accent);
+      --pg-accent-soft: rgba(var(--ed-accent-rgb), 0.1);
+      --pg-accent-line: rgba(var(--ed-accent-rgb), 0.28);
     }
     .theme-light {
-      --pg-bg: #f2f4f8;
-      --pg-panel: #ffffff;
-      --pg-border: #e0e4ea;
-      --pg-text: #2b2f36;
-      --pg-dim: #6b7280;
-      --pg-accent: #4c7899;
-      --pg-accent-soft: rgba(76, 120, 153, 0.1);
-      --pg-accent-line: rgba(76, 120, 153, 0.24);
+      --pg-bg: var(--ed-paper);
+      --pg-panel: var(--ed-paper-raised);
+      --pg-border: var(--ed-rule);
+      --pg-text: var(--ed-ink);
+      --pg-dim: var(--ed-ink-muted);
+      --pg-accent: var(--ed-accent);
+      --pg-accent-soft: rgba(var(--ed-accent-rgb), 0.08);
+      --pg-accent-line: rgba(var(--ed-accent-rgb), 0.24);
     }
 
     body {
@@ -172,7 +177,7 @@
       border-radius: 5px;
       background: rgba(163, 190, 140, 0.16);
       border: 1px solid rgba(163, 190, 140, 0.4);
-      color: #a3be8c;
+      color: #8fb58f;
       vertical-align: middle;
     }
   </style>
@@ -183,7 +188,7 @@
 <header>
   <div class="head-row">
     <h1>📊 Wiki Mermaid 图表样式预览</h1>
-    <span class="meta">17 个图表 · 15 种表现形式 · 样式直连 <code>wiki-mermaid.css</code></span>
+    <span class="meta">17 个图表 · 15 种表现形式 · 样式直连 <code>08-mermaid.css</code></span>
     <button id="theme-toggle">☀︎ 切换浅色</button>
   </div>
   <nav>
@@ -299,7 +304,7 @@ sequenceDiagram
   <!-- ================= 3. 流程图 · 管线 ================= -->
   <section id="c-flow-pipeline">
     <h2>知识管线 <span class="chip">wiki/index.md</span></h2>
-    <p class="desc">无分组的横向流程图，节点用语义 class 着色（色值由 wiki-mermaid.css 统一提供）</p>
+    <p class="desc">无分组的横向流程图，节点用语义 class 着色（色值由 07-diagrams.css 统一提供）</p>
     <div class="block-language-mermaid">
 <pre class="mermaid">
 flowchart LR
@@ -788,108 +793,108 @@ gitGraph
   function boot() {
     const mermaid = window.mermaid;
 
-    /* ---------- 主题变量：与 wiki-mermaid.css 的 token 保持一致 ---------- */
+    /* ---------- 主题变量：与 07-diagrams.css 的编辑风色板保持一致 ---------- */
     const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif';
 
     const THEMES = {
       dark: {
         darkMode: true,
-        background: '#232326',
+        background: '#1b1a18',
         fontFamily: FONT,
         fontSize: '14px',
-        textColor: '#d8d8dc',
-        titleColor: '#d8d8dc',
-        primaryColor: '#2e2e33',
-        primaryTextColor: '#d8d8dc',
-        primaryBorderColor: '#4c566a',
-        secondaryColor: '#35353b',
-        secondaryTextColor: '#d8d8dc',
-        secondaryBorderColor: '#4c566a',
-        tertiaryColor: '#2e2e33',
-        tertiaryTextColor: '#d8d8dc',
-        tertiaryBorderColor: '#4c566a',
-        mainBkg: '#2e2e33',
-        nodeBorder: '#4c566a',
-        nodeTextColor: '#d8d8dc',
-        lineColor: '#71798a',
-        edgeLabelBackground: '#3a3a42',
-        clusterBkg: 'rgba(94,129,172,0.07)',
-        clusterBorder: 'rgba(129,161,193,0.35)',
+        textColor: '#e6e2d8',
+        titleColor: '#e6e2d8',
+        primaryColor: '#232120',
+        primaryTextColor: '#e6e2d8',
+        primaryBorderColor: '#423e38',
+        secondaryColor: '#2a2622',
+        secondaryTextColor: '#e6e2d8',
+        secondaryBorderColor: '#423e38',
+        tertiaryColor: '#232120',
+        tertiaryTextColor: '#e6e2d8',
+        tertiaryBorderColor: '#423e38',
+        mainBkg: '#232120',
+        nodeBorder: '#423e38',
+        nodeTextColor: '#e6e2d8',
+        lineColor: '#6e6961',
+        edgeLabelBackground: '#2a2622',
+        clusterBkg: 'rgba(143,174,206,0.07)',
+        clusterBorder: 'rgba(143,174,206,0.35)',
         // sequence
-        actorBkg: '#30363f',
-        actorBorder: '#5e81ac',
-        actorTextColor: '#d8d8dc',
-        actorLineColor: 'rgba(129,161,193,0.4)',
-        signalColor: '#93a4bd',
-        signalTextColor: '#d8d8dc',
-        labelBoxBkgColor: '#3d4a3a',
-        labelBoxBorderColor: 'rgba(163,190,140,0.45)',
+        actorBkg: '#232120',
+        actorBorder: '#8faece',
+        actorTextColor: '#e6e2d8',
+        actorLineColor: 'rgba(143,174,206,0.4)',
+        signalColor: '#9b958a',
+        signalTextColor: '#e6e2d8',
+        labelBoxBkgColor: 'rgba(143,181,143,0.14)',
+        labelBoxBorderColor: 'rgba(143,181,143,0.45)',
         labelTextColor: '#b6d19d',
-        loopTextColor: '#a2a2ab',
-        noteBkgColor: 'rgba(235,203,139,0.12)',
-        noteBorderColor: '#b9a06a',
-        noteTextColor: '#d8d8dc',
-        activationBkgColor: 'rgba(94,129,172,0.55)',
-        activationBorderColor: '#5e81ac',
-        sequenceNumberColor: '#232326',
+        loopTextColor: '#9b958a',
+        noteBkgColor: 'rgba(212,182,95,0.12)',
+        noteBorderColor: '#d4b65f',
+        noteTextColor: '#e6e2d8',
+        activationBkgColor: 'rgba(143,174,206,0.55)',
+        activationBorderColor: '#8faece',
+        sequenceNumberColor: '#1b1a18',
         // gantt
         sectionBkgColor: 'rgba(255,255,255,0.035)',
         altSectionBkgColor: 'transparent',
         sectionBkgColor2: 'transparent',
-        taskBkgColor: '#5e81ac',
+        taskBkgColor: '#8faece',
         taskTextColor: '#16161a',
-        taskTextLightColor: '#d8d8dc',
-        taskTextOutsideColor: '#d8d8dc',
-        taskBorderColor: '#5e81ac',
-        activeTaskBkgColor: '#81a1c1',
-        activeTaskBorderColor: '#81a1c1',
-        doneTaskBkgColor: '#4c566a',
-        doneTaskBorderColor: '#4c566a',
+        taskTextLightColor: '#e6e2d8',
+        taskTextOutsideColor: '#e6e2d8',
+        taskBorderColor: '#8faece',
+        activeTaskBkgColor: '#8faece',
+        activeTaskBorderColor: '#8faece',
+        doneTaskBkgColor: '#423e38',
+        doneTaskBorderColor: '#423e38',
         gridColor: 'rgba(255,255,255,0.08)',
         // pie
-        pie1: '#5e81ac', pie2: '#88c0d0', pie3: '#a3be8c', pie4: '#ebcb8b',
-        pie5: '#d08770', pie6: '#bf616a', pie7: '#b48ead',
-        pieTitleTextColor: '#d8d8dc',
+        pie1: '#8faece', pie2: '#7fb8b4', pie3: '#8fb58f', pie4: '#d4b65f',
+        pie5: '#dca36b', pie6: '#de8580', pie7: '#b79cc4',
+        pieTitleTextColor: '#e6e2d8',
         pieSectionTextColor: '#16161a',
-        pieLegendTextColor: '#d8d8dc',
-        pieStrokeColor: '#232326',
+        pieLegendTextColor: '#e6e2d8',
+        pieStrokeColor: '#1b1a18',
         pieOuterStrokeColor: '#3a3a40',
         // git
-        git0: '#5e81ac', git1: '#88c0d0', git2: '#a3be8c', git3: '#ebcb8b',
-        git4: '#d08770', git5: '#bf616a', git6: '#b48ead', git7: '#81a1c1',
+        git0: '#8faece', git1: '#7fb8b4', git2: '#8fb58f', git3: '#d4b65f',
+        git4: '#dca36b', git5: '#de8580', git6: '#b79cc4', git7: '#8faece',
         gitBranchLabel0: '#16161a', gitBranchLabel1: '#16161a',
         gitBranchLabel2: '#16161a', gitBranchLabel3: '#16161a',
         gitBranchLabel4: '#16161a', gitBranchLabel5: '#16161a',
         gitBranchLabel6: '#16161a', gitBranchLabel7: '#16161a',
-        commitLabelColor: '#a2a2ab',
-        commitLabelBackground: '#232326',
-        tagLabelColor: '#d8d8dc',
-        tagLabelBackground: 'rgba(180,142,173,0.22)',
-        tagLabelBorder: '#b48ead',
+        commitLabelColor: '#9b958a',
+        commitLabelBackground: '#1b1a18',
+        tagLabelColor: '#e6e2d8',
+        tagLabelBackground: 'rgba(183,156,196,0.22)',
+        tagLabelBorder: '#b79cc4',
         // er
-        attributeBackgroundColorOdd: '#2e2e33',
+        attributeBackgroundColorOdd: '#232120',
         attributeBackgroundColorEven: 'rgba(255,255,255,0.035)',
         // quadrant / xy
         quadrant1Fill: 'rgba(76,120,153,0.10)',
         quadrant2Fill: 'rgba(136,192,208,0.08)',
-        quadrant3Fill: 'rgba(163,190,140,0.06)',
-        quadrant4Fill: 'rgba(180,142,173,0.08)',
-        quadrantPointFill: '#5e81ac',
-        quadrantPointTextFill: '#d8d8dc',
-        quadrantTitleFill: '#d8d8dc',
+        quadrant3Fill: 'rgba(143,181,143,0.06)',
+        quadrant4Fill: 'rgba(183,156,196,0.08)',
+        quadrantPointFill: '#8faece',
+        quadrantPointTextFill: '#e6e2d8',
+        quadrantTitleFill: '#e6e2d8',
         xyChart: {
           backgroundColor: 'transparent',
-          titleColor: '#d8d8dc',
-          xAxisLabelColor: '#a2a2ab',
-          xAxisTitleColor: '#d8d8dc',
-          yAxisLabelColor: '#a2a2ab',
-          yAxisTitleColor: '#d8d8dc',
-          plotColorPalette: '#5e81ac, #88c0d0, #a3be8c, #ebcb8b'
+          titleColor: '#e6e2d8',
+          xAxisLabelColor: '#9b958a',
+          xAxisTitleColor: '#e6e2d8',
+          yAxisLabelColor: '#9b958a',
+          yAxisTitleColor: '#e6e2d8',
+          plotColorPalette: '#8faece, #7fb8b4, #8fb58f, #d4b65f'
         },
         // journey / timeline
-        cScale0: '#5e81ac', cScale1: '#88c0d0', cScale2: '#a3be8c',
-        cScale3: '#ebcb8b', cScale4: '#d08770', cScale5: '#bf616a',
-        cScale6: '#b48ead', cScale7: '#81a1c1'
+        cScale0: '#8faece', cScale1: '#7fb8b4', cScale2: '#8fb58f',
+        cScale3: '#d4b65f', cScale4: '#dca36b', cScale5: '#de8580',
+        cScale6: '#b79cc4', cScale7: '#8faece'
       },
 
       light: {
@@ -916,7 +921,7 @@ gitGraph
         clusterBkg: 'rgba(76,120,153,0.05)',
         clusterBorder: 'rgba(76,120,153,0.28)',
         actorBkg: '#eef3f8',
-        actorBorder: '#4c7899',
+        actorBorder: '#3f6484',
         actorTextColor: '#2b2f36',
         actorLineColor: 'rgba(76,120,153,0.35)',
         signalColor: '#6b7b8f',
@@ -929,30 +934,30 @@ gitGraph
         noteBorderColor: '#c9a227',
         noteTextColor: '#2b2f36',
         activationBkgColor: 'rgba(76,120,153,0.35)',
-        activationBorderColor: '#4c7899',
+        activationBorderColor: '#3f6484',
         sequenceNumberColor: '#ffffff',
         sectionBkgColor: 'rgba(15,23,42,0.025)',
         altSectionBkgColor: 'transparent',
         sectionBkgColor2: 'transparent',
-        taskBkgColor: '#4c7899',
+        taskBkgColor: '#3f6484',
         taskTextColor: '#ffffff',
         taskTextLightColor: '#2b2f36',
         taskTextOutsideColor: '#2b2f36',
-        taskBorderColor: '#4c7899',
-        activeTaskBkgColor: '#6c9abb',
-        activeTaskBorderColor: '#6c9abb',
+        taskBorderColor: '#3f6484',
+        activeTaskBkgColor: '#3f6484',
+        activeTaskBorderColor: '#3f6484',
         doneTaskBkgColor: '#c3ccd8',
         doneTaskBorderColor: '#c3ccd8',
         gridColor: 'rgba(15,23,42,0.08)',
-        pie1: '#4c7899', pie2: '#3a8ea0', pie3: '#6a9455', pie4: '#b8860b',
-        pie5: '#c25e3a', pie6: '#b04050', pie7: '#8e5e87',
+        pie1: '#3f6484', pie2: '#3e7a78', pie3: '#4f7a52', pie4: '#a8871f',
+        pie5: '#c07a3e', pie6: '#b4453f', pie7: '#7a5a86',
         pieTitleTextColor: '#2b2f36',
         pieSectionTextColor: '#ffffff',
         pieLegendTextColor: '#2b2f36',
         pieStrokeColor: '#ffffff',
         pieOuterStrokeColor: '#e2e5ea',
-        git0: '#4c7899', git1: '#3a8ea0', git2: '#6a9455', git3: '#b8860b',
-        git4: '#c25e3a', git5: '#b04050', git6: '#8e5e87', git7: '#6c9abb',
+        git0: '#3f6484', git1: '#3e7a78', git2: '#4f7a52', git3: '#a8871f',
+        git4: '#c07a3e', git5: '#b4453f', git6: '#7a5a86', git7: '#3f6484',
         gitBranchLabel0: '#ffffff', gitBranchLabel1: '#ffffff',
         gitBranchLabel2: '#ffffff', gitBranchLabel3: '#ffffff',
         gitBranchLabel4: '#ffffff', gitBranchLabel5: '#ffffff',
@@ -961,14 +966,14 @@ gitGraph
         commitLabelBackground: '#f7f8fa',
         tagLabelColor: '#2b2f36',
         tagLabelBackground: 'rgba(142,94,135,0.14)',
-        tagLabelBorder: '#8e5e87',
+        tagLabelBorder: '#7a5a86',
         attributeBackgroundColorOdd: '#ffffff',
         attributeBackgroundColorEven: 'rgba(15,23,42,0.025)',
         quadrant1Fill: 'rgba(76,120,153,0.08)',
         quadrant2Fill: 'rgba(58,142,160,0.06)',
         quadrant3Fill: 'rgba(106,148,85,0.05)',
         quadrant4Fill: 'rgba(142,94,135,0.06)',
-        quadrantPointFill: '#4c7899',
+        quadrantPointFill: '#3f6484',
         quadrantPointTextFill: '#2b2f36',
         quadrantTitleFill: '#2b2f36',
         xyChart: {
@@ -978,11 +983,11 @@ gitGraph
           xAxisTitleColor: '#2b2f36',
           yAxisLabelColor: '#5d646f',
           yAxisTitleColor: '#2b2f36',
-          plotColorPalette: '#4c7899, #3a8ea0, #6a9455, #b8860b'
+          plotColorPalette: '#3f6484, #3e7a78, #4f7a52, #a8871f'
         },
-        cScale0: '#4c7899', cScale1: '#3a8ea0', cScale2: '#6a9455',
-        cScale3: '#b8860b', cScale4: '#c25e3a', cScale5: '#b04050',
-        cScale6: '#8e5e87', cScale7: '#6c9abb'
+        cScale0: '#3f6484', cScale1: '#3e7a78', cScale2: '#4f7a52',
+        cScale3: '#a8871f', cScale4: '#c07a3e', cScale5: '#b4453f',
+        cScale6: '#7a5a86', cScale7: '#3f6484'
       }
     };
 
@@ -1039,7 +1044,7 @@ gitGraph
   function fail() {
     document.querySelectorAll('.block-language-mermaid').forEach(function (box) {
       var warn = document.createElement('p');
-      warn.style.cssText = 'color:#bf616a;font-size:13px;text-align:center;padding:12px';
+      warn.style.cssText = 'color:#de8580;font-size:13px;text-align:center;padding:12px';
       warn.textContent = '⚠️ Mermaid 资源加载失败，请检查网络后刷新页面';
       box.replaceChildren(warn);
     });

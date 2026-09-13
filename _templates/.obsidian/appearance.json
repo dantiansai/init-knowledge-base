@@ -1,15 +1,19 @@
 {
-  "accentColor": "#5e81ac",
-  "cssTheme": "",
+  "accentColor": "#A34A52",
+  "cssTheme": "Minimal",
   "baseFontSize": 16,
   "baseFontSizeAction": true,
   "enabledCssSnippets": [
-    "wiki-reading",
-    "wiki-callouts",
-    "wiki-components",
-    "wiki-mermaid",
-    "wiki-markmap",
-    "wiki-canvas"
+    "01-foundation",
+    "02-typography",
+    "03-callouts",
+    "04-components",
+    "05-layout",
+    "06-chrome",
+    "07-diagrams",
+    "08-mermaid",
+    "09-markmap",
+    "10-canvas"
   ],
   "theme": "obsidian",
   "translucency": false,

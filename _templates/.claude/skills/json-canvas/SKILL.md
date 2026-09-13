@@ -200,7 +200,7 @@ Canvas 文件是标准 JSON，包含两个顶级数组：
 
 ```json
 {
-  "color": "#5e81ac"
+  "color": "#A34A52"
 }
 ```
 
