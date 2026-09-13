@@ -1,0 +1,192 @@
+/* ==========================================================================
+   Wiki Markmap — 思维导图（Markmap）样式增强
+   配合 Obsidian Markmap 插件使用（```markmap 代码块）
+   设计目标：把默认的"细线条 + 小圆点"升级为有层次的节点阅读体验
+   层级配色由 Markmap 插件自身（colorFreezeLevel / 调色板）控制，
+   本片段负责形态、留白、连线质感与交互反馈
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design Token
+   -------------------------------------------------------------------------- */
+.theme-dark {
+  --wiki-mk-canvas-bg: #232326;
+  --wiki-mk-canvas-border: #3a3a40;
+  --wiki-mk-grid: rgba(255, 255, 255, 0.06);
+  --wiki-mk-fg: #d8d8dc;
+  --wiki-mk-fg-dim: #a2a2ab;
+  --wiki-mk-link: rgba(129, 161, 193, 0.55);
+  --wiki-mk-link-hover: #88c0d0;
+  --wiki-mk-dot-ring: #232326;
+  --wiki-mk-hover-bg: rgba(129, 161, 193, 0.16);
+}
+
+.theme-light {
+  --wiki-mk-canvas-bg: #f7f8fa;
+  --wiki-mk-canvas-border: #e2e5ea;
+  --wiki-mk-grid: rgba(15, 23, 42, 0.06);
+  --wiki-mk-fg: #2b2f36;
+  --wiki-mk-fg-dim: #5d646f;
+  --wiki-mk-link: rgba(76, 120, 153, 0.5);
+  --wiki-mk-link-hover: #4c7899;
+  --wiki-mk-dot-ring: #ffffff;
+  --wiki-mk-hover-bg: rgba(76, 120, 153, 0.12);
+}
+
+.theme-dark,
+.theme-light {
+  --wiki-mk-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  --wiki-mk-radius: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   2. 画布容器 —— 与 Mermaid 卡片保持同一视觉语言
+   -------------------------------------------------------------------------- */
+.block-language-markmap,
+.markmap-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.4em 0;
+  padding: 12px;
+  background-color: var(--wiki-mk-canvas-bg);
+  border: 1px solid var(--wiki-mk-canvas-border);
+  border-radius: var(--wiki-mk-radius);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+  position: relative;
+}
+
+/* 极淡的点阵底纹 */
+.block-language-markmap::before,
+.markmap-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--wiki-mk-grid) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+  opacity: 0.6;
+}
+
+.markmap-container .markmap,
+.block-language-markmap .markmap,
+svg.markmap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 320px;
+  border-radius: 8px;
+  font-family: var(--wiki-mk-font);
+}
+
+/* --------------------------------------------------------------------------
+   3. 节点圆点
+   -------------------------------------------------------------------------- */
+.markmap-node > circle {
+  stroke: var(--wiki-mk-dot-ring);
+  stroke-width: 2px;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+/* 折叠态节点（有子节点但已收起）用空心描边提示"这里还有内容" */
+.markmap-node-circle.markmap-node-circle--open,
+.markmap-node--folded > circle {
+  fill: transparent !important;
+  stroke-width: 2.5px;
+}
+
+/* --------------------------------------------------------------------------
+   4. 连线 —— 加粗并统一为柔和冷色，弱化"蜘蛛网"感
+   -------------------------------------------------------------------------- */
+.markmap-link {
+  stroke: var(--wiki-mk-link) !important;
+  stroke-width: 1.6px;
+  stroke-linecap: round;
+  fill: none;
+  transition: stroke 0.15s ease;
+}
+
+/* 深层连线渐次变淡，让主干更突出 */
+.markmap-node--depth-3 ~ .markmap-link {
+  stroke-opacity: 0.75;
+}
+
+/* --------------------------------------------------------------------------
+   5. 节点文字
+   -------------------------------------------------------------------------- */
+/* 文字颜色统一为前景色。
+   注意：这里刻意不改字体族、字号与字重 —— Markmap 依赖文本测量来
+   计算每个 foreignObject 的宽高，任何影响字宽的覆盖都会导致文字被裁切
+   或节点互相重叠。字体相关调整请走 Markmap 插件自身的设置。 */
+.markmap-foreign,
+.markmap-foreign > div,
+.markmap-foreign span {
+  color: var(--wiki-mk-fg);
+}
+
+/* Markmap 测算的 foreignObject 宽度在 emoji / 中英混排时可能偏窄，
+   允许溢出显示，避免出现"init-knowledge-" 这类被截断的文字 */
+.markmap-foreign {
+  overflow: visible !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. 悬停反馈 —— 用 box-shadow 模拟内边距，不干扰 Markmap 的布局测量
+   -------------------------------------------------------------------------- */
+.markmap-node:hover > .markmap-foreign > div,
+.markmap-node:hover > .markmap-foreign span {
+  background-color: var(--wiki-mk-hover-bg);
+  border-radius: 5px;
+  box-shadow: 0 0 0 4px var(--wiki-mk-hover-bg);
+}
+
+.markmap-node:hover > circle {
+  stroke: var(--wiki-mk-link-hover);
+}
+
+/* 从根到当前节点的链路高亮 */
+.markmap-node:hover ~ .markmap-link,
+.markmap-node:hover > .markmap-link {
+  stroke: var(--wiki-mk-link-hover) !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. 内嵌于笔记中的小尺寸 markmap —— 收紧留白
+   -------------------------------------------------------------------------- */
+.markdown-embed .block-language-markmap {
+  margin: 0.8em 0;
+  padding: 8px;
+}
+
+.markdown-embed .markmap-container .markmap,
+.markdown-embed .block-language-markmap .markmap {
+  min-height: 240px;
+}
+
+/* --------------------------------------------------------------------------
+   8. 打印降级
+   -------------------------------------------------------------------------- */
+@media print {
+  .block-language-markmap,
+  .markmap-container {
+    background-color: #fff !important;
+    border: 1px solid #ccc !important;
+    break-inside: avoid;
+  }
+
+  .block-language-markmap::before,
+  .markmap-container::before {
+    display: none !important;
+  }
+
+  .markmap-link {
+    stroke: #999 !important;
+  }
+}

@@ -11,10 +11,11 @@
 - 📁 **标准目录结构**：`raw/`（原始资料）、`wiki/`（知识编译输出）、`assets/`（媒体资源）
 - 📝 **4 种标准模板**：Entity（实体）、Concept（概念）、Source（来源摘要）、Synthesis（综合分析）
 - ⚙️ **统一 Obsidian 配置**：预置核心插件清单、社区插件推荐、编辑器设置、模板路径预设、图谱颜色分组
-- 🎨 **3 个 CSS 阅读样式**：`wiki-reading.css`、`wiki-callouts.css`、`wiki-components.css`
+- 🎨 **6 个 CSS 样式片段**：`wiki-reading`（阅读排版）、`wiki-callouts`（语义化提示框）、`wiki-components`（双链/标签/代码块）、`wiki-mermaid`（图表美化）、`wiki-markmap`（思维导图）、`wiki-canvas`（白板）
 - 📊 **Dataview 动态仪表盘**：`wiki/index.md` 自动聚合概念库、实体库、待处理清单、时效性监控
 - 🤖 **6 个 Agent Skills**：`ingest`（增量编译+讨论确认+URL摄入）、`query`（智能查询）、`lint`（健康检查+概念空缺检测）、`refresh`（联网时效性更新）、`obsidian-markdown`（语法规范）、`json-canvas`（知识可视化）
 - 🗺️ **Markmap 思维导图**：预置知识库全景思维导图，安装插件后可交互浏览项目架构
+- 📈 **15 种 Mermaid 图表样式**：时序图、流程图、思维导图、类图、状态机、ER 图、甘特图、饼图、时间线、象限图、GitGraph 等，明暗主题自适应
 
 ## 快速开始
 

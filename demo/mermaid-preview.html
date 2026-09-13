@@ -3,173 +3,415 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wiki Mermaid 图表预览</title>
+  <title>Wiki Mermaid 图表样式预览</title>
+
+  <!-- 直接复用生产环境的 CSS snippet，预览效果与 Obsidian 内一致 -->
+  <link rel="stylesheet" href="../_templates/.obsidian/snippets/wiki-mermaid.css">
+
   <style>
-    :root {
-      --bg: #1a1b26;
-      --panel: #24283b;
-      --border: rgba(255,255,255,0.06);
-      --text: #c0caf5;
-      --text-dim: #565f89;
-      --accent: #7aa2f7;
-      --green: #9ece6a;
-      --orange: #e0af68;
-      --red: #f7768e;
-      --purple: #bb9af7;
-    }
+    /* 页面外壳样式（非图表部分），图表样式全部来自 wiki-mermaid.css */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-      line-height: 1.7;
+
+    .theme-dark {
+      --pg-bg: #1a1a1d;
+      --pg-panel: #202024;
+      --pg-border: #33333a;
+      --pg-text: #d8d8dc;
+      --pg-dim: #8f8f99;
+      --pg-accent: #81a1c1;
+      --pg-accent-soft: rgba(129, 161, 193, 0.12);
+      --pg-accent-line: rgba(129, 161, 193, 0.28);
     }
-    #header {
-      background: rgba(36, 40, 59, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 32px;
+    .theme-light {
+      --pg-bg: #f2f4f8;
+      --pg-panel: #ffffff;
+      --pg-border: #e0e4ea;
+      --pg-text: #2b2f36;
+      --pg-dim: #6b7280;
+      --pg-accent: #4c7899;
+      --pg-accent-soft: rgba(76, 120, 153, 0.1);
+      --pg-accent-line: rgba(76, 120, 153, 0.24);
+    }
+
+    body {
+      background: var(--pg-bg);
+      color: var(--pg-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.7;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    /* ---------- 顶部栏 ---------- */
+    header {
       position: sticky;
       top: 0;
       z-index: 100;
+      background: color-mix(in srgb, var(--pg-bg) 88%, transparent);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--pg-border);
+      padding: 16px 32px 14px;
     }
-    #header h1 {
-      font-size: 18px;
-      color: var(--accent);
-      font-weight: 600;
-    }
-    #header .subtitle {
-      font-size: 12px;
-      color: var(--text-dim);
-      margin-top: 4px;
-    }
-    #nav {
+    .head-row {
       display: flex;
-      gap: 8px;
-      margin-top: 10px;
+      align-items: baseline;
+      gap: 14px;
       flex-wrap: wrap;
     }
-    #nav a {
-      background: rgba(122, 162, 247, 0.1);
-      border: 1px solid rgba(122, 162, 247, 0.2);
-      color: var(--accent);
-      padding: 5px 12px;
-      border-radius: 6px;
+    header h1 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--pg-accent);
+      letter-spacing: 0.01em;
+    }
+    header .meta {
+      font-size: 12px;
+      color: var(--pg-dim);
+    }
+    #theme-toggle {
+      margin-left: auto;
+      background: var(--pg-accent-soft);
+      border: 1px solid var(--pg-accent-line);
+      color: var(--pg-accent);
+      padding: 6px 14px;
+      border-radius: 7px;
       cursor: pointer;
       font-size: 12px;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    #nav a:hover {
-      background: rgba(122, 162, 247, 0.2);
-      border-color: rgba(122, 162, 247, 0.4);
-    }
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 32px;
-    }
-    .section {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-      margin-bottom: 28px;
-    }
-    .section h2 {
-      font-size: 16px;
-      color: var(--accent);
-      margin-bottom: 6px;
+      font-family: inherit;
       font-weight: 600;
+      transition: background 0.15s ease, border-color 0.15s ease;
     }
-    .section .desc {
-      font-size: 13px;
-      color: var(--text-dim);
-      margin-bottom: 20px;
+    #theme-toggle:hover {
+      background: var(--pg-accent-line);
     }
-    .mermaid-box {
-      background: #1a1b26;
-      border-radius: 8px;
-      padding: 24px;
+    nav {
       display: flex;
-      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    nav a {
+      background: var(--pg-accent-soft);
+      border: 1px solid var(--pg-accent-line);
+      color: var(--pg-accent);
+      padding: 4px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      text-decoration: none;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    nav a:hover {
+      background: var(--pg-accent-line);
+      transform: translateY(-1px);
+    }
+    nav .sep {
+      color: var(--pg-dim);
+      font-size: 12px;
+      padding: 4px 2px;
+      opacity: 0.6;
+    }
+
+    /* ---------- 主体 ---------- */
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 32px 80px;
+    }
+    .group-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--pg-dim);
+      margin: 44px 0 6px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--pg-border);
+    }
+    .group-title:first-child { margin-top: 0; }
+
+    section {
+      background: var(--pg-panel);
+      border: 1px solid var(--pg-border);
+      border-radius: 14px;
+      padding: 22px 24px 24px;
+      margin-top: 20px;
+    }
+    section h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--pg-accent);
+      display: flex;
       align-items: center;
-      min-height: 200px;
-      overflow-x: auto;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    .mermaid {
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif !important;
+    section .desc {
+      font-size: 12.5px;
+      color: var(--pg-dim);
+      margin: 6px 0 4px;
     }
-    .file-tag {
+    .chip {
       display: inline-block;
-      background: rgba(158, 206, 106, 0.12);
-      color: var(--green);
       font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      margin-left: 8px;
       font-weight: 500;
+      padding: 1px 8px;
+      border-radius: 5px;
+      background: var(--pg-accent-soft);
+      border: 1px solid var(--pg-accent-line);
+      color: var(--pg-accent);
+      white-space: nowrap;
+    }
+
+    /* 高亮标记 */
+    .star {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: rgba(163, 190, 140, 0.16);
+      border: 1px solid rgba(163, 190, 140, 0.4);
+      color: #a3be8c;
+      vertical-align: middle;
     }
   </style>
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: 'dark',
-      themeVariables: {
-        primaryColor: '#5e81ac',
-        primaryTextColor: '#e5e9f0',
-        primaryBorderColor: '#5e81ac',
-        lineColor: '#81a1c1',
-        secondaryColor: '#3b4252',
-        tertiaryColor: '#2e3440',
-        fontFamily: '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif',
-        nodeBorder: '#5e81ac',
-        clusterBkg: '#2e3440',
-        clusterBorder: '#4c566a',
-      }
-    });
-  </script>
 </head>
-<body>
-  <div id="header">
-    <h1>🧠 Wiki Mermaid 图表预览</h1>
-    <div class="subtitle">Obsidian 原生渲染效果模拟 · 共 8 个图表 · 来自 7 个模板文件</div>
-    <div id="nav">
-      <a href="#sec1">知识管线</a>
-      <a href="#sec2">架构思维导图</a>
-      <a href="#sec3">编译流程</a>
-      <a href="#sec4">技能交互</a>
-      <a href="#sec5">权限模型</a>
-      <a href="#sec6">技术MOC</a>
-      <a href="#sec7">商业MOC</a>
-      <a href="#sec8">首次使用</a>
-    </div>
+
+<body class="theme-dark">
+
+<header>
+  <div class="head-row">
+    <h1>📊 Wiki Mermaid 图表样式预览</h1>
+    <span class="meta">17 个图表 · 15 种表现形式 · 样式直连 <code>wiki-mermaid.css</code></span>
+    <button id="theme-toggle">☀︎ 切换浅色</button>
   </div>
+  <nav>
+    <span class="sep">时序</span>
+    <a href="#c-seq-ingest">摄入流程</a>
+    <a href="#c-seq-query">查询溯源</a>
+    <span class="sep">流程</span>
+    <a href="#c-flow-pipeline">知识管线</a>
+    <a href="#c-flow-compile">编译流程</a>
+    <a href="#c-flow-skills">技能交互</a>
+    <span class="sep">结构</span>
+    <a href="#c-mind-vault">全景导图</a>
+    <a href="#c-mind-tech">技术领域</a>
+    <a href="#c-class">类图</a>
+    <a href="#c-state">状态机</a>
+    <a href="#c-er">ER 图</a>
+    <span class="sep">数据</span>
+    <a href="#c-gantt">甘特图</a>
+    <a href="#c-pie">饼图</a>
+    <a href="#c-timeline">时间线</a>
+    <a href="#c-xy">XY 图</a>
+    <span class="sep">其他</span>
+    <a href="#c-journey">旅程图</a>
+    <a href="#c-quadrant">象限图</a>
+    <a href="#c-git">GitGraph</a>
+  </nav>
+</header>
 
-  <div class="container">
+<main>
 
-    <div class="section" id="sec1">
-      <h2>📊 知识管线 <span class="file-tag">wiki/index.md</span></h2>
-      <div class="desc">知识从摄入到产出的完整管线，展示在首页仪表盘顶部</div>
-      <div class="mermaid-box">
+  <div class="group-title">一 · 时序与流程</div>
+
+  <!-- ================= 1. 时序图 · 摄入 ================= -->
+  <section id="c-seq-ingest">
+    <h2>知识摄入全流程 <span class="star">★ 时序图</span> <span class="chip">.claude/skills/ingest</span></h2>
+    <p class="desc">覆盖 participant / autonumber / Note / alt / loop / activate 六种时序图元素</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as 👤 用户
+    participant A as 🤖 ingest
+    participant R as 📥 raw/
+    participant W as 🧠 wiki/
+    participant S as 💾 state.json
+
+    Note over U,S: 阶段一 · 增量检测
+
+    U->>A: /ingest raw/01-articles
+    A->>S: 读取处理记录
+    S-->>A: 返回已完成哈希
+    A->>A: 比对文件哈希
+
+    alt 文件未处理
+        Note over A,W: 阶段二 · 知识编译
+        A->>R: 读取源文件
+        R-->>A: 返回正文
+        A->>U: 展示提取的实体与概念
+        U-->>A: 确认 / 修正
+        activate A
+        A->>W: 创建来源摘要 (sources/)
+        A->>W: 创建或更新概念页
+        A->>W: 创建或更新实体页
+        deactivate A
+        loop 每个提取出的概念
+            A->>W: 增量合并 [[双链]]
+        end
+    else 已处理过
+        A-->>U: 跳过（内容无变更）
+    end
+
+    A->>S: 写入处理状态
+    A->>R: 归档至 raw/09-archive/
+    A-->>U: ✅ 输出编译完成报告
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 2. 时序图 · 查询 ================= -->
+  <section id="c-seq-query">
+    <h2>查询与来源标注 <span class="star">★ 时序图</span> <span class="chip">.claude/skills/query</span></h2>
+    <p class="desc">展示 opt 可选分支、自调用消息与虚线返回箭头的视觉区分</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as 👤 用户
+    participant Q as 🔍 query
+    participant I as 🗂️ index.md
+    participant W as 🧠 wiki/
+    participant L as ⏱️ refresh
+
+    U->>Q: /query 三阶段分离架构是什么？
+    Q->>I: 检索主题索引
+    I-->>Q: 命中 3 个概念页
+    Q->>W: 深度读取相关页面
+    W-->>Q: 返回正文与双链
+    Q->>Q: 冲突检测 + 时效性判定
+
+    opt 内容超过 90 天未刷新
+        Q->>L: 触发联网验证
+        activate L
+        L->>L: 搜索最新资料
+        deactivate L
+        L-->>Q: 返回最新结论 / 标记冲突
+    end
+
+    Q-->>U: 带 [[wikilink]] 来源标注的回答
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 3. 流程图 · 管线 ================= -->
+  <section id="c-flow-pipeline">
+    <h2>知识管线 <span class="chip">wiki/index.md</span></h2>
+    <p class="desc">无分组的横向流程图，节点用语义 class 着色（色值由 wiki-mermaid.css 统一提供）</p>
+    <div class="block-language-mermaid">
 <pre class="mermaid">
 flowchart LR
-    RAW["📥 raw/"] -->|"/ingest"| IG["🤖 编译"]
-    URL["🌐 URL"] -->|"/ingest url"| IG
+    RAW["📥 raw/"] -->|/ingest| IG["🤖 编译"]
+    URL["🌐 URL"] -->|/ingest url| IG
     IG --> WIKI["🧠 wiki/"]
-    WIKI -->|"/query"| ANS["💬 回答"]
-    WIKI -->|"/lint"| RPT["📋 健康报告"]
-    WIKI -->|"/refresh"| UPD["🔄 联网更新"]
-    WIKI -->|"/canvas"|GRP["🎨 图谱"]
-</pre>
-      </div>
-    </div>
+    WIKI -->|/query| ANS["💬 回答"]
+    WIKI -->|/lint| RPT["📋 健康报告"]
+    WIKI -->|/refresh| UPD["🔄 联网更新"]
+    WIKI -->|/canvas| GRP["🎨 图谱"]
 
-    <div class="section" id="sec2">
-      <h2>🧠 架构总览思维导图 <span class="file-tag">Mindmap-知识库全景.md</span></h2>
-      <div class="desc">整个知识库的层级结构一览</div>
-      <div class="mermaid-box">
+    class RAW,URL blue
+    class IG green
+    class WIKI cyan
+    class ANS purple
+    class RPT,UPD orange
+    class GRP yellow
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 4. 流程图 · 编译 ================= -->
+  <section id="c-flow-compile">
+    <h2>知识编译流程 <span class="chip">Mindmap-知识库全景.md</span></h2>
+    <p class="desc">带 subgraph 分组框的四阶段流程，分组框统一为柔和虚线容器</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+flowchart LR
+    subgraph Raw["📥 raw/ 不可变层"]
+        R1["文章"] 
+        R2["论文"]
+        R3["转录"]
+        R4["URL 网页"]
+    end
+
+    subgraph Ingest["🤖 ingest"]
+        I1["提取实体概念"]
+        I2["讨论确认"]
+        I3["创建 wiki 页面"]
+    end
+
+    subgraph Wiki["🧠 wiki/ 编译层"]
+        W1["concepts/"]
+        W2["entities/"]
+        W3["sources/"]
+        W4["syntheses/"]
+    end
+
+    subgraph Maintain["🔧 维护"]
+        M1["lint 健康"]
+        M2["refresh 更新"]
+        M3["canvas 图谱"]
+    end
+
+    R1 & R2 & R3 --> I1
+    R4 -->|自动抓取| I1
+    I1 --> I2 --> I3
+    I3 --> W1 & W2 & W3 & W4
+    W1 & W2 & W3 & W4 --> M1 & M2 & M3
+
+    class R1,R2,R3,R4 red
+    class I1,I2,I3 green
+    class W1,W2,W3,W4 cyan
+    class M1,M2,M3 purple
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 5. 流程图 · 技能 ================= -->
+  <section id="c-flow-skills">
+    <h2>Agent 技能交互 <span class="chip">Mindmap-知识库全景.md</span></h2>
+    <p class="desc">纵向流程图，含 stadium 形状、数据库圆柱、虚线依赖关系</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+flowchart TD
+    User(["👤 用户"])
+
+    User -->|/ingest| IG["🤖 ingest<br/>增量编译"]
+    User -->|/query| QY["🔍 query<br/>智能查询"]
+    User -->|/lint| LT["🩺 lint<br/>健康检查"]
+    User -->|/refresh| RF["🔄 refresh<br/>联网更新"]
+    User -->|/canvas| CV["🎨 canvas<br/>图谱生成"]
+
+    IG -->|写入| Wiki[("🧠 wiki/")]
+    QY -->|读取| Wiki
+    LT -->|扫描| Wiki
+    RF -->|更新| Wiki
+    CV -->|读取| Wiki
+
+    IG -.->|遵循规范| OM["📐 obsidian-markdown"]
+    QY -.-> OM
+    LT -.-> OM
+    RF -.-> OM
+
+    IG -->|状态追踪| IS[("💾 ingest-state")]
+    RF -->|状态追踪| RS[("💾 refresh-state")]
+
+    class User solid
+    class Wiki cyan
+    class IS,RS orange
+    class OM purple
+</pre>
+    </div>
+  </section>
+
+  <div class="group-title">二 · 结构与关系</div>
+
+  <!-- ================= 6. Mindmap 全景 ================= -->
+  <section id="c-mind-vault">
+    <h2>知识库全景 <span class="chip">mermaid mindmap</span></h2>
+    <p class="desc">原生 mindmap 类型：根节点实心强调，一级分支起按语义色阶分层着色</p>
+    <div class="block-language-mermaid">
 <pre class="mermaid">
 mindmap
   root((LLM Wiki))
@@ -181,131 +423,37 @@ mindmap
       归档 09-archive
     知识编译 wiki
       概念 concepts
-        框架
-        方法论
-        理论
       实体 entities
-        人物
-        公司
-        工具
-        产品
       来源摘要 sources
       综合分析 syntheses
       主题地图 mocs
-    Agent技能
+    媒体资源 assets
+      图片
+      PDF
+      附件
+    Agent 技能
       ingest 摄入
       query 查询
       lint 健康检查
       refresh 联网刷新
       canvas 可视化
     配置体系
-      Obsidian配置
-      CSS样式
+      Obsidian 配置
+      CSS 样式
       模板系统
 </pre>
-      </div>
     </div>
+  </section>
 
-    <div class="section" id="sec3">
-      <h2>🔄 知识编译流程 <span class="file-tag">Mindmap-知识库全景.md</span></h2>
-      <div class="desc">从 raw/ 到 wiki/ 的完整编译流程，含维护环节</div>
-      <div class="mermaid-box">
-<pre class="mermaid">
-flowchart LR
-    subgraph Raw["📥 raw/ 不可变层"]
-        R1[文章]
-        R2[论文]
-        R3[转录]
-        R4[URL网页]
-    end
-    subgraph Ingest["🤖 ingest"]
-        I1[提取实体概念]
-        I2[讨论确认]
-        I3[创建wiki页面]
-    end
-    subgraph Wiki["🧠 wiki/ 编译层"]
-        W1[concepts/]
-        W2[entities/]
-        W3[sources/]
-        W4[syntheses/]
-    end
-    subgraph Maintain["🔧 维护"]
-        M1[lint 健康]
-        M2[refresh 更新]
-        M3[canvas 图谱]
-    end
-    R1 & R2 & R3 --> I1
-    R4 -->|自动抓取| I1
-    I1 --> I2 --> I3
-    I3 --> W1 & W2 & W3 & W4
-    W1 & W2 & W3 & W4 --> M1 & M2 & M3
-</pre>
-      </div>
-    </div>
-
-    <div class="section" id="sec4">
-      <h2>🤖 Agent 技能交互 <span class="file-tag">Mindmap-知识库全景.md</span></h2>
-      <div class="desc">6 个 Agent Skill 的输入输出和依赖关系</div>
-      <div class="mermaid-box">
-<pre class="mermaid">
-flowchart TD
-    User([用户])
-    User -->|"/ingest"| IG[ingest]
-    User -->|"/query"| QY[query]
-    User -->|"/lint"| LT[lint]
-    User -->|"/refresh"| RF[refresh]
-    User -->|"/canvas"| CV[canvas]
-    IG -->|"写入"| Wiki[(wiki/)]
-    QY -->|"读取"| Wiki
-    LT -->|"扫描"| Wiki
-    RF -->|"更新"| Wiki
-    CV -->|"读取"| Wiki
-    IG -.->|"规范"| OM[obsidian-markdown]
-    QY -.-> OM
-    LT -.-> OM
-    RF -.-> OM
-    IG --> IS[(state.json)]
-    RF --> RS[(state.json)]
-</pre>
-      </div>
-    </div>
-
-    <div class="section" id="sec5">
-      <h2>🔒 目录权限模型 <span class="file-tag">Mindmap-知识库全景.md + CLAUDE.md</span></h2>
-      <div class="desc">三层分离架构：不可变层 → 媒体层 → 编译层</div>
-      <div class="mermaid-box">
-<pre class="mermaid">
-flowchart TB
-    subgraph Immutable["⛔ 不可变层"]
-        RAW["raw/ 原始资料 只读"]
-        ARC["raw/09-archive/ 禁止读取"]
-    end
-    subgraph Media["🖼️ 媒体层"]
-        ASSETS["assets/ 图片PDF 语法: ![[file]]"]
-    end
-    subgraph Workspace["✏️ 编译层 Agent工作区"]
-        WIKI["wiki/ 可创建更新"]
-        TPL["templates/ 模板只读"]
-    end
-    subgraph Config["⚙️ 配置层"]
-        OBS[".obsidian/ 配置"]
-        CLD[".claude/ Skills+状态"]
-    end
-    RAW -->|"ingest 编译"| WIKI
-    WIKI -->|"嵌入"| ASSETS
-    TPL -.->|"模板引用"| WIKI
-</pre>
-      </div>
-    </div>
-
-    <div class="section" id="sec6">
-      <h2>💻 技术领域图谱 <span class="file-tag">MOC-技术.md</span></h2>
-      <div class="desc">技术领域知识分类思维导图</div>
-      <div class="mermaid-box">
+  <!-- ================= 7. Mindmap 技术 ================= -->
+  <section id="c-mind-tech">
+    <h2>技术领域图谱 <span class="chip">MOC-技术.md</span></h2>
+    <p class="desc">主题地图专用 mindmap，结构比全景导图更浅，节点更易扫读</p>
+    <div class="block-language-mermaid">
 <pre class="mermaid">
 mindmap
   root((技术))
-    AI/机器学习
+    AI / 机器学习
       深度学习
       NLP
       计算机视觉
@@ -321,63 +469,601 @@ mindmap
     基础设施
       云计算
       容器化
-      CI/CD
+      CI / CD
     开发工具
       编辑器
       版本控制
+      调试工具
 </pre>
-      </div>
     </div>
+  </section>
 
-    <div class="section" id="sec7">
-      <h2>💼 商业领域图谱 <span class="file-tag">MOC-商业.md</span></h2>
-      <div class="desc">商业领域知识分类思维导图</div>
-      <div class="mermaid-box">
+  <!-- ================= 8. 类图 ================= -->
+  <section id="c-class">
+    <h2>知识对象模型 <span class="chip">classDiagram</span></h2>
+    <p class="desc">类图：类名条实心强调，属性区与分隔线统一描边</p>
+    <div class="block-language-mermaid">
 <pre class="mermaid">
-mindmap
-  root((商业))
-    商业模式
-      SaaS
-      电商
-      广告
-      订阅制
-    市场
-      市场分析
-      竞品研究
-      用户增长
-    投资
-      风险投资
-      估值方法
-      财务分析
-    产品
-      产品策略
-      增长黑客
-    组织管理
-      团队建设
-      OKR/KPI
-</pre>
-      </div>
-    </div>
+classDiagram
+    class WikiPage {
+        +String title
+        +String type
+        +List tags
+        +List sources
+        +Date last_updated
+        +Date last_refreshed
+        +render()
+        +validate() bool
+    }
 
-    <div class="section" id="sec8">
-      <h2>🚀 首次使用流程 <span class="file-tag">OBSIDIAN_SETUP.md</span></h2>
-      <div class="desc">新用户从打开 Vault 到生成图谱的 10 步流程</div>
-      <div class="mermaid-box">
+    class Concept {
+        +String definition
+        +String complexity
+        +List related
+        +merge(Concept) void
+    }
+
+    class Entity {
+        +String entity_type
+        +List relations
+        +updateProfile() void
+    }
+
+    class Source {
+        +String source_type
+        +String credibility
+        +String archive_url
+        +summarize() String
+    }
+
+    class Synthesis {
+        +String question
+        +List evidence
+        +String confidence
+        +conclude() String
+    }
+
+    class MOC {
+        +String domain
+        +query() List
+    }
+
+    WikiPage <|-- Concept
+    WikiPage <|-- Entity
+    WikiPage <|-- Source
+    WikiPage <|-- Synthesis
+    Concept "*" --> "*" Entity : 关联
+    Source "1" --> "*" Concept : 提炼
+    Synthesis --> Source : 引用
+    MOC o-- WikiPage : 聚合
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 9. 状态图 ================= -->
+  <section id="c-state">
+    <h2>页面生命周期状态机 <span class="chip">stateDiagram-v2</span></h2>
+    <p class="desc">状态图：起止节点用蓝实心，复合状态用虚线分组框</p>
+    <div class="block-language-mermaid">
 <pre class="mermaid">
-flowchart TD
-    A["1. Obsidian 打开 Vault"] --> B["2. 关闭 Restricted Mode"]
-    B --> C["3. 安装 Dataview + Templater"]
-    C --> D["4. 确认 CSS Snippets"]
-    D --> E["5. Templater 设置模板路径"]
-    E --> F["6. 图谱颜色预设生效"]
-    F --> G["7. 放入资料或 /ingest url"]
-    G --> H["8. /ingest 编译知识"]
-    H --> I["9. /refresh 联网更新"]
-    I --> J["10. /canvas 生成图谱"]
-</pre>
-      </div>
-    </div>
+stateDiagram-v2
+    [*] --> Draft : 新建
 
-  </div>
+    state "草稿" as Draft
+    state "审阅中" as Review
+    state "已发布" as Published
+    state "待刷新" as Stale
+
+    Draft --> Review : 内容完整
+    Review --> Draft : 退回修改
+    Review --> Published : 通过校验
+
+    state Published {
+        [*] --> Active
+        Active --> Archived : 被取代
+        Archived --> [*]
+    }
+
+    Published --> Stale : 超过刷新周期
+    Stale --> Published : refresh 完成
+    Stale --> Review : 发现冲突
+    Published --> [*] : 废弃
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 10. ER 图 ================= -->
+  <section id="c-er">
+    <h2>知识库实体关系 <span class="chip">erDiagram</span></h2>
+    <p class="desc">ER 图：实体框描边统一，属性行交替底色便于横向对齐阅读</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+erDiagram
+    WIKI_PAGE ||--o{ CONCEPT : contains
+    WIKI_PAGE ||--o{ ENTITY : contains
+    WIKI_PAGE ||--o{ SOURCE : contains
+    WIKI_PAGE ||--o{ SYNTHESIS : contains
+
+    SOURCE ||--|{ CONCEPT : extracts
+    CONCEPT }o--o{ ENTITY : relates
+    SYNTHESIS }o--|| SOURCE : cites
+    MOC ||--o{ WIKI_PAGE : aggregates
+
+    WIKI_PAGE {
+        string title PK
+        string type
+        date last_updated
+    }
+    CONCEPT {
+        string definition
+        string complexity
+    }
+    ENTITY {
+        string entity_type
+        string name
+    }
+    SOURCE {
+        string source_type
+        string credibility
+    }
+</pre>
+    </div>
+  </section>
+
+  <div class="group-title">三 · 数据与时间</div>
+
+  <!-- ================= 11. 甘特图 ================= -->
+  <section id="c-gantt">
+    <h2>知识库建设排期 <span class="chip">gantt</span></h2>
+    <p class="desc">甘特图：分组交替底色、任务条圆角、今日红线、里程碑菱形</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+gantt
+    title 知识库建设节奏
+    dateFormat YYYY-MM-DD
+    axisFormat %m/%d
+
+    section 基础设施
+    目录骨架搭建        :done,    a1, 2026-08-01, 5d
+    插件与样式配置      :done,    a2, after a1, 4d
+    模板与 MOC 体系     :active,  a3, after a2, 6d
+
+    section 内容摄入
+    首批资料入库        :         b1, after a3, 8d
+    概念库编译          :         b2, after b1, 10d
+    实体关系补全        :         b3, after b2, 7d
+
+    section 维护迭代
+    首次健康检查        :         c1, after b3, 2d
+    联网刷新一轮        :         c2, after c1, 3d
+    里程碑评审          :milestone, m1, after c2, 0d
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 12. 饼图 ================= -->
+  <section id="c-pie">
+    <h2>知识库内容构成 <span class="chip">pie</span></h2>
+    <p class="desc">饼图：扇区间用画布底色留白分隔，图例与标题统一前景色</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+pie showData
+    title 知识库页面类型分布
+    "概念 concepts" : 42
+    "实体 entities" : 28
+    "来源摘要 sources" : 18
+    "综合分析 syntheses" : 8
+    "主题地图 mocs" : 4
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 13. 时间线 ================= -->
+  <section id="c-timeline">
+    <h2>知识库演进路线 <span class="chip">timeline</span></h2>
+    <p class="desc">时间线：节点胶囊化、轴线加粗、按阶段横向铺开</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+timeline
+    title 知识库能力演进
+    section 起步期
+        2026 Q1 : 确立 Karpathy LLM Wiki 架构
+                : 搭建 raw / wiki 双层分离
+    section 成型期
+        2026 Q2 : 接入 ingest 增量编译
+                : 引入 lint 健康检查
+    section 深化期
+        2026 Q3 : refresh 联网时效更新
+                : canvas 知识图谱可视化
+    section 展望
+        2026 Q4 : 多库联邦检索
+                : 自动矛盾消解
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 14. XY 图 ================= -->
+  <section id="c-xy">
+    <h2>知识增长趋势 <span class="chip">xychart-beta</span></h2>
+    <p class="desc">XY 图：柱状图与折线图叠加，网格线降噪处理</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+xychart-beta
+    title "每月新增概念页数量"
+    x-axis ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月"]
+    y-axis "页面数" 0 --> 60
+    bar [8, 14, 22, 18, 31, 42, 38, 55]
+    line [8, 14, 22, 18, 31, 42, 38, 55]
+</pre>
+    </div>
+  </section>
+
+  <div class="group-title">四 · 其他表现形式</div>
+
+  <!-- ================= 15. 旅程图 ================= -->
+  <section id="c-journey">
+    <h2>新用户上手旅程 <span class="chip">journey</span></h2>
+    <p class="desc">旅程图：情绪分值驱动纵向位置，分阶段用不同语义色</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+journey
+    title 新用户从零到产出第一条知识
+    section 探索
+      打开 Vault: 5: 用户
+      浏览目录结构: 4: 用户
+    section 配置
+      关闭受限模式: 3: 用户
+      安装 Dataview 与 Templater: 2: 用户
+      确认 CSS 片段已启用: 4: 用户
+    section 摄入
+      放入原始资料: 4: 用户
+      执行 ingest 编译: 5: 用户
+    section 收获
+      查看生成的概念页: 5: 用户
+      用 query 提问并溯源: 5: 用户
+      生成 canvas 图谱: 5: 用户
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 16. 象限图 ================= -->
+  <section id="c-quadrant">
+    <h2>知识优先级矩阵 <span class="chip">quadrantChart</span></h2>
+    <p class="desc">象限图：四个象限交替底色，数据点按语义色区分主题</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+quadrantChart
+    title 知识缺口优先级评估
+    x-axis 低研究成本 --> 高研究成本
+    y-axis 低价值 --> 高价值
+    quadrant-1 优先攻坚
+    quadrant-2 快速补齐
+    quadrant-3 暂时搁置
+    quadrant-4 长期投入
+    三阶段分离架构: [0.25, 0.85]
+    增量编译机制: [0.35, 0.78]
+    概念空缺检测: [0.20, 0.62]
+    跨库联邦检索: [0.82, 0.90]
+    矛盾自动消解: [0.88, 0.72]
+    向量检索增强: [0.75, 0.45]
+    多语言支持: [0.60, 0.30]
+    历史版本回溯: [0.45, 0.22]
+</pre>
+    </div>
+  </section>
+
+  <!-- ================= 17. GitGraph ================= -->
+  <section id="c-git">
+    <h2>知识库版本管理 <span class="chip">gitGraph</span></h2>
+    <p class="desc">GitGraph：分支标签胶囊化、提交节点与画布底色描边分离</p>
+    <div class="block-language-mermaid">
+<pre class="mermaid">
+gitGraph
+    commit id: "初始化骨架"
+    commit id: "目录与配置"
+    branch content
+    checkout content
+    commit id: "首批资料入库"
+    commit id: "概念库编译"
+    checkout main
+    merge content
+    branch maintenance
+    checkout maintenance
+    commit id: "lint 健康检查"
+    commit id: "refresh 联网更新"
+    checkout main
+    merge maintenance tag: "v1.0"
+    commit id: "canvas 图谱"
+</pre>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 主逻辑：Mermaid 就绪后调用 ---------- */
+  function boot() {
+    const mermaid = window.mermaid;
+
+    /* ---------- 主题变量：与 wiki-mermaid.css 的 token 保持一致 ---------- */
+    const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif';
+
+    const THEMES = {
+      dark: {
+        darkMode: true,
+        background: '#232326',
+        fontFamily: FONT,
+        fontSize: '14px',
+        textColor: '#d8d8dc',
+        titleColor: '#d8d8dc',
+        primaryColor: '#2e2e33',
+        primaryTextColor: '#d8d8dc',
+        primaryBorderColor: '#4c566a',
+        secondaryColor: '#35353b',
+        secondaryTextColor: '#d8d8dc',
+        secondaryBorderColor: '#4c566a',
+        tertiaryColor: '#2e2e33',
+        tertiaryTextColor: '#d8d8dc',
+        tertiaryBorderColor: '#4c566a',
+        mainBkg: '#2e2e33',
+        nodeBorder: '#4c566a',
+        nodeTextColor: '#d8d8dc',
+        lineColor: '#71798a',
+        edgeLabelBackground: '#3a3a42',
+        clusterBkg: 'rgba(94,129,172,0.07)',
+        clusterBorder: 'rgba(129,161,193,0.35)',
+        // sequence
+        actorBkg: '#30363f',
+        actorBorder: '#5e81ac',
+        actorTextColor: '#d8d8dc',
+        actorLineColor: 'rgba(129,161,193,0.4)',
+        signalColor: '#93a4bd',
+        signalTextColor: '#d8d8dc',
+        labelBoxBkgColor: '#3d4a3a',
+        labelBoxBorderColor: 'rgba(163,190,140,0.45)',
+        labelTextColor: '#b6d19d',
+        loopTextColor: '#a2a2ab',
+        noteBkgColor: 'rgba(235,203,139,0.12)',
+        noteBorderColor: '#b9a06a',
+        noteTextColor: '#d8d8dc',
+        activationBkgColor: 'rgba(94,129,172,0.55)',
+        activationBorderColor: '#5e81ac',
+        sequenceNumberColor: '#232326',
+        // gantt
+        sectionBkgColor: 'rgba(255,255,255,0.035)',
+        altSectionBkgColor: 'transparent',
+        sectionBkgColor2: 'transparent',
+        taskBkgColor: '#5e81ac',
+        taskTextColor: '#16161a',
+        taskTextLightColor: '#d8d8dc',
+        taskTextOutsideColor: '#d8d8dc',
+        taskBorderColor: '#5e81ac',
+        activeTaskBkgColor: '#81a1c1',
+        activeTaskBorderColor: '#81a1c1',
+        doneTaskBkgColor: '#4c566a',
+        doneTaskBorderColor: '#4c566a',
+        gridColor: 'rgba(255,255,255,0.08)',
+        // pie
+        pie1: '#5e81ac', pie2: '#88c0d0', pie3: '#a3be8c', pie4: '#ebcb8b',
+        pie5: '#d08770', pie6: '#bf616a', pie7: '#b48ead',
+        pieTitleTextColor: '#d8d8dc',
+        pieSectionTextColor: '#16161a',
+        pieLegendTextColor: '#d8d8dc',
+        pieStrokeColor: '#232326',
+        pieOuterStrokeColor: '#3a3a40',
+        // git
+        git0: '#5e81ac', git1: '#88c0d0', git2: '#a3be8c', git3: '#ebcb8b',
+        git4: '#d08770', git5: '#bf616a', git6: '#b48ead', git7: '#81a1c1',
+        gitBranchLabel0: '#16161a', gitBranchLabel1: '#16161a',
+        gitBranchLabel2: '#16161a', gitBranchLabel3: '#16161a',
+        gitBranchLabel4: '#16161a', gitBranchLabel5: '#16161a',
+        gitBranchLabel6: '#16161a', gitBranchLabel7: '#16161a',
+        commitLabelColor: '#a2a2ab',
+        commitLabelBackground: '#232326',
+        tagLabelColor: '#d8d8dc',
+        tagLabelBackground: 'rgba(180,142,173,0.22)',
+        tagLabelBorder: '#b48ead',
+        // er
+        attributeBackgroundColorOdd: '#2e2e33',
+        attributeBackgroundColorEven: 'rgba(255,255,255,0.035)',
+        // quadrant / xy
+        quadrant1Fill: 'rgba(76,120,153,0.10)',
+        quadrant2Fill: 'rgba(136,192,208,0.08)',
+        quadrant3Fill: 'rgba(163,190,140,0.06)',
+        quadrant4Fill: 'rgba(180,142,173,0.08)',
+        quadrantPointFill: '#5e81ac',
+        quadrantPointTextFill: '#d8d8dc',
+        quadrantTitleFill: '#d8d8dc',
+        xyChart: {
+          backgroundColor: 'transparent',
+          titleColor: '#d8d8dc',
+          xAxisLabelColor: '#a2a2ab',
+          xAxisTitleColor: '#d8d8dc',
+          yAxisLabelColor: '#a2a2ab',
+          yAxisTitleColor: '#d8d8dc',
+          plotColorPalette: '#5e81ac, #88c0d0, #a3be8c, #ebcb8b'
+        },
+        // journey / timeline
+        cScale0: '#5e81ac', cScale1: '#88c0d0', cScale2: '#a3be8c',
+        cScale3: '#ebcb8b', cScale4: '#d08770', cScale5: '#bf616a',
+        cScale6: '#b48ead', cScale7: '#81a1c1'
+      },
+
+      light: {
+        darkMode: false,
+        background: '#f7f8fa',
+        fontFamily: FONT,
+        fontSize: '14px',
+        textColor: '#2b2f36',
+        titleColor: '#2b2f36',
+        primaryColor: '#ffffff',
+        primaryTextColor: '#2b2f36',
+        primaryBorderColor: '#c3ccd8',
+        secondaryColor: '#f4f6f9',
+        secondaryTextColor: '#2b2f36',
+        secondaryBorderColor: '#c3ccd8',
+        tertiaryColor: '#ffffff',
+        tertiaryTextColor: '#2b2f36',
+        tertiaryBorderColor: '#c3ccd8',
+        mainBkg: '#ffffff',
+        nodeBorder: '#c3ccd8',
+        nodeTextColor: '#2b2f36',
+        lineColor: '#9aa5b4',
+        edgeLabelBackground: '#eef1f5',
+        clusterBkg: 'rgba(76,120,153,0.05)',
+        clusterBorder: 'rgba(76,120,153,0.28)',
+        actorBkg: '#eef3f8',
+        actorBorder: '#4c7899',
+        actorTextColor: '#2b2f36',
+        actorLineColor: 'rgba(76,120,153,0.35)',
+        signalColor: '#6b7b8f',
+        signalTextColor: '#2b2f36',
+        labelBoxBkgColor: '#e8f0e2',
+        labelBoxBorderColor: 'rgba(106,148,85,0.4)',
+        labelTextColor: '#4f7038',
+        loopTextColor: '#5d646f',
+        noteBkgColor: 'rgba(184,134,11,0.1)',
+        noteBorderColor: '#c9a227',
+        noteTextColor: '#2b2f36',
+        activationBkgColor: 'rgba(76,120,153,0.35)',
+        activationBorderColor: '#4c7899',
+        sequenceNumberColor: '#ffffff',
+        sectionBkgColor: 'rgba(15,23,42,0.025)',
+        altSectionBkgColor: 'transparent',
+        sectionBkgColor2: 'transparent',
+        taskBkgColor: '#4c7899',
+        taskTextColor: '#ffffff',
+        taskTextLightColor: '#2b2f36',
+        taskTextOutsideColor: '#2b2f36',
+        taskBorderColor: '#4c7899',
+        activeTaskBkgColor: '#6c9abb',
+        activeTaskBorderColor: '#6c9abb',
+        doneTaskBkgColor: '#c3ccd8',
+        doneTaskBorderColor: '#c3ccd8',
+        gridColor: 'rgba(15,23,42,0.08)',
+        pie1: '#4c7899', pie2: '#3a8ea0', pie3: '#6a9455', pie4: '#b8860b',
+        pie5: '#c25e3a', pie6: '#b04050', pie7: '#8e5e87',
+        pieTitleTextColor: '#2b2f36',
+        pieSectionTextColor: '#ffffff',
+        pieLegendTextColor: '#2b2f36',
+        pieStrokeColor: '#ffffff',
+        pieOuterStrokeColor: '#e2e5ea',
+        git0: '#4c7899', git1: '#3a8ea0', git2: '#6a9455', git3: '#b8860b',
+        git4: '#c25e3a', git5: '#b04050', git6: '#8e5e87', git7: '#6c9abb',
+        gitBranchLabel0: '#ffffff', gitBranchLabel1: '#ffffff',
+        gitBranchLabel2: '#ffffff', gitBranchLabel3: '#ffffff',
+        gitBranchLabel4: '#ffffff', gitBranchLabel5: '#ffffff',
+        gitBranchLabel6: '#ffffff', gitBranchLabel7: '#ffffff',
+        commitLabelColor: '#5d646f',
+        commitLabelBackground: '#f7f8fa',
+        tagLabelColor: '#2b2f36',
+        tagLabelBackground: 'rgba(142,94,135,0.14)',
+        tagLabelBorder: '#8e5e87',
+        attributeBackgroundColorOdd: '#ffffff',
+        attributeBackgroundColorEven: 'rgba(15,23,42,0.025)',
+        quadrant1Fill: 'rgba(76,120,153,0.08)',
+        quadrant2Fill: 'rgba(58,142,160,0.06)',
+        quadrant3Fill: 'rgba(106,148,85,0.05)',
+        quadrant4Fill: 'rgba(142,94,135,0.06)',
+        quadrantPointFill: '#4c7899',
+        quadrantPointTextFill: '#2b2f36',
+        quadrantTitleFill: '#2b2f36',
+        xyChart: {
+          backgroundColor: 'transparent',
+          titleColor: '#2b2f36',
+          xAxisLabelColor: '#5d646f',
+          xAxisTitleColor: '#2b2f36',
+          yAxisLabelColor: '#5d646f',
+          yAxisTitleColor: '#2b2f36',
+          plotColorPalette: '#4c7899, #3a8ea0, #6a9455, #b8860b'
+        },
+        cScale0: '#4c7899', cScale1: '#3a8ea0', cScale2: '#6a9455',
+        cScale3: '#b8860b', cScale4: '#c25e3a', cScale5: '#b04050',
+        cScale6: '#8e5e87', cScale7: '#6c9abb'
+      }
+    };
+
+    /* ---------- 记录原始图表源码，供主题切换后重渲染 ---------- */
+    const boxes = [...document.querySelectorAll('.block-language-mermaid')];
+    boxes.forEach(box => {
+      box.dataset.code = box.querySelector('pre.mermaid').textContent;
+    });
+
+    let currentTheme = 'dark';
+
+    async function renderAll() {
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: 'loose',
+        theme: 'base',
+        themeVariables: THEMES[currentTheme],
+      flowchart: { curve: 'basis', htmlLabels: true, padding: 14, nodeSpacing: 46, rankSpacing: 56, useMaxWidth: false },
+      sequence: { actorMargin: 60, boxMargin: 12, mirrorActors: false, useMaxWidth: false, wrap: false },
+      gantt: { useMaxWidth: false, barHeight: 20, barGap: 5, topPadding: 56 },
+      mindmap: { useMaxWidth: false, padding: 12 },
+      er: { useMaxWidth: false, layoutDirection: 'TB' },
+      journey: { useMaxWidth: false },
+      timeline: { useMaxWidth: false },
+      pie: { useMaxWidth: false },
+      quadrantChart: { useMaxWidth: false },
+      gitGraph: { useMaxWidth: false },
+      xyChart: { useMaxWidth: false }
+      });
+
+      boxes.forEach(box => {
+        const pre = document.createElement('pre');
+        pre.className = 'mermaid';
+        pre.textContent = box.dataset.code;
+        box.replaceChildren(pre);
+      });
+
+      await mermaid.run({ nodes: [...document.querySelectorAll('pre.mermaid')] });
+    }
+
+    /* ---------- 主题切换 ---------- */
+    const toggle = document.getElementById('theme-toggle');
+    toggle.addEventListener('click', async () => {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.className = 'theme-' + currentTheme;
+      toggle.textContent = currentTheme === 'dark' ? '☀︎ 切换浅色' : '☾ 切换深色';
+      await renderAll();
+    });
+
+    renderAll();
+  }
+
+  /* ---------- 依赖加载失败时的降级提示 ---------- */
+  function fail() {
+    document.querySelectorAll('.block-language-mermaid').forEach(function (box) {
+      var warn = document.createElement('p');
+      warn.style.cssText = 'color:#bf616a;font-size:13px;text-align:center;padding:12px';
+      warn.textContent = '⚠️ Mermaid 资源加载失败，请检查网络后刷新页面';
+      box.replaceChildren(warn);
+    });
+  }
+
+  /* ---------- Mermaid 依赖加载：多 CDN 顺序回退 ---------- */
+  var SOURCES = [
+    'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js',
+    'https://fastly.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js',
+    'https://unpkg.com/mermaid@11/dist/mermaid.min.js'
+  ];
+  var idx = 0;
+
+  (function next() {
+    if (idx >= SOURCES.length) { fail(); return; }
+    var s = document.createElement('script');
+    s.src = SOURCES[idx++];
+    s.onload = function () { window.mermaid ? boot() : next(); };
+    s.onerror = next;
+    document.head.appendChild(s);
+  })();
+
+})();
+</script>
+
 </body>
 </html>

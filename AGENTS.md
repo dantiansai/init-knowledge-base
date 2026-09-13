@@ -24,7 +24,7 @@
 | 知识库客户端 | [Obsidian](https://obsidian.md/)（桌面端） | 用户主要的阅读与编辑界面 |
 | 数据查询 | Dataview（Obsidian 社区插件） | `wiki/index.md` 动态仪表盘依赖此插件 |
 | 模板引擎 | Templater（Obsidian 社区插件） | `templates/` 目录下的 4 个模板由其解析 |
-| 样式 | CSS Snippets | `.obsidian/snippets/` 下的 3 个 CSS 文件 |
+| 样式 | CSS Snippets | `.obsidian/snippets/` 下的 6 个 CSS 文件 |
 | 版本控制 | Git | 仅追踪配置与内容，排除插件二进制文件 |
 
 ### 运行时架构
@@ -182,7 +182,7 @@ status: draft | finished | archived
 3. **Templater 语法检查**：`templates/*.md` 中的 `<% ... %>` 语法需与 Templater 插件兼容。
 4. **CSS 语法检查**：`.obsidian/snippets/*.css` 需保证无语法错误。
 5. **端到端验证**：在 Kimi Code CLI 中执行 `/init-vault test-vault`，在 Obsidian 中打开生成的 Vault，确认：
-   - 三个 CSS 片段已自动启用（Appearance → CSS Snippets）
+   - 六个 CSS 片段已自动启用（Appearance → CSS Snippets）
    - `wiki/index.md` 的 Dataview 查询正常渲染（安装 Dataview 后）
    - `templates/` 中的模板可通过 Templater 正常插入
    - `wiki/mocs/` 中的 4 个 MOC 文件无死链，Dataview 查询正常渲染

@@ -69,6 +69,13 @@
 | `wiki-reading.css` | 阅读排版优化：标题层级、段落间距、引用块、表格 |
 | `wiki-callouts.css` | Callout 美化：语义化颜色 + 左侧边条 |
 | `wiki-components.css` | 组件增强：双链、外部链接、标签、图片、代码块 |
+| `wiki-mermaid.css` | 图表美化：时序图、流程图、思维导图、类图、状态图、ER 图、甘特图、饼图、时间线、象限图等 |
+| `wiki-markmap.css` | 思维导图（Markmap）：节点圆点、连线质感、悬停与折叠反馈 |
+| `wiki-canvas.css` | Canvas 白板：节点卡片、分组、连线、聚焦态 |
+
+> 图表类片段（mermaid / markmap / canvas）全部基于语义 CSS 变量实现明暗双主题自适应，
+> 因此 Mermaid 源码中**不需要**写 `style X fill:#...` 这类硬编码颜色，
+> 用语义 `class` 即可（见 `Mindmap-知识库全景.md` 的示例）。
 
 如需调整样式，可在 **Settings → Appearance → CSS Snippets** 中开关单个片段。
 
@@ -274,11 +281,11 @@ flowchart TD
     H --> I["9. /refresh 联网更新"]
     I --> J["10. /canvas 生成图谱"]
 
-    style A fill:#5e81ac,stroke:#5e81ac,color:#fff
-    style C fill:#d08770,stroke:#d08770,color:#fff
-    style H fill:#a3be8c,stroke:#a3be8c,color:#fff
-    style I fill:#d08770,stroke:#d08770,color:#fff
-    style J fill:#ebcb8b,stroke:#ebcb8b,color:#2e3440
+    class A solid
+    class C,H orange
+    class I green
+    class J yellow
+
 ```
 
 1. 在 Obsidian 中打开本文件夹作为 Vault

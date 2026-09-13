@@ -1,0 +1,1049 @@
+/* ==========================================================================
+   Wiki Mermaid — 知识库图表美化样式
+   覆盖 Mermaid 全图表类型：时序图 / 流程图 / 思维导图 / 类图 / 状态图 /
+   ER 图 / 甘特图 / 饼图 / 旅程图 / 时间线 / 象限图 / GitGraph / XY 图
+   设计与 wiki-reading / wiki-callouts / wiki-components 共用同一套 Nord 冷色 token
+   明暗双主题自适应 —— 同一份 Mermaid 源码在两种主题下都保持可读
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 设计 Token
+   -------------------------------------------------------------------------- */
+
+/* 语义色阶（Nord Aurora）— 供 Mermaid 源码中的语义 class 使用（对应第 17 节） */
+.theme-dark {
+  --wiki-c-blue: #5e81ac;
+  --wiki-c-cyan: #88c0d0;
+  --wiki-c-green: #a3be8c;
+  --wiki-c-yellow: #ebcb8b;
+  --wiki-c-orange: #d08770;
+  --wiki-c-red: #bf616a;
+  --wiki-c-purple: #b48ead;
+
+  /* 柔化底色：深色主题下 alpha 需略高才能在深底上显出层次 */
+  --wiki-c-blue-soft: rgba(94, 129, 172, 0.32);
+  --wiki-c-cyan-soft: rgba(136, 192, 208, 0.24);
+  --wiki-c-green-soft: rgba(163, 190, 140, 0.24);
+  --wiki-c-yellow-soft: rgba(235, 203, 139, 0.22);
+  --wiki-c-orange-soft: rgba(208, 135, 112, 0.24);
+  --wiki-c-red-soft: rgba(191, 97, 106, 0.24);
+  --wiki-c-purple-soft: rgba(180, 142, 173, 0.26);
+
+  /* 画布 */
+  --wiki-mmd-canvas-bg: #232326;
+  --wiki-mmd-canvas-border: #3a3a40;
+  --wiki-mmd-canvas-inset: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+
+  /* 文字 */
+  --wiki-mmd-fg: #d8d8dc;
+  --wiki-mmd-fg-dim: #a2a2ab;
+  --wiki-mmd-fg-faint: #7c7c86;
+  --wiki-mmd-on-solid: #16161a;
+
+  /* 节点 */
+  --wiki-mmd-node-bg: #2e2e33;
+  --wiki-mmd-node-bg-alt: #35353b;
+  --wiki-mmd-node-border: #4c566a;
+  --wiki-mmd-node-shadow: rgba(0, 0, 0, 0.28);
+
+  /* 连线 */
+  --wiki-mmd-line: #71798a;
+  --wiki-mmd-line-strong: #81a1c1;
+
+  /* 标签胶囊 */
+  --wiki-mmd-label-bg: #3a3a42;
+  --wiki-mmd-label-fg: #cfd3da;
+
+  /* 分组框 */
+  --wiki-mmd-cluster-bg: rgba(94, 129, 172, 0.07);
+  --wiki-mmd-cluster-border: rgba(129, 161, 193, 0.35);
+  --wiki-mmd-cluster-fg: #9fb3d1;
+
+  /* 时序图专属 */
+  --wiki-mmd-actor-bg: #30363f;
+  --wiki-mmd-actor-border: #5e81ac;
+  --wiki-mmd-lifeline: rgba(129, 161, 193, 0.4);
+  --wiki-mmd-seq-msg: #93a4bd;
+  --wiki-mmd-seq-note-bg: rgba(235, 203, 139, 0.12);
+  --wiki-mmd-seq-note-border: #b9a06a;
+  --wiki-mmd-seq-frame: rgba(163, 190, 140, 0.45);
+  --wiki-mmd-seq-label-bg: #3d4a3a;
+  --wiki-mmd-seq-label-fg: #b6d19d;
+  --wiki-mmd-seq-activation: rgba(94, 129, 172, 0.55);
+
+  /* 网格 / 表格 */
+  --wiki-mmd-grid: rgba(255, 255, 255, 0.08);
+  --wiki-mmd-stripe: rgba(255, 255, 255, 0.035);
+}
+
+.theme-light {
+  --wiki-c-blue: #4c7899;
+  --wiki-c-cyan: #3a8ea0;
+  --wiki-c-green: #6a9455;
+  --wiki-c-yellow: #b8860b;
+  --wiki-c-orange: #c25e3a;
+  --wiki-c-red: #b04050;
+  --wiki-c-purple: #8e5e87;
+
+  --wiki-c-blue-soft: rgba(76, 120, 153, 0.14);
+  --wiki-c-cyan-soft: rgba(58, 142, 160, 0.12);
+  --wiki-c-green-soft: rgba(106, 148, 85, 0.12);
+  --wiki-c-yellow-soft: rgba(184, 134, 11, 0.12);
+  --wiki-c-orange-soft: rgba(194, 94, 58, 0.12);
+  --wiki-c-red-soft: rgba(176, 64, 80, 0.12);
+  --wiki-c-purple-soft: rgba(142, 94, 135, 0.12);
+
+  --wiki-mmd-canvas-bg: #f7f8fa;
+  --wiki-mmd-canvas-border: #e2e5ea;
+  --wiki-mmd-canvas-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  --wiki-mmd-fg: #2b2f36;
+  --wiki-mmd-fg-dim: #5d646f;
+  --wiki-mmd-fg-faint: #8a9099;
+  --wiki-mmd-on-solid: #ffffff;
+
+  --wiki-mmd-node-bg: #ffffff;
+  --wiki-mmd-node-bg-alt: #f4f6f9;
+  --wiki-mmd-node-border: #c3ccd8;
+  --wiki-mmd-node-shadow: rgba(15, 23, 42, 0.07);
+
+  --wiki-mmd-line: #9aa5b4;
+  --wiki-mmd-line-strong: #6c9abb;
+
+  --wiki-mmd-label-bg: #eef1f5;
+  --wiki-mmd-label-fg: #444b55;
+
+  --wiki-mmd-cluster-bg: rgba(76, 120, 153, 0.05);
+  --wiki-mmd-cluster-border: rgba(76, 120, 153, 0.28);
+  --wiki-mmd-cluster-fg: #4c7899;
+
+  --wiki-mmd-actor-bg: #eef3f8;
+  --wiki-mmd-actor-border: #4c7899;
+  --wiki-mmd-lifeline: rgba(76, 120, 153, 0.35);
+  --wiki-mmd-seq-msg: #6b7b8f;
+  --wiki-mmd-seq-note-bg: rgba(184, 134, 11, 0.1);
+  --wiki-mmd-seq-note-border: #c9a227;
+  --wiki-mmd-seq-frame: rgba(106, 148, 85, 0.4);
+  --wiki-mmd-seq-label-bg: #e8f0e2;
+  --wiki-mmd-seq-label-fg: #4f7038;
+  --wiki-mmd-seq-activation: rgba(76, 120, 153, 0.35);
+
+  --wiki-mmd-grid: rgba(15, 23, 42, 0.08);
+  --wiki-mmd-stripe: rgba(15, 23, 42, 0.025);
+}
+
+/* 排版 token —— 两个主题共用 */
+.theme-dark,
+.theme-light {
+  --wiki-mmd-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  --wiki-mmd-radius: 10px;
+  --wiki-mmd-radius-sm: 6px;
+  --wiki-mmd-stroke: 1.5px;
+  --wiki-mmd-font-size: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   2. 图表容器 —— 从"裸露在白底上的一段 SVG"变成一张卡片
+   -------------------------------------------------------------------------- */
+.block-language-mermaid,
+.mermaid-view {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 1.4em 0 !important;
+  padding: 22px 18px !important;
+  background-color: var(--wiki-mmd-canvas-bg) !important;
+  border: 1px solid var(--wiki-mmd-canvas-border) !important;
+  border-radius: var(--wiki-mmd-radius) !important;
+  box-shadow: var(--wiki-mmd-canvas-inset) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  position: relative !important;
+}
+
+/* 容器内加一层极淡的网格纹理，强化"技术画布"质感 */
+.block-language-mermaid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--wiki-mmd-grid) 1px,
+    transparent 0
+  );
+  background-size: 16px 16px;
+  opacity: 0.5;
+}
+
+.block-language-mermaid > svg,
+.mermaid-view > svg {
+  position: relative;
+  z-index: 1;
+  /* 保持图表自然尺寸：字号与线宽不被压缩，超出容器时由容器横向滚动 */
+  width: auto !important;
+  max-width: none !important;
+  height: auto;
+}
+
+/* 图表内的滚动条 */
+.block-language-mermaid::-webkit-scrollbar {
+  height: 8px;
+}
+.block-language-mermaid::-webkit-scrollbar-track {
+  background: transparent;
+}
+.block-language-mermaid::-webkit-scrollbar-thumb {
+  background: var(--wiki-mmd-canvas-border);
+  border-radius: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   3. 全局字体与基础重置
+   -------------------------------------------------------------------------- */
+.block-language-mermaid svg {
+  font-family: var(--wiki-mmd-font) !important;
+  font-size: var(--wiki-mmd-font-size) !important;
+}
+
+.block-language-mermaid svg text,
+.block-language-mermaid svg tspan,
+.block-language-mermaid .nodeLabel,
+.block-language-mermaid .edgeLabel,
+.block-language-mermaid .messageText,
+.block-language-mermaid .actor,
+.block-language-mermaid .noteText,
+.block-language-mermaid .labelText,
+.block-language-mermaid .loopText,
+.block-language-mermaid svg foreignObject,
+.block-language-mermaid svg foreignObject div,
+.block-language-mermaid svg foreignObject span {
+  font-family: var(--wiki-mmd-font) !important;
+}
+
+/* 统一箭头颜色，避免默认纯黑箭头在暗色下刺眼 */
+.block-language-mermaid marker path,
+.block-language-mermaid .marker,
+.block-language-mermaid .arrowheadPath,
+.block-language-mermaid #arrowhead path {
+  fill: var(--wiki-mmd-line-strong) !important;
+  stroke: var(--wiki-mmd-line-strong) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Flowchart 流程图
+   -------------------------------------------------------------------------- */
+
+/* 节点外形：圆角 + 描边 + 柔和投影 */
+.block-language-mermaid .node rect,
+.block-language-mermaid .node circle,
+.block-language-mermaid .node ellipse,
+.block-language-mermaid .node polygon,
+.block-language-mermaid .node path {
+  fill: var(--wiki-mmd-node-bg) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  rx: 8px;
+  ry: 8px;
+  filter: drop-shadow(0 2px 3px var(--wiki-mmd-node-shadow));
+  transition: stroke 0.15s ease, fill 0.15s ease;
+}
+
+/* 节点悬停 —— 弱交互反馈，帮助在密集图中定位 */
+.block-language-mermaid .node:hover rect,
+.block-language-mermaid .node:hover circle,
+.block-language-mermaid .node:hover polygon,
+.block-language-mermaid .node:hover path {
+  stroke: var(--wiki-mmd-line-strong) !important;
+  fill: var(--wiki-mmd-node-bg-alt) !important;
+}
+
+/* 节点文字 */
+.block-language-mermaid .nodeLabel,
+.block-language-mermaid .node .label,
+.block-language-mermaid .label text {
+  fill: var(--wiki-mmd-fg) !important;
+  color: var(--wiki-mmd-fg) !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+}
+
+.block-language-mermaid .node foreignObject div,
+.block-language-mermaid .node foreignObject span {
+  color: var(--wiki-mmd-fg) !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+}
+
+/* 连线 */
+.block-language-mermaid .edgePath .path,
+.block-language-mermaid .flowchart-link,
+.block-language-mermaid .edge-thickness-normal,
+.block-language-mermaid .edge-thickness-thick {
+  stroke: var(--wiki-mmd-line) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  stroke-linecap: round !important;
+  fill: none !important;
+}
+
+/* 连线上的文字标签 —— 做成胶囊，避免压在线上看不清 */
+.block-language-mermaid .edgeLabel,
+.block-language-mermaid .edgeLabel p,
+.block-language-mermaid .edgeLabel span {
+  background-color: var(--wiki-mmd-label-bg) !important;
+  color: var(--wiki-mmd-label-fg) !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  padding: 1px 2px !important;
+  border-radius: 4px !important;
+}
+
+.block-language-mermaid .edgeLabel rect,
+.block-language-mermaid .edgeLabel .labelBkg {
+  fill: var(--wiki-mmd-label-bg) !important;
+  stroke: var(--wiki-mmd-canvas-border) !important;
+  stroke-width: 1px !important;
+  rx: 6px;
+  ry: 6px;
+  opacity: 1 !important;
+}
+
+.block-language-mermaid .edgeLabel foreignObject div {
+  color: var(--wiki-mmd-label-fg) !important;
+  font-size: 12px !important;
+}
+
+/* 分组框（subgraph）—— 柔和虚线容器 */
+.block-language-mermaid .cluster rect,
+.block-language-mermaid .cluster polygon {
+  fill: var(--wiki-mmd-cluster-bg) !important;
+  stroke: var(--wiki-mmd-cluster-border) !important;
+  stroke-width: 1px !important;
+  stroke-dasharray: 5 4 !important;
+  rx: 12px;
+  ry: 12px;
+}
+
+.block-language-mermaid .cluster-label,
+.block-language-mermaid .cluster-label .nodeLabel,
+.block-language-mermaid .cluster span,
+.block-language-mermaid .cluster text {
+  fill: var(--wiki-mmd-cluster-fg) !important;
+  color: var(--wiki-mmd-cluster-fg) !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.02em !important;
+}
+
+.block-language-mermaid .cluster foreignObject div {
+  color: var(--wiki-mmd-cluster-fg) !important;
+  font-weight: 700 !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. Sequence Diagram 时序图  ★ 重点
+   -------------------------------------------------------------------------- */
+
+/* Actor 参与者盒子 */
+.block-language-mermaid .actor {
+  fill: var(--wiki-mmd-actor-bg) !important;
+  stroke: var(--wiki-mmd-actor-border) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  rx: 8px;
+  ry: 8px;
+  filter: drop-shadow(0 2px 4px var(--wiki-mmd-node-shadow));
+}
+
+.block-language-mermaid text.actor,
+.block-language-mermaid text.actor > tspan {
+  fill: var(--wiki-mmd-fg) !important;
+  stroke: none !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+/* 生命线 —— 虚线，弱化存在感但不消失 */
+.block-language-mermaid .actor-line {
+  stroke: var(--wiki-mmd-lifeline) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  stroke-dasharray: 5 4 !important;
+}
+
+/* 消息连线 */
+.block-language-mermaid .messageLine0,
+.block-language-mermaid .messageLine1 {
+  stroke: var(--wiki-mmd-seq-msg) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  stroke-linecap: round !important;
+}
+
+/* 自调用消息需要保留可见的折返 */
+.block-language-mermaid .messageLine1 {
+  stroke-dasharray: 4 3 !important;
+}
+
+/* 消息文字 */
+.block-language-mermaid .messageText {
+  fill: var(--wiki-mmd-fg) !important;
+  stroke: none !important;
+  font-size: 12.5px !important;
+}
+
+/* Note 便签 —— 用暖色和主流程区分开 */
+.block-language-mermaid .note {
+  fill: var(--wiki-mmd-seq-note-bg) !important;
+  stroke: var(--wiki-mmd-seq-note-border) !important;
+  stroke-width: 1px !important;
+  rx: 6px;
+  ry: 6px;
+}
+
+.block-language-mermaid .noteText,
+.block-language-mermaid .noteText > tspan {
+  fill: var(--wiki-mmd-fg) !important;
+  stroke: none !important;
+  font-size: 12px !important;
+}
+
+/* loop / alt / opt / par 等控制框 */
+.block-language-mermaid .loopLine {
+  stroke: var(--wiki-mmd-seq-frame) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  stroke-dasharray: 5 4 !important;
+}
+
+.block-language-mermaid .labelBox {
+  fill: var(--wiki-mmd-seq-label-bg) !important;
+  stroke: var(--wiki-mmd-seq-frame) !important;
+  stroke-width: 1px !important;
+  rx: 5px;
+  ry: 5px;
+}
+
+.block-language-mermaid .labelText,
+.block-language-mermaid .labelText > tspan {
+  fill: var(--wiki-mmd-seq-label-fg) !important;
+  stroke: none !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+}
+
+.block-language-mermaid .loopText,
+.block-language-mermaid .loopText > tspan {
+  fill: var(--wiki-mmd-fg-dim) !important;
+  stroke: none !important;
+  font-size: 12px !important;
+}
+
+/* 激活条（消息期间的存活矩形） */
+.block-language-mermaid .activation0,
+.block-language-mermaid .activation1,
+.block-language-mermaid .activation2 {
+  fill: var(--wiki-mmd-seq-activation) !important;
+  stroke: var(--wiki-mmd-actor-border) !important;
+  stroke-width: 1px !important;
+  rx: 3px;
+  ry: 3px;
+}
+
+/* 自动编号的序号圆标 */
+.block-language-mermaid .sequenceNumber {
+  fill: var(--wiki-mmd-canvas-bg) !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+}
+
+/* 顶层标题（Mermaid 11 时序图标题） */
+.block-language-mermaid .sequenceTitle,
+.block-language-mermaid .titleText {
+  fill: var(--wiki-mmd-fg) !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. Mindmap 思维导图（Mermaid 原生 mindmap）
+   -------------------------------------------------------------------------- */
+
+/* 连线：加粗 + 圆头，让放射结构更清晰 */
+.block-language-mermaid .mindmap-edge,
+.block-language-mermaid .edge {
+  stroke: var(--wiki-mmd-line) !important;
+  stroke-width: 2px !important;
+  stroke-linecap: round !important;
+  fill: none !important;
+}
+
+/* 节点统一外形 */
+.block-language-mermaid .mindmap-node > rect,
+.block-language-mermaid .mindmap-node > path,
+.block-language-mermaid .mindmap-node > circle,
+.block-language-mermaid .mindmap-node > ellipse,
+.block-language-mermaid .mindmap-node > polygon {
+  stroke: var(--wiki-mmd-canvas-bg) !important;
+  stroke-width: 2px !important;
+  rx: 8px;
+  ry: 8px;
+}
+
+/* 中心根节点 —— 最重的视觉锚点 */
+.block-language-mermaid .section-root rect,
+.block-language-mermaid .section-root path,
+.block-language-mermaid .section-root circle {
+  fill: var(--wiki-c-blue) !important;
+  stroke: var(--wiki-c-blue) !important;
+}
+.block-language-mermaid .section-root .nodeLabel,
+.block-language-mermaid .section-root text,
+.block-language-mermaid .section-root foreignObject div {
+  fill: var(--wiki-mmd-on-solid) !important;
+  color: var(--wiki-mmd-on-solid) !important;
+  font-weight: 700 !important;
+}
+
+/* 分层着色
+   注意 Mermaid mindmap 的层级编号：根节点是 section--1，
+   一级分支才是 section-0，往后依次 section-1 / section-2 ……
+   节点外形由 <path class="node-bkg"> 绘制（不是 rect），故用直接子元素选择器 */
+.block-language-mermaid .section-0 > rect,
+.block-language-mermaid .section-0 > circle,
+.block-language-mermaid .section-0 > path {
+  fill: var(--wiki-c-blue-soft) !important;
+  stroke: var(--wiki-c-blue) !important;
+}
+.block-language-mermaid .section-1 > rect,
+.block-language-mermaid .section-1 > circle,
+.block-language-mermaid .section-1 > path {
+  fill: var(--wiki-c-cyan-soft) !important;
+  stroke: var(--wiki-c-cyan) !important;
+}
+.block-language-mermaid .section-2 > rect,
+.block-language-mermaid .section-2 > circle,
+.block-language-mermaid .section-2 > path {
+  fill: var(--wiki-c-green-soft) !important;
+  stroke: var(--wiki-c-green) !important;
+}
+.block-language-mermaid .section-3 > rect,
+.block-language-mermaid .section-3 > circle,
+.block-language-mermaid .section-3 > path {
+  fill: var(--wiki-c-yellow-soft) !important;
+  stroke: var(--wiki-c-yellow) !important;
+}
+.block-language-mermaid .section-4 > rect,
+.block-language-mermaid .section-4 > circle,
+.block-language-mermaid .section-4 > path {
+  fill: var(--wiki-c-purple-soft) !important;
+  stroke: var(--wiki-c-purple) !important;
+}
+.block-language-mermaid .section-5 > rect,
+.block-language-mermaid .section-5 > circle,
+.block-language-mermaid .section-5 > path {
+  fill: var(--wiki-c-orange-soft) !important;
+  stroke: var(--wiki-c-orange) !important;
+}
+
+/* 节点底部的装饰横线：弱化，避免与描边抢注意力 */
+.block-language-mermaid .mindmap-node .node-line- {
+  stroke: var(--wiki-mmd-line) !important;
+  stroke-width: 1px !important;
+  opacity: 0.3;
+}
+
+/* 分隔线：根节点的圆角矩形底衬不需要描边 */
+.block-language-mermaid .mindmap-node > g.label > rect {
+  fill: none !important;
+  stroke: none !important;
+}
+
+/* mindmap 文字 */
+.block-language-mermaid .mindmap-node .nodeLabel,
+.block-language-mermaid .mindmap-node text,
+.block-language-mermaid .mindmap-node foreignObject div {
+  fill: var(--wiki-mmd-fg) !important;
+  color: var(--wiki-mmd-fg) !important;
+  font-size: 13px !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Class Diagram 类图
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .classGroup rect,
+.block-language-mermaid .classGroup path {
+  fill: var(--wiki-mmd-node-bg) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  rx: 6px;
+  ry: 6px;
+}
+
+.block-language-mermaid .classLabel .box {
+  fill: var(--wiki-c-blue) !important;
+  stroke: var(--wiki-c-blue) !important;
+  rx: 6px;
+  ry: 6px;
+}
+
+.block-language-mermaid .classLabel .label {
+  fill: var(--wiki-mmd-on-solid) !important;
+  color: var(--wiki-mmd-on-solid) !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+}
+
+.block-language-mermaid .classGroup .title,
+.block-language-mermaid .classTitle {
+  fill: var(--wiki-mmd-fg) !important;
+  color: var(--wiki-mmd-fg) !important;
+  font-weight: 600 !important;
+}
+
+.block-language-mermaid .classGroup text,
+.block-language-mermaid .classGroup .nodeLabel {
+  fill: var(--wiki-mmd-fg-dim) !important;
+  color: var(--wiki-mmd-fg-dim) !important;
+}
+
+.block-language-mermaid .relation,
+.block-language-mermaid .divider {
+  stroke: var(--wiki-mmd-line) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+}
+
+.block-language-mermaid .relationLabel {
+  fill: var(--wiki-mmd-label-fg) !important;
+  font-size: 12px !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. State Diagram 状态图
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .statediagram-state rect,
+.block-language-mermaid .stateGroup rect,
+.block-language-mermaid .node rect.state-start,
+.block-language-mermaid .node rect.state-end {
+  fill: var(--wiki-mmd-node-bg) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  rx: 8px;
+  ry: 8px;
+}
+
+.block-language-mermaid .stateGroup .state-title,
+.block-language-mermaid .stateLabel,
+.block-language-mermaid .statediagram-state .nodeLabel {
+  fill: var(--wiki-mmd-fg) !important;
+  color: var(--wiki-mmd-fg) !important;
+  font-weight: 600 !important;
+}
+
+.block-language-mermaid .transition {
+  stroke: var(--wiki-mmd-line) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  fill: none !important;
+}
+
+.block-language-mermaid .statediagram-cluster rect {
+  fill: var(--wiki-mmd-cluster-bg) !important;
+  stroke: var(--wiki-mmd-cluster-border) !important;
+  stroke-dasharray: 5 4 !important;
+  rx: 12px;
+  ry: 12px;
+}
+
+/* 起始/终止节点 */
+.block-language-mermaid .start-state,
+.block-language-mermaid .end-state-inner {
+  fill: var(--wiki-c-blue) !important;
+  stroke: var(--wiki-c-blue) !important;
+}
+.block-language-mermaid .end-state-outer {
+  stroke: var(--wiki-c-blue) !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. ER Diagram 实体关系图
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .er.entityBox {
+  fill: var(--wiki-mmd-node-bg) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  rx: 6px;
+  ry: 6px;
+}
+
+.block-language-mermaid .er.entityLabel,
+.block-language-mermaid .er.entityLabelText {
+  fill: var(--wiki-mmd-fg) !important;
+  font-weight: 700 !important;
+}
+
+.block-language-mermaid .er.attributeBoxOdd {
+  fill: var(--wiki-mmd-node-bg) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+}
+
+.block-language-mermaid .er.attributeBoxEven {
+  fill: var(--wiki-mmd-stripe) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+}
+
+.block-language-mermaid .er.relationshipBox,
+.block-language-mermaid .er.relationshipLabelBox {
+  fill: var(--wiki-mmd-label-bg) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+  rx: 5px;
+  ry: 5px;
+}
+
+.block-language-mermaid .er.relationshipLabel {
+  fill: var(--wiki-mmd-label-fg) !important;
+  font-size: 12px !important;
+}
+
+.block-language-mermaid .er.relationshipLine {
+  stroke: var(--wiki-mmd-line) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. Gantt 甘特图
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .grid .tick line {
+  stroke: var(--wiki-mmd-grid) !important;
+}
+
+.block-language-mermaid .grid .tick text {
+  fill: var(--wiki-mmd-fg-dim) !important;
+  font-size: 12px !important;
+}
+
+.block-language-mermaid .grid path {
+  stroke: var(--wiki-mmd-grid) !important;
+}
+
+/* 任务条 */
+.block-language-mermaid .task {
+  fill: var(--wiki-c-blue) !important;
+  stroke: var(--wiki-c-blue) !important;
+  rx: 4px;
+  ry: 4px;
+  height: 18px;
+}
+
+.block-language-mermaid .taskText,
+.block-language-mermaid .taskTextOutsideRight,
+.block-language-mermaid .taskTextOutsideLeft {
+  fill: var(--wiki-mmd-fg) !important;
+  font-size: 12px !important;
+}
+
+/* 任务组标题 */
+.block-language-mermaid .sectionTitle {
+  fill: var(--wiki-mmd-fg) !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+}
+
+/* 分组交替底色，长甘特图更好读 */
+.block-language-mermaid .section:nth-child(even) rect,
+.block-language-mermaid rect.section {
+  fill: var(--wiki-mmd-stripe) !important;
+}
+
+/* 今日标记线 */
+.block-language-mermaid .today {
+  stroke: var(--wiki-c-red) !important;
+  stroke-width: 2px !important;
+}
+
+/* 里程碑菱形 */
+.block-language-mermaid .milestone {
+  fill: var(--wiki-c-yellow) !important;
+  stroke: var(--wiki-c-yellow) !important;
+}
+
+/* --------------------------------------------------------------------------
+   11. Pie 饼图
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .pieCircle,
+.block-language-mermaid .slice {
+  stroke: var(--wiki-mmd-canvas-bg) !important;
+  stroke-width: 2px !important;
+}
+
+.block-language-mermaid .pieTitleText {
+  fill: var(--wiki-mmd-fg) !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+}
+
+.block-language-mermaid .pieOuterCircle {
+  stroke: var(--wiki-mmd-canvas-border) !important;
+}
+
+.block-language-mermaid .legend text,
+.block-language-mermaid .slice text {
+  fill: var(--wiki-mmd-fg) !important;
+  font-size: 12px !important;
+}
+
+/* --------------------------------------------------------------------------
+   12. User Journey 旅程图
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .journey-section {
+  fill: var(--wiki-mmd-cluster-bg) !important;
+}
+
+.block-language-mermaid .journey-section .section-type-1,
+.block-language-mermaid .task-type-1 {
+  fill: var(--wiki-c-blue) !important;
+  stroke: var(--wiki-c-blue) !important;
+}
+.block-language-mermaid .task-type-2 {
+  fill: var(--wiki-c-cyan) !important;
+  stroke: var(--wiki-c-cyan) !important;
+}
+.block-language-mermaid .task-type-3 {
+  fill: var(--wiki-c-green) !important;
+  stroke: var(--wiki-c-green) !important;
+}
+.block-language-mermaid .task-type-4 {
+  fill: var(--wiki-c-yellow) !important;
+  stroke: var(--wiki-c-yellow) !important;
+}
+.block-language-mermaid .task-type-5 {
+  fill: var(--wiki-c-orange) !important;
+  stroke: var(--wiki-c-orange) !important;
+}
+
+.block-language-mermaid .journey-line,
+.block-language-mermaid line {
+  stroke: var(--wiki-mmd-line) !important;
+}
+
+.block-language-mermaid .journey-section-title,
+.block-language-mermaid .task text {
+  fill: var(--wiki-mmd-fg) !important;
+  font-size: 12px !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. Timeline 时间线
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .timeline-node rect,
+.block-language-mermaid .timeline-node path,
+.block-language-mermaid .timeline-node circle {
+  fill: var(--wiki-c-blue-soft) !important;
+  stroke: var(--wiki-c-blue) !important;
+  stroke-width: var(--wiki-mmd-stroke) !important;
+  rx: 8px;
+  ry: 8px;
+}
+
+.block-language-mermaid .timeline-node .nodeLabel,
+.block-language-mermaid .timeline-node text {
+  fill: var(--wiki-mmd-fg) !important;
+  font-size: 12.5px !important;
+}
+
+.block-language-mermaid .timeline-line,
+.block-language-mermaid .timeline-node line {
+  stroke: var(--wiki-mmd-line-strong) !important;
+  stroke-width: 2px !important;
+}
+
+/* --------------------------------------------------------------------------
+   14. Quadrant Chart 象限图
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .quadrant rect {
+  fill: var(--wiki-mmd-node-bg-alt) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+  stroke-width: 1px !important;
+}
+
+/* 四个象限交替明暗，便于区分 */
+.block-language-mermaid .quadrant:nth-child(odd) rect {
+  fill: var(--wiki-mmd-node-bg) !important;
+}
+
+.block-language-mermaid .quadrant-points circle,
+.block-language-mermaid .quadrant-points .point {
+  fill: var(--wiki-c-blue) !important;
+  stroke: var(--wiki-mmd-canvas-bg) !important;
+  stroke-width: 1.5px !important;
+  r: 5px;
+}
+
+.block-language-mermaid .quadrant-points text,
+.block-language-mermaid .quadrant-title text {
+  fill: var(--wiki-mmd-fg) !important;
+  font-size: 12px !important;
+}
+
+/* --------------------------------------------------------------------------
+   15. GitGraph
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .commit-label,
+.block-language-mermaid .commit-label-text {
+  fill: var(--wiki-mmd-fg-dim) !important;
+  font-size: 11px !important;
+}
+
+.block-language-mermaid .branch-label rect,
+.block-language-mermaid .branchLabelBkg {
+  fill: var(--wiki-mmd-label-bg) !important;
+  stroke: var(--wiki-mmd-node-border) !important;
+  rx: 5px;
+  ry: 5px;
+}
+
+.block-language-mermaid .branch-label text {
+  fill: var(--wiki-mmd-label-fg) !important;
+  font-size: 11px !important;
+}
+
+.block-language-mermaid .commit {
+  stroke: var(--wiki-mmd-canvas-bg) !important;
+  stroke-width: 2px !important;
+}
+
+.block-language-mermaid .tag-label rect {
+  fill: var(--wiki-c-purple-soft) !important;
+  stroke: var(--wiki-c-purple) !important;
+  rx: 5px;
+  ry: 5px;
+}
+
+.block-language-mermaid .tag-label text {
+  fill: var(--wiki-mmd-fg) !important;
+  font-size: 11px !important;
+}
+
+/* --------------------------------------------------------------------------
+   16. XY Chart / Sankey
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .xychart .plot rect,
+.block-language-mermaid .xychart .plot .bar {
+  fill: var(--wiki-c-blue) !important;
+  stroke: none !important;
+  rx: 3px;
+  ry: 3px;
+}
+
+.block-language-mermaid .xychart .plot .line,
+.block-language-mermaid .xychart .plot .line-plot {
+  stroke: var(--wiki-c-cyan) !important;
+  stroke-width: 2px !important;
+}
+
+.block-language-mermaid .xychart .axis line,
+.block-language-mermaid .xychart .axis path {
+  stroke: var(--wiki-mmd-grid) !important;
+}
+
+.block-language-mermaid .xychart .axis text,
+.block-language-mermaid .xychart-title text {
+  fill: var(--wiki-mmd-fg-dim) !important;
+  font-size: 12px !important;
+}
+
+.block-language-mermaid .sankey-link {
+  stroke-opacity: 0.35 !important;
+}
+
+.block-language-mermaid .sankey-label {
+  fill: var(--wiki-mmd-fg) !important;
+  font-size: 12px !important;
+}
+
+/* --------------------------------------------------------------------------
+   17. 语义节点色 —— 与 Mermaid 源码中的语义 class 一一对应
+
+   用法：在 Mermaid 里只写   class 节点ID blue  即可，不要写 classDef。
+
+   原因：Mermaid 的 classDef 只接受简单色值，写成
+   `classDef blue fill:var(--x)` 或 `fill:rgba(...)` 会直接抛出解析错误，
+   导致整张图渲染失败。因此颜色全部由这里统一提供 ——
+   这同时让同一份源码天然获得明暗双主题自适应能力。
+   -------------------------------------------------------------------------- */
+.block-language-mermaid .node.blue rect,
+.block-language-mermaid .node.blue polygon,
+.block-language-mermaid .node.blue path {
+  fill: var(--wiki-c-blue-soft) !important;
+  stroke: var(--wiki-c-blue) !important;
+}
+.block-language-mermaid .node.cyan rect,
+.block-language-mermaid .node.cyan polygon,
+.block-language-mermaid .node.cyan path {
+  fill: var(--wiki-c-cyan-soft) !important;
+  stroke: var(--wiki-c-cyan) !important;
+}
+.block-language-mermaid .node.green rect,
+.block-language-mermaid .node.green polygon,
+.block-language-mermaid .node.green path {
+  fill: var(--wiki-c-green-soft) !important;
+  stroke: var(--wiki-c-green) !important;
+}
+.block-language-mermaid .node.yellow rect,
+.block-language-mermaid .node.yellow polygon,
+.block-language-mermaid .node.yellow path {
+  fill: var(--wiki-c-yellow-soft) !important;
+  stroke: var(--wiki-c-yellow) !important;
+}
+.block-language-mermaid .node.orange rect,
+.block-language-mermaid .node.orange polygon,
+.block-language-mermaid .node.orange path {
+  fill: var(--wiki-c-orange-soft) !important;
+  stroke: var(--wiki-c-orange) !important;
+}
+.block-language-mermaid .node.red rect,
+.block-language-mermaid .node.red polygon,
+.block-language-mermaid .node.red path {
+  fill: var(--wiki-c-red-soft) !important;
+  stroke: var(--wiki-c-red) !important;
+}
+.block-language-mermaid .node.purple rect,
+.block-language-mermaid .node.purple polygon,
+.block-language-mermaid .node.purple path {
+  fill: var(--wiki-c-purple-soft) !important;
+  stroke: var(--wiki-c-purple) !important;
+}
+
+/* 强调节点 —— 实心填充，用于流程起点/终点/关键决策 */
+.block-language-mermaid .node.solid rect,
+.block-language-mermaid .node.solid polygon,
+.block-language-mermaid .node.solid path {
+  fill: var(--wiki-c-blue) !important;
+  stroke: var(--wiki-c-blue) !important;
+}
+.block-language-mermaid .node.solid .nodeLabel,
+.block-language-mermaid .node.solid foreignObject div {
+  fill: var(--wiki-mmd-on-solid) !important;
+  color: var(--wiki-mmd-on-solid) !important;
+  font-weight: 600 !important;
+}
+
+/* --------------------------------------------------------------------------
+   18. 打印降级
+   -------------------------------------------------------------------------- */
+@media print {
+  .block-language-mermaid,
+  .mermaid-view {
+    background-color: #fff !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .block-language-mermaid::before {
+    display: none !important;
+  }
+
+  .block-language-mermaid .node rect,
+  .block-language-mermaid .node polygon,
+  .block-language-mermaid .node path {
+    filter: none !important;
+  }
+}

@@ -45,7 +45,10 @@ _templates/
 │   └── snippets/
 │       ├── wiki-reading.css
 │       ├── wiki-callouts.css
-│       └── wiki-components.css
+│       ├── wiki-components.css
+│       ├── wiki-mermaid.css      # Mermaid 全类型图表（含时序图）
+│       ├── wiki-markmap.css      # Markmap 思维导图
+│       └── wiki-canvas.css       # Canvas 白板
 ├── templates/
 │   ├── entity.md
 │   ├── concept.md
@@ -119,7 +122,10 @@ _templates/
 │   └── snippets/
 │       ├── wiki-reading.css
 │       ├── wiki-callouts.css
-│       └── wiki-components.css
+│       ├── wiki-components.css
+│       ├── wiki-mermaid.css      # Mermaid 全类型图表（含时序图）
+│       ├── wiki-markmap.css      # Markmap 思维导图
+│       └── wiki-canvas.css       # Canvas 白板
 └── .claude/
     └── skills/
         ├── ingest/
@@ -198,7 +204,7 @@ _templates/
 ### 首次使用 Obsidian
 1. 在 Obsidian 中打开此文件夹作为 Vault
 2. 参考 `OBSIDIAN_SETUP.md` 安装推荐社区插件
-3. 确认 **Settings → Appearance → CSS Snippets** 中三个片段已启用
+3. 确认 **Settings → Appearance → CSS Snippets** 中六个片段已启用
 4. 模板文件夹已通过 `templates.json` 自动配置为 `templates/`
 5. 图谱视图颜色分组已通过 `graph.json` 预设
 6. 将原始资料放入 raw/ 目录，或直接执行 `/ingest <url>` 抓取网页

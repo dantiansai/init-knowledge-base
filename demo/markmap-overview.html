@@ -3,91 +3,191 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>init-knowledge-base 架构思维导图</title>
+  <title>Wiki Markmap 思维导图预览</title>
+
+  <!-- 直接复用生产环境的 CSS snippet，节点与连线样式与 Obsidian 内一致 -->
+  <link rel="stylesheet" href="../_templates/.obsidian/snippets/wiki-markmap.css">
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    .theme-dark {
+      --pg-bg: #1a1a1d;
+      --pg-panel: #202024;
+      --pg-border: #33333a;
+      --pg-text: #d8d8dc;
+      --pg-dim: #8f8f99;
+      --pg-accent: #81a1c1;
+      --pg-accent-soft: rgba(129, 161, 193, 0.12);
+      --pg-accent-line: rgba(129, 161, 193, 0.28);
+    }
+    .theme-light {
+      --pg-bg: #f2f4f8;
+      --pg-panel: #ffffff;
+      --pg-border: #e0e4ea;
+      --pg-text: #2b2f36;
+      --pg-dim: #6b7280;
+      --pg-accent: #4c7899;
+      --pg-accent-soft: rgba(76, 120, 153, 0.1);
+      --pg-accent-line: rgba(76, 120, 153, 0.24);
+    }
+
+    html, body { height: 100%; }
+
     body {
-      background: #1a1b26;
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-      overflow: hidden;
+      background: var(--pg-bg);
+      color: var(--pg-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC",
+        "PingFang SC", "Microsoft YaHei", sans-serif;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      overflow: hidden;
+      transition: background 0.2s ease, color 0.2s ease;
     }
-    #header {
-      background: rgba(30, 33, 46, 0.95);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+
+    /* ---------- 顶部栏 ---------- */
+    header {
+      flex-shrink: 0;
+      background: var(--pg-panel);
+      border-bottom: 1px solid var(--pg-border);
       padding: 12px 24px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
       z-index: 10;
     }
-    #header h1 {
+    header h1 {
       font-size: 15px;
-      color: #7aa2f7;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--pg-accent);
       white-space: nowrap;
+      margin-right: 6px;
     }
-    #header .subtitle {
-      font-size: 12px;
-      color: #565f89;
-      margin-left: auto;
-    }
-    #header button {
-      background: rgba(122, 162, 247, 0.12);
-      border: 1px solid rgba(122, 162, 247, 0.25);
-      color: #7aa2f7;
-      padding: 6px 14px;
+
+    .btn {
+      background: var(--pg-accent-soft);
+      border: 1px solid var(--pg-accent-line);
+      color: var(--pg-accent);
+      padding: 5px 13px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 12px;
       font-family: inherit;
-      transition: all 0.2s;
+      font-weight: 500;
+      transition: background 0.15s ease, transform 0.15s ease;
     }
-    #header button:hover {
-      background: rgba(122, 162, 247, 0.2);
-      border-color: rgba(122, 162, 247, 0.4);
+    .btn:hover { background: var(--pg-accent-line); transform: translateY(-1px); }
+    .btn.active {
+      background: var(--pg-accent);
+      border-color: var(--pg-accent);
+      color: var(--pg-bg);
+      font-weight: 700;
     }
-    #header button.active {
-      background: rgba(122, 162, 247, 0.25);
-      border-color: rgba(122, 162, 247, 0.5);
+
+    .divider {
+      width: 1px;
+      height: 20px;
+      background: var(--pg-border);
+      margin: 0 4px;
     }
-    #mindmap-container {
+    .spacer { flex: 1; }
+
+    .hint {
+      font-size: 11.5px;
+      color: var(--pg-dim);
+      white-space: nowrap;
+    }
+
+    /* ---------- 画布 ---------- */
+    #canvas-wrap {
       flex: 1;
-      width: 100%;
       position: relative;
+      overflow: hidden;
+      /* 复用 snippet 的画布 token，与 Obsidian 内保持一致 */
+      background-color: var(--wiki-mk-canvas-bg);
+    }
+    /* 与 snippet 中一致的极淡点阵底纹 */
+    #canvas-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(
+        circle at 1px 1px,
+        var(--wiki-mk-grid) 1px,
+        transparent 0
+      );
+      background-size: 18px 18px;
+      opacity: 0.6;
     }
     #mindmap {
+      position: relative;
+      z-index: 1;
       width: 100%;
       height: 100%;
+      display: block;
     }
-    .markmap-node text {
-      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+
+    /* 统计浮标 */
+    #stats {
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      z-index: 2;
+      font-size: 11.5px;
+      color: var(--pg-dim);
+      background: var(--pg-panel);
+      border: 1px solid var(--pg-border);
+      border-radius: 7px;
+      padding: 6px 12px;
+      letter-spacing: 0.02em;
     }
+    #stats b { color: var(--pg-accent); font-weight: 700; }
   </style>
+
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://cdn.jsdelivr.net/npm/markmap-view@0.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/markmap-lib@0.17"></script>
 </head>
-<body>
-  <div id="header">
-    <h1>🧠 init-knowledge-base 架构思维导图</h1>
-    <button id="btn-architecture" class="active" onclick="switchMap('architecture')">项目架构</button>
-    <button id="btn-workflow" onclick="switchMap('workflow')">工作流程</button>
-    <button id="btn-skills" onclick="switchMap('skills')">技能关系</button>
-    <span class="subtitle">Markmap · 点击节点可折叠/展开 · 滚轮缩放 · 拖拽平移</span>
-  </div>
-  <div id="mindmap-container">
-    <svg id="mindmap"></svg>
-  </div>
 
-  <script>
-    const maps = {
-      architecture: `# init-knowledge-base
+<body class="theme-dark">
 
-## 📥 raw/ (不可变层)
+<header>
+  <h1>🧠 Wiki Markmap 思维导图</h1>
+
+  <button class="btn active" id="btn-architecture">项目架构</button>
+  <button class="btn" id="btn-workflow">工作流程</button>
+  <button class="btn" id="btn-skills">技能关系</button>
+
+  <span class="divider"></span>
+
+  <button class="btn" id="btn-expand">全部展开</button>
+  <button class="btn" id="btn-collapse">折叠到二级</button>
+  <button class="btn" id="btn-fit">适应画布</button>
+
+  <span class="spacer"></span>
+
+  <span class="hint">点击节点折叠/展开 · 滚轮缩放 · 拖拽平移</span>
+  <button class="btn" id="btn-theme">☀︎ 浅色</button>
+</header>
+
+<div id="canvas-wrap">
+  <svg id="mindmap" class="markmap"></svg>
+  <div id="stats">节点 <b id="stat-nodes">0</b> · 层级 <b id="stat-depth">0</b></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ======================================================================
+     1. 思维导图数据源
+     ====================================================================== */
+  const maps = {
+    architecture: `# init-knowledge-base
+
+## 📥 raw/ 不可变层
 ### 01-articles/
 - 网页剪藏
 - 文章 Markdown
@@ -105,14 +205,14 @@
 - 已处理归档
 - ⛔ 禁止读取
 
-## 🧠 wiki/ (编译输出层)
+## 🧠 wiki/ 编译输出层
 ### index.md
 - Dataview 动态仪表盘
-- 概念库/实体库/综合分析
+- 概念库 / 实体库 / 综合分析
 - 时效性监控
 ### log.md
 - Append-only 操作日志
-- ingest/query/lint/refresh/canvas
+- ingest / query / lint / refresh
 ### concepts/
 - 框架
 - 方法论
@@ -141,13 +241,13 @@
 
 ## 📝 templates/
 ### entity.md
-- 通用字段 + 人物/公司/产品分类型
+- 通用字段 + 分类型
 ### concept.md
-- 定义/原理/演进脉络/误区
+- 定义 / 原理 / 演进 / 误区
 ### source.md
-- 元信息/摘要/可信度
+- 元信息 / 摘要 / 可信度
 ### synthesis.md
-- 研究问题/证据表/结论
+- 研究问题 / 证据表 / 结论
 
 ## ⚙️ .obsidian/
 ### app.json
@@ -155,54 +255,51 @@
 - 附件路径 assets/
 ### appearance.json
 - 主题色 #5e81ac
-- 3 个 CSS 片段自动启用
+- 6 个 CSS 片段自动启用
 ### templates.json
 - 模板文件夹预设
 ### graph.json
 - 5 色分组着色
 ### snippets/
 #### wiki-reading.css
-- 标题层级/段落/引用/表格
-- Dataview 样式
-- 打印支持
+- 标题层级 / 段落 / 引用 / 表格
 #### wiki-callouts.css
-- 语义化颜色
-- 折叠动画
-- 明暗模式适配
+- 语义化颜色 / 折叠动画
 #### wiki-components.css
-- 双链/外链/标签
-- 代码块语言标签
-- 图谱节点颜色
+- 双链 / 外链 / 标签 / 代码块
+#### wiki-mermaid.css
+- 时序图 / 流程图 / 类图 / 甘特图
+#### wiki-markmap.css
+- 思维导图节点与连线
+#### wiki-canvas.css
+- Canvas 卡片与连线
 
 ## 🤖 .claude/skills/
 ### ingest
 - 增量编译 (state.json)
 - 讨论确认模式
 - URL 网页摄入
-- 批量摘要报告
 ### query
 - 索引检索
 - 双链标注来源
 ### lint
-- 死链检测
-- 孤儿页面
+- 死链检测 / 孤儿页面
 - 概念空缺检测
 - 研究方向建议
 ### refresh
 - 联网搜索验证
 - 按领域刷新周期
 - 冲突标记
-- refresh-state.json
 ### obsidian-markdown
-- 语法规范 (隐式调用)
+- 语法规范（隐式调用）
 ### json-canvas
 - 知识图谱可视化
 - .canvas 文件生成
 `,
 
-      workflow: `# 知识库工作流
+    workflow: `# 知识库工作流
 
-## 📥 摄入阶段 (ingest)
+## 📥 摄入阶段 ingest
 ### 输入来源
 #### raw/ 本地文件
 - Markdown 文章
@@ -213,46 +310,46 @@
 - HTML → Markdown
 - 存入 raw/01-articles/
 ### 处理流程
-#### 步骤 1: 检查状态
+#### 步骤 1 检查状态
 - 对比哈希
 - 跳过已归档
-#### 步骤 2: 读取源文件
+#### 步骤 2 读取源文件
 - .md 直接读取
 - .pdf 提取文本
-#### 步骤 3: 提炼核心
-- 主旨/实体/概念
+#### 步骤 3 提炼核心
+- 主旨 / 实体 / 概念
 - 非中文翻译
-#### 步骤 3.5: 讨论确认
+#### 步骤 3.5 讨论确认
 - 展示提取结果
 - 用户可修正
-#### 步骤 4: 创建来源摘要
+#### 步骤 4 创建来源摘要
 - wiki/sources/
-#### 步骤 5: 知识网络化
-- 创建/更新实体页
-- 创建/更新概念页
+#### 步骤 5 知识网络化
+- 创建或更新实体页
+- 创建或更新概念页
 - 增量合并
-#### 步骤 6: 更新注册表
+#### 步骤 6 更新注册表
 - index.md
 - log.md
-#### 步骤 7: 归档源文件
+#### 步骤 7 归档源文件
 - → raw/09-archive/
-#### 步骤 8: 更新状态
+#### 步骤 8 更新状态
 - ingest-state.json
 
-## 🔍 查询阶段 (query)
+## 🔍 查询阶段 query
 ### 流程
 #### 通过 index.md 检索
 #### 深度阅读相关页面
-#### 用 [[wikilink]] 标注来源回答
+#### 用 wikilink 标注来源回答
 
-## 🔧 健康检查 (lint)
+## 🔧 健康检查 lint
 ### 检查项
 #### 死链检测
-- [[链接]] 无目标
+- 链接无目标
 #### 孤儿页面
-- 无入链/出链
+- 无入链 / 出链
 #### 概念空缺
-- 被引用 ≥2 次但无页面
+- 被引用 ≥ 2 次但无页面
 - 按引用次数分级
 #### 重名检测
 - 编辑距离 < 3
@@ -262,12 +359,12 @@
 - 健康度评分
 - 研究方向建议
 
-## 🌐 联网刷新 (refresh)
+## 🌐 联网刷新 refresh
 ### 触发条件
-#### AI/技术: 30天
-#### 商业: 45天
-#### 科学: 90天
-#### 其他: 180天
+#### AI / 技术 30 天
+#### 商业 45 天
+#### 科学 90 天
+#### 其他 180 天
 ### 流程
 #### 提取关键词
 #### 联网搜索
@@ -277,7 +374,7 @@
 ### 状态追踪
 - refresh-state.json
 
-## 🎨 可视化 (canvas)
+## 🎨 可视化 canvas
 ### 输出
 #### .canvas 文件
 #### 节点类型
@@ -287,49 +384,49 @@
 - 分组节点
 `,
 
-      skills: `# Agent Skills 关系图
+    skills: `# Agent Skills 关系图
 
 ## 核心编译
 ### ingest
-- 输入: raw/ 文件 或 URL
-- 输出: wiki/ 页面
-- 依赖: obsidian-markdown
-- 状态: ingest-state.json
-- 触发: /ingest [path|url]
+- 输入 raw/ 文件 或 URL
+- 输出 wiki/ 页面
+- 依赖 obsidian-markdown
+- 状态 ingest-state.json
+- 触发 /ingest
 
 ## 检索问答
 ### query
-- 输入: 用户问题
-- 依赖: wiki/index.md
-- 输出: 带来源的回答
-- 触发: /query <问题>
+- 输入 用户问题
+- 依赖 wiki/index.md
+- 输出 带来源的回答
+- 触发 /query
 
 ## 健康维护
 ### lint
-- 输入: wiki/ 全扫描
-- 输出: 健康报告
-- 检测: 死链/孤儿/空缺/冲突
-- 触发: /lint
+- 输入 wiki/ 全扫描
+- 输出 健康报告
+- 检测 死链 / 孤儿 / 空缺 / 冲突
+- 触发 /lint
 
 ## 时效更新
 ### refresh
-- 输入: 陈旧 wiki 页面
-- 依赖: 联网搜索
-- 输出: 更新/冲突标记
-- 状态: refresh-state.json
-- 触发: /refresh
+- 输入 陈旧 wiki 页面
+- 依赖 联网搜索
+- 输出 更新 / 冲突标记
+- 状态 refresh-state.json
+- 触发 /refresh
 
 ## 可视化
 ### json-canvas
-- 输入: wiki/ 页面+双链
-- 输出: .canvas 文件
-- 触发: /canvas
+- 输入 wiki/ 页面 + 双链
+- 输出 .canvas 文件
+- 触发 /canvas
 
 ## 基础设施
 ### obsidian-markdown
-- 类型: 隐式调用
-- 职责: 语法规范
-- 被依赖: ingest/query/lint/refresh
+- 类型 隐式调用
+- 职责 语法规范
+- 被依赖 ingest / query / lint / refresh
 
 ## 数据流
 ### raw/ → ingest → wiki/
@@ -348,44 +445,160 @@
 - 上次搜索日期
 - 发现的新信息
 `
+  };
+
+  /* ======================================================================
+     2. 调色板 —— 修正原版引号混用导致的数组解析失败
+     ====================================================================== */
+  const PALETTE = {
+    dark: ['#5e81ac', '#88c0d0', '#a3be8c', '#ebcb8b', '#d08770', '#b48ead', '#81a1c1'],
+    light: ['#4c7899', '#3a8ea0', '#6a9455', '#b8860b', '#c25e3a', '#8e5e87', '#6c9abb']
+  };
+
+  /* ======================================================================
+     3. 状态
+     ====================================================================== */
+  let currentMap = 'architecture';
+  let currentTheme = 'dark';
+  let expandLevel = 3;
+  let mm = null;
+  let lastRoot = null;
+
+  /* markmap-lib / markmap-view 的 UMD 全局都挂在 window.markmap 命名空间下。
+     原版代码引用的 markmapLib 从未定义，会导致渲染直接抛错。 */
+  const Transformer = window.markmap && window.markmap.Transformer;
+  const Markmap = window.markmap && window.markmap.Markmap;
+
+  if (!Transformer || !Markmap) {
+    document.getElementById('stats').textContent =
+      '⚠️ Markmap 资源加载失败，请检查网络后刷新';
+    return;
+  }
+
+  const transformer = new Transformer();
+
+  /* ======================================================================
+     4. 渲染
+     ====================================================================== */
+  /* 给每个一级分支分配稳定序号，使其所有后代共用同一色系，
+     避免 Markmap 默认"按深度取色"导致同一层节点全部同色 */
+  function assignBranches(root) {
+    root.payload = root.payload || {};
+    root.payload.branch = -1;
+    (root.children || []).forEach(function (child, i) {
+      (function walk(n) {
+        n.payload = n.payload || {};
+        n.payload.branch = i;
+        (n.children || []).forEach(walk);
+      })(child);
+    });
+  }
+
+  function colorFor(theme) {
+    var colors = PALETTE[theme];
+    return function (node) {
+      var b = node.payload && typeof node.payload.branch === 'number'
+        ? node.payload.branch : null;
+      if (b === null || b < 0) return colors[0];
+      return colors[(b + 1) % colors.length];
+    };
+  }
+
+  function countNodes(node) {
+    let nodes = 1;
+    let depth = node.state ? node.state.depth || 0 : 0;
+    (node.children || []).forEach(child => {
+      const r = countNodes(child);
+      nodes += r.nodes;
+      depth = Math.max(depth, r.depth);
+    });
+    return { nodes, depth };
+  }
+
+  function render(fit) {
+    const { root } = transformer.transform(maps[currentMap]);
+    lastRoot = root;
+    assignBranches(root);
+
+    const options = {
+      duration: 400,
+      maxWidth: 300,
+      spacingHorizontal: 90,
+      spacingVertical: 12,
+      paddingX: 14,
+      autoFit: false,
+      initialExpandLevel: expandLevel,
+      colorFreezeLevel: 0,
+      color: colorFor(currentTheme)
     };
 
-    let currentMap = 'architecture';
-    let mm;
-
-    function renderMap(key) {
-      const md = maps[key];
-      const { root } = markmapLib.transformer.transform(md);
-      if (!mm) {
-        mm = Markmap.create('#mindmap', {
-          duration: 400,
-          maxWidth: 320,
-          spacingHorizontal: 100,
-          spacingVertical: 14,
-          paddingX: 12,
-          autoFit: true,
-          color: (node) => {
-            const colors = ['#7aa2f7", '#9ece6a", "#e0af68", "#f7768e", "#bb9af7", "#7dcfff", "#c0caf5"];
-            const depth = node.state.depth || 0;
-            return colors[depth % colors.length];
-          },
-        }, root);
-      } else {
-        mm.setData(root);
-        mm.fit();
-      }
+    if (!mm) {
+      mm = Markmap.create('#mindmap', options, root);
+    } else {
+      mm.setOptions(options);
+      mm.setData(root);
     }
 
-    function switchMap(key) {
-      currentMap = key;
-      document.querySelectorAll('#header button').forEach(b => b.classList.remove('active'));
-      document.getElementById('btn-' + key).classList.add('active');
-      renderMap(key);
-    }
+    const stat = countNodes(root);
+    document.getElementById('stat-nodes').textContent = stat.nodes;
+    document.getElementById('stat-depth').textContent = stat.depth;
 
-    window.addEventListener('load', () => {
-      renderMap('architecture');
+    if (fit !== false) {
+      setTimeout(() => mm.fit(), 60);
+    }
+  }
+
+  /* ======================================================================
+     5. 交互
+     ====================================================================== */
+  function switchMap(key) {
+    currentMap = key;
+    ['architecture', 'workflow', 'skills'].forEach(k => {
+      document.getElementById('btn-' + k).classList.toggle('active', k === key);
     });
-  </script>
+    render();
+  }
+
+  ['architecture', 'workflow', 'skills'].forEach(key => {
+    document.getElementById('btn-' + key)
+      .addEventListener('click', () => switchMap(key));
+  });
+
+  document.getElementById('btn-expand').addEventListener('click', () => {
+    expandLevel = -1;
+    render();
+  });
+
+  document.getElementById('btn-collapse').addEventListener('click', () => {
+    expandLevel = 2;
+    render();
+  });
+
+  document.getElementById('btn-fit').addEventListener('click', () => {
+    if (mm) mm.fit();
+  });
+
+  document.getElementById('btn-theme').addEventListener('click', () => {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.className = 'theme-' + currentTheme;
+    document.getElementById('btn-theme').textContent =
+      currentTheme === 'dark' ? '☀︎ 浅色' : '☾ 深色';
+    render(false);
+  });
+
+  /* 窗口尺寸变化时重新适应 */
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (mm) mm.fit(); }, 160);
+  });
+
+  /* ======================================================================
+     6. 启动
+     ====================================================================== */
+  window.addEventListener('load', () => render());
+})();
+</script>
+
 </body>
 </html>

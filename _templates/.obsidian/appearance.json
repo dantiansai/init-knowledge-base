@@ -6,7 +6,10 @@
   "enabledCssSnippets": [
     "wiki-reading",
     "wiki-callouts",
-    "wiki-components"
+    "wiki-components",
+    "wiki-mermaid",
+    "wiki-markmap",
+    "wiki-canvas"
   ],
   "theme": "obsidian",
   "translucency": false,

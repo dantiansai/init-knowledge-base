@@ -20,9 +20,10 @@ flowchart TB
     RAW ==>|"ingest 编译"| WIKI
     WIKI -.->|"![[嵌入]]"| AST
 
-    style Immutable fill:#bf616a,stroke:#bf616a,color:#fff
-    style Media fill:#d08770,stroke:#d08770,color:#fff
-    style Workspace fill:#a3be8c,stroke:#a3be8c,color:#fff
+    class RAW red
+    class AST orange
+    class WIKI green
+
 ```
 
 - `/raw/` (不可变层 - Immutable)：
